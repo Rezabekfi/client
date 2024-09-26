@@ -1,9 +1,16 @@
+import java.awt.*;
+
 public class Player {
 
     private GoalDirection driection;
     private int numberOfWalls;
     private int x, y;
     private char color; 
+    private Color color_2d;
+
+    public Color getColor_2d() {
+        return color_2d;
+    }
 
     public Player(GoalDirection direction, int x, int y, char color){
         this.driection = direction;
@@ -11,6 +18,7 @@ public class Player {
         this.x = x;
         this.y = y;
         this.color = color;
+        this.color_2d = Constants.CHAR_TO_COLOR.get(color);
     }
 
     public GoalDirection getDriection() {
@@ -58,5 +66,6 @@ public class Player {
         return "Player [driection=" + driection + ", numberOfWalls=" + numberOfWalls + ", x=" + x + ", y=" + y
                 + ", color=" + color + "]";
     }
+
 
 }
