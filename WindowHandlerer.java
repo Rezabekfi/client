@@ -6,5 +6,6 @@ public class WindowHandlerer {
         window.setSize(width, height);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
+        window.setResizable(false);
     }
 }
