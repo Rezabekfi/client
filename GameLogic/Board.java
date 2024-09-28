@@ -1,3 +1,7 @@
+package GameLogic;
+
+import Settings.Constants;
+
 public class Board {
     private char[][] board;
     private boolean[][] horizontalWalls; 

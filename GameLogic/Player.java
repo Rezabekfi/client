@@ -1,4 +1,7 @@
+package GameLogic;
 import java.awt.*;
+
+import Settings.Constants;
 
 public class Player {
 

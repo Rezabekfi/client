@@ -1,7 +1,9 @@
+package Settings;
 import java.util.HashMap;
 import java.awt.*;
 
 public class Constants{
+    public static String GAME_NAME = "Quoridor";
     public static int STARTING_NUMBER_OF_WALLS = 10; 
     public static int BOARD_SIZE = 9;
     public static int LEAST_POSSIBLE_PLAYERS = 2;
@@ -15,4 +17,8 @@ public class Constants{
         put('y', Color.YELLOW);
         put('p', Color.PINK);
     }};
+
+    //WINDOW SETTINGS 
+    public static int WINDOW_WIDTH = 1920/2;
+    public static int WINDOW_HEIGHT = 1080/2;
 }
