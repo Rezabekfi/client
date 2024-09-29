@@ -1,11 +1,12 @@
 package UI;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel {
 
-    private JPanel mainPanel;
+    private WindowHandlerer mainFrame;
 
-    public GamePanel(JPanel mainPanel) {
-        this.mainPanel = mainPanel;
+    public GamePanel(WindowHandlerer mainFrame) {
+        this.mainFrame = mainFrame;
     }
 }

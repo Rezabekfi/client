@@ -3,9 +3,9 @@ import javax.swing.JPanel;
 
 public class SettingsPanel extends JPanel {
     
-    private JPanel mainPanel;
+    private WindowHandlerer mainFrame;
 
-    public SettingsPanel(JPanel mainPanel) {
-        this.mainPanel = mainPanel;
+    public SettingsPanel(WindowHandlerer mainFrame) {
+        this.mainFrame = mainFrame;
     }
 }
