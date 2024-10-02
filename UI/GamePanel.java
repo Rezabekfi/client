@@ -25,6 +25,25 @@ public class GamePanel extends JPanel {
         titlePanel.add(title);
         this.add(titlePanel, BorderLayout.CENTER);
 
+        /*  RANDOM pokus - nic duleziteho
+        JPanel centerPanel = new JPanel();
+        this.add(centerPanel, BorderLayout.CENTER);
+        JPanel centerPanel1 = new JPanel();
+        centerPanel.add(centerPanel1, BorderLayout.NORTH);
+        JPanel centerPanel2 = new JPanel();
+        centerPanel1.add(centerPanel2, BorderLayout.WEST);
+        JPanel centerPanel3 = new JPanel();
+        centerPanel2.add(centerPanel3, BorderLayout.NORTH);
+        JPanel centerPanel4 = new JPanel();
+        JLabel titleCenter = new JLabel("GAME");
+        centerPanel4.add(titleCenter);
+        centerPanel3.add(centerPanel4, BorderLayout.WEST);
+        */
+
+        // TODO: add Game board middle sides maybe names + walls number 
+
+
+
         JPanel buttonPanel = new JPanel();
         JButton backButton = new JButton("Back to menu.");
         backButton.addActionListener(new ActionListener() {
