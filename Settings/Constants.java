@@ -21,4 +21,11 @@ public class Constants{
     //WINDOW SETTINGS 
     public static int WINDOW_WIDTH = 1920/2;
     public static int WINDOW_HEIGHT = 1080/2;
+
+    public static String MENU_CARD = "Menu";
+    public static String GAME_ON_CARD = "Game";
+    public static String GAME_OFF_CARD = "Game";
+    public static String SETTINGS_CARD = "Settings";
+
+    public static int EXIT_SUCCES = 0;
 }

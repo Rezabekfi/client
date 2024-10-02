@@ -40,17 +40,22 @@ public class MenuPanel extends JPanel {
         JPanel playSoloPanel = new JPanel();
         JButton playSolButton = new JButton("Play Solo");
         playSoloPanel.add(playSolButton);
+        playSolButton.addActionListener(playSoloAction());
 
         JPanel playMultiplayerPanel = new JPanel();
         JButton playMultiplayerButton = new JButton("Play Online");
+        playMultiplayerButton.addActionListener(playSoloAction());
         playMultiplayerPanel.add(playMultiplayerButton);
 
+        
         JPanel settingsPanel = new JPanel();
         JButton settingsButton = new JButton("Settings");
+        settingsButton.addActionListener(settingsAction());
         settingsPanel.add(settingsButton);
 
         JPanel exitPanel = new JPanel();
         JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(exitAction());
         exitPanel.add(exitButton);
 
         buttonPanel.add(playSoloPanel);
@@ -59,5 +64,32 @@ public class MenuPanel extends JPanel {
         buttonPanel.add(exitPanel);
 
         this.add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private ActionListener playSoloAction() {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.showCard(Constants.GAME_ON_CARD);
+            }
+        };
+    }
+
+    private ActionListener settingsAction() {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.showCard(Constants.SETTINGS_CARD);
+            }
+        };
+    }
+
+    private ActionListener exitAction() {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(Constants.EXIT_SUCCES);
+            }
+        };
     }
 }

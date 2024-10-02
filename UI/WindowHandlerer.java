@@ -27,9 +27,9 @@ public class WindowHandlerer extends JFrame {
         JPanel settingsPanel = new SettingsPanel(this);
 
         // Add both panels to the frame (CardLayout will handle switching between them)
-        mainPanel.add(menuPanel, "Menu");
-        mainPanel.add(gamePanel, "Game");
-        mainPanel.add(settingsPanel, "Settings");
+        mainPanel.add(menuPanel, Constants.MENU_CARD);
+        mainPanel.add(gamePanel, Constants.GAME_ON_CARD);
+        mainPanel.add(settingsPanel, Constants.SETTINGS_CARD);
 
         this.add(mainPanel);
         this.setVisible(true);
