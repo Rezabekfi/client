@@ -8,15 +8,17 @@ public class Board {
     private boolean[][] verticalWalls;
     private int numberOfPlayers;
     private Player[] players;
+    private int boardSize;
 
     public Board(int numberOfPlayers) {
         if (numberOfPlayers > Constants.MAXIMUM_POSSIBLE_PLAYERS) {
             numberOfPlayers = Constants.MAXIMUM_POSSIBLE_PLAYERS;
         }
+        this.boardSize = Constants.BOARD_SIZE;
         this.numberOfPlayers = numberOfPlayers;
-        this.horizontalWalls = new boolean[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
-        this.verticalWalls = new boolean[Constants.BOARD_SIZE][Constants.BOARD_SIZE-1];
-        this.board = new char[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
+        this.horizontalWalls = new boolean[boardSize][boardSize];
+        this.verticalWalls = new boolean[boardSize][boardSize-1];
+        this.board = new char[boardSize][boardSize];
         this.players = new Player[numberOfPlayers];
     }
 
@@ -77,6 +79,10 @@ public class Board {
 
     public char[][] getBoard() {
         return board;
+    }
+
+    public int getBoardSize() {
+        return this.boardSize;
     }
 
     public boolean[][] getHorizontalWalls() {
