@@ -1,5 +1,6 @@
 package UI;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import GameLogic.Board;
 import Settings.Constants;
 
 public class GamePanel extends JPanel {
@@ -18,32 +20,25 @@ public class GamePanel extends JPanel {
 
     public GamePanel(WindowHandlerer mainFrame) {
         this.mainFrame = mainFrame;
-        this.setLayout(new BorderLayout());
+        this.setLayout(null);
+
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
         JLabel title = new JLabel("GAME", SwingConstants.CENTER);
         titlePanel.add(title);
-        this.add(titlePanel, BorderLayout.CENTER);
+        titlePanel.setBounds(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT/12);
+        titlePanel.setBackground(Color.GRAY);
+        this.add(titlePanel);
 
-        /*  RANDOM pokus - nic duleziteho
-        JPanel centerPanel = new JPanel();
-        this.add(centerPanel, BorderLayout.CENTER);
-        JPanel centerPanel1 = new JPanel();
-        centerPanel.add(centerPanel1, BorderLayout.NORTH);
-        JPanel centerPanel2 = new JPanel();
-        centerPanel1.add(centerPanel2, BorderLayout.WEST);
-        JPanel centerPanel3 = new JPanel();
-        centerPanel2.add(centerPanel3, BorderLayout.NORTH);
-        JPanel centerPanel4 = new JPanel();
-        JLabel titleCenter = new JLabel("GAME");
-        centerPanel4.add(titleCenter);
-        centerPanel3.add(centerPanel4, BorderLayout.WEST);
-        */
-
-        // TODO: add Game board middle sides maybe names + walls number 
+        
+        GameBoard gb = new GameBoard(new Board());
+        gb.setBounds(Constants.WINDOW_WIDTH/2 - Constants.WINDOW_HEIGHT*3/8, Constants.WINDOW_HEIGHT/12, Constants.WINDOW_HEIGHT*3/4, Constants.WINDOW_HEIGHT*3/4);;
+        this.add(gb);
 
 
 
+
+        // dont know about this button might
         JPanel buttonPanel = new JPanel();
         JButton backButton = new JButton("Back to menu.");
         backButton.addActionListener(new ActionListener() {
@@ -53,7 +48,9 @@ public class GamePanel extends JPanel {
             }
         });
         buttonPanel.add(backButton);
-        this.add(buttonPanel, BorderLayout.SOUTH);
+        buttonPanel.setBounds(0, Constants.WINDOW_HEIGHT*5/6, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT/6);
+        buttonPanel.setBackground(Color.GRAY);
+        this.add(buttonPanel);
         
     }
 }

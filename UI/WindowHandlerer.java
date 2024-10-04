@@ -21,8 +21,6 @@ public class WindowHandlerer extends JFrame {
         JPanel menuPanel = new MenuPanel(this);
 
         JPanel gamePanel = new GamePanel(this);
-        JLabel gameLabel = new JLabel("Game is running...");
-        gamePanel.add(gameLabel);
 
         JPanel settingsPanel = new SettingsPanel(this);
 
