@@ -9,8 +9,8 @@ public class Main {
         Board board = wh.getGamePanel().getGameBoard().getBoard();
 
         char[][] bb = board.getBoard();
-
+        bb[0][4] = 'X';
         board.printBoardDebugging();
-
+        wh.getGamePanel().getGameBoard().updateBoard();
     }
 }

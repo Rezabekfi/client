@@ -78,6 +78,68 @@ public class GameBoard extends JPanel {
         return boardPanel;
     }
 
+    // Method to update board UI dynamically
+    public void updateBoard() {
+        // Check for player movement and repaint the affected squares
+        updateSquares();
+        
+        // Check for wall placement and repaint affected walls
+        updateWalls();
+        
+        revalidate(); // Ensure layout is recalculated
+        repaint();    // Redraw the updated components
+    }
+
+    private void updateSquares() {
+        char[][] gamePosition = this.board.getBoard();
+        for (int i = 0; i < this.board.getBoardSize(); i++) {
+            for (int j = 0; j < this.board.getBoardSize(); j++) {
+                SquareUI currentSquare = squares[i][j];
+                
+                // If the square has changed (e.g., a player moved), update it
+                if (currentSquare.getSquareChar() != gamePosition[i][j]) {
+                    currentSquare.setSquareChar(gamePosition[i][j]);
+                    currentSquare.repaint();  // Repaint only this square
+                }
+            }
+        }
+    }
+
+    private void updateWalls() {
+        boolean[][] verticalWallState = this.board.getVerticalWalls();
+        boolean[][] horizontalWallState = this.board.getHorizontalWalls();
+
+        // Check and repaint vertical walls
+        for (int i = 0; i < Constants.BOARD_SIZE; i++) {
+            for (int j = 0; j < Constants.BOARD_SIZE - 1; j++) {
+                if (verticalWallState[i][j] && verticalWalls[i][j] == null) {
+                    WallUI wall = new WallUI();  // Create the new wall
+                    int wallGap = 5;
+                    int squareSize = mainFrame.getHeight() * 3 / 4 / 9 - wallGap;
+                    wall.setBounds((j + 1) * squareSize + j * wallGap, i * squareSize + i * wallGap, wallGap, squareSize);
+                    verticalWalls[i][j] = wall;
+                    this.add(wall);  // Add the new wall to the panel
+                    wall.repaint();
+                }
+            }
+        }
+
+        // Check and repaint horizontal walls
+        for (int i = 0; i < Constants.BOARD_SIZE - 1; i++) {
+            for (int j = 0; j < Constants.BOARD_SIZE; j++) {
+                if (horizontalWallState[i][j] && horizontalWalls[i][j] == null) {
+                    WallUI wall = new WallUI();  // Create the new wall
+                    int wallGap = 5;
+                    int squareSize = mainFrame.getHeight() * 3 / 4 / 9 - wallGap;
+                    wall.setBounds(j * squareSize + j * wallGap, (i + 1) * squareSize + i * wallGap, squareSize, wallGap);
+                    horizontalWalls[i][j] = wall;
+                    this.add(wall);  // Add the new wall to the panel
+                    wall.repaint();
+                }
+            }
+        }
+    }
+
     public Board getBoard() {
         return board;
     }
