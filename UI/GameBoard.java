@@ -19,7 +19,7 @@ public class GameBoard extends JPanel {
     
     private Board board;
     private WindowHandlerer mainFrame;
-    private SquareUI[][] squares = new SquareUI[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
+    private SquareUI[][] squares;
     private WallUI[][] verticalWalls = new WallUI[Constants.BOARD_SIZE][Constants.BOARD_SIZE-1];
     private WallUI[][] horizontalWalls = new WallUI[Constants.BOARD_SIZE-1][Constants.BOARD_SIZE];
 
@@ -27,6 +27,7 @@ public class GameBoard extends JPanel {
         this.board = board;
         this.mainFrame = mainFrame;
         this.setLayout(new BorderLayout());
+        this.squares = new SquareUI[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
         
         JPanel boardPanel = setUpGameBoardUI();
         this.add(boardPanel, BorderLayout.CENTER);
@@ -75,15 +76,6 @@ public class GameBoard extends JPanel {
         }
         
         return boardPanel;
-    }
-
-    @Override
-    public void repaint() {
-        for (int i = 0; i < Constants.BOARD_SIZE; i++) {
-            for (int j  = 0; j < Constants.BOARD_SIZE; j++) {
-                squares[i][j].repaint();
-            }
-        }
     }
 
     public Board getBoard() {
