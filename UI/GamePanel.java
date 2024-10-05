@@ -17,6 +17,7 @@ import Settings.Constants;
 public class GamePanel extends JPanel {
 
     private WindowHandlerer mainFrame;
+    private GameBoard gb;
 
     public GamePanel(WindowHandlerer mainFrame) {
         this.mainFrame = mainFrame;
@@ -26,14 +27,14 @@ public class GamePanel extends JPanel {
         titlePanel.setLayout(new BorderLayout());
         JLabel title = new JLabel("GAME", SwingConstants.CENTER);
         titlePanel.add(title);
-        titlePanel.setBounds(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT/12);
+        titlePanel.setBounds(0, 0, this.mainFrame.getWidth(), this.mainFrame.getHeight()/12);
         titlePanel.setBackground(Color.GRAY);
         this.add(titlePanel);
 
         
-        GameBoard gb = new GameBoard(new Board());
-        gb.setBounds(Constants.WINDOW_WIDTH/2 - Constants.WINDOW_HEIGHT*3/8, Constants.WINDOW_HEIGHT/12, Constants.WINDOW_HEIGHT*3/4, Constants.WINDOW_HEIGHT*3/4);;
-        this.add(gb);
+        this.gb = new GameBoard(new Board(), this.mainFrame);
+        this.gb.setBounds(this.mainFrame.getWidth()/2 - this.mainFrame.getHeight()*3/8, this.mainFrame.getHeight()/12, this.mainFrame.getHeight()*3/4, this.mainFrame.getHeight()*3/4);;
+        this.add(this.gb);
 
 
 
@@ -48,9 +49,30 @@ public class GamePanel extends JPanel {
             }
         });
         buttonPanel.add(backButton);
-        buttonPanel.setBounds(0, Constants.WINDOW_HEIGHT*5/6, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT/6);
+        buttonPanel.setBounds(0, this.mainFrame.getHeight()*5/6, this.mainFrame.getWidth(), this.mainFrame.getHeight()/6);
         buttonPanel.setBackground(Color.GRAY);
         this.add(buttonPanel);
         
+    }
+
+
+    
+    @Override
+    public void repaint() {
+        super.repaint();
+    }
+
+
+
+    public WindowHandlerer getMainFrame() {
+        return mainFrame;
+    }
+
+    public GameBoard getGameBoard() {
+        return gb;
+    }
+
+    public void setGb(GameBoard gb) {
+        this.gb = gb;
     }
 }

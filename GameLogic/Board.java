@@ -20,6 +20,8 @@ public class Board {
         this.verticalWalls = new boolean[boardSize][boardSize-1];
         this.board = new char[boardSize][boardSize];
         this.players = new Player[numberOfPlayers];
+
+        setUpGame();
     }
 
     public Board() {

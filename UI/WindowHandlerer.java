@@ -10,6 +10,12 @@ import Settings.Constants;
 public class WindowHandlerer extends JFrame {
 
     private JPanel mainPanel;
+
+    private GamePanel gamePanel;
+
+    private MenuPanel menuPanel;
+
+    private SettingsPanel settingsPanel;
     
     public WindowHandlerer() {
         createWindow(this, Constants.GAME_NAME, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
@@ -18,24 +24,24 @@ public class WindowHandlerer extends JFrame {
         mainPanel.setLayout(new CardLayout());
         
          // Create two JPanels representing different game screens
-        JPanel menuPanel = new MenuPanel(this);
+        this.menuPanel = new MenuPanel(this);
 
-        JPanel gamePanel = new GamePanel(this);
+        this.gamePanel = new GamePanel(this);
 
-        JPanel settingsPanel = new SettingsPanel(this);
+        this.settingsPanel = new SettingsPanel(this);
 
         // Add both panels to the frame (CardLayout will handle switching between them)
-        mainPanel.add(menuPanel, Constants.MENU_CARD);
-        mainPanel.add(gamePanel, Constants.GAME_ON_CARD);
-        mainPanel.add(settingsPanel, Constants.SETTINGS_CARD);
+        mainPanel.add(this.menuPanel, Constants.MENU_CARD);
+        mainPanel.add(this.gamePanel, Constants.GAME_ON_CARD);
+        mainPanel.add(this.settingsPanel, Constants.SETTINGS_CARD);
 
-        this.add(mainPanel);
+        this.add(this.mainPanel);
         this.setVisible(true);
     }
 
     public void showCard(String panel) {
-        CardLayout cl = (CardLayout) mainPanel.getLayout();
-        cl.show(mainPanel, panel);
+        CardLayout cl = (CardLayout) this.mainPanel.getLayout();
+        cl.show(this.mainPanel, panel);
     }
 
     
@@ -52,4 +58,19 @@ public class WindowHandlerer extends JFrame {
     public JPanel getMainPanel() {
         return mainPanel;
     }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
+    }
+
+    public MenuPanel getMenuPanel() {
+        return menuPanel;
+    }
+
+    public SettingsPanel getSettingsPanel() {
+        return settingsPanel;
+    }
+
+    
 }
+
