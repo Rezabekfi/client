@@ -6,11 +6,8 @@ public class Main {
     public static void main(String[] args) {
         
         WindowHandlerer wh = new WindowHandlerer();
-        Board board = wh.getGamePanel().getGameBoard().getBoard();
+        GameManager gm = wh.getGamePanel().getGameManager();
 
-        char[][] bb = board.getBoard();
-        bb[0][4] = 'X';
-        board.printBoardDebugging();
-        wh.getGamePanel().getGameBoard().updateBoard();
+        gm.movePlayer(8, 5);
     }
 }

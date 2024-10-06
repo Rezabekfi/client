@@ -12,12 +12,14 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import GameLogic.Board;
+import GameLogic.GameManager;
 import Settings.Constants;
 
 public class GamePanel extends JPanel {
 
     private WindowHandlerer mainFrame;
     private GameBoard gb;
+    private GameManager gm;
 
     public GamePanel(WindowHandlerer mainFrame) {
         this.mainFrame = mainFrame;
@@ -31,10 +33,12 @@ public class GamePanel extends JPanel {
         titlePanel.setBackground(Color.GRAY);
         this.add(titlePanel);
 
-        
-        this.gb = new GameBoard(new Board(), this.mainFrame);
+        Board board =new Board();
+        this.gb = new GameBoard(board, this.mainFrame);
         this.gb.setBounds(this.mainFrame.getWidth()/2 - this.mainFrame.getHeight()*3/8, this.mainFrame.getHeight()/12, this.mainFrame.getHeight()*3/4, this.mainFrame.getHeight()*3/4);;
         this.add(this.gb);
+
+        this.gm = new GameManager(board, gb);
 
 
 
@@ -72,7 +76,11 @@ public class GamePanel extends JPanel {
         return gb;
     }
 
-    public void setGb(GameBoard gb) {
+    public void setGameBoard(GameBoard gb) {
         this.gb = gb;
+    }
+
+    public GameManager getGameManager() {
+        return gm;
     }
 }

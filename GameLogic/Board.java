@@ -37,7 +37,7 @@ public class Board {
         GoalDirection[] dirs = GoalDirection.values();
         for(int i = 0; i < this.numberOfPlayers; i++) {
             this.players[i] = createPlayer(dirs[i]);
-            this.board[players[i].getY()][players[i].getX()] = players[i].getColor();
+            this.board[players[i].getRow()][players[i].getCol()] = players[i].getColor();
         }
 
     }
@@ -45,38 +45,38 @@ public class Board {
     // TODO: change color distribution to something else.
     // CAREFUL DIRECTION IS DIRECTION WHICH PLAYER WILL BE FACING AND TRYING TO GET TO NOT THE ONE WEHRE HE STARTS!
     private Player createPlayer(GoalDirection goalDirection) {
-        int x, y;
+        int row, col;
         char color;
         switch (goalDirection) {
             case NORTH:
-                x = this.board.length/2;
-                y = this.board.length - 1;
+                col = this.board.length/2;
+                row = this.board.length - 1;
                 color = Constants.PLAYER_COLORS[0];
                 break;
             case EAST:
-                x = 0;
-                y = this.board.length/2;
+                col = 0;
+                row = this.board.length/2;
                 color = Constants.PLAYER_COLORS[2];
                 break;
             case SOUTH:
-                x = this.board.length/2;
-                y = 0;
+                col = this.board.length/2;
+                row = 0;
                 color = Constants.PLAYER_COLORS[1];
                 break;
             case WEST:
-                x = this.board.length - 1;
-                y = this.board.length/2;
+                col = this.board.length - 1;
+                row = this.board.length/2;
                 color = Constants.PLAYER_COLORS[3];
                 break;
             default:
                 System.out.println("DISASTER!!! X Y SET TO 0 0");
-                x = 0;
-                y = 0;
+                col = 0;
+                row = 0;
                 color = Constants.PLAYER_COLORS[4];
                 break;
         }
 
-        return new Player(goalDirection, x, y, color);
+        return new Player(goalDirection, row, col, color);
     }
 
     public char[][] getBoard() {
@@ -110,5 +110,63 @@ public class Board {
             }
             System.out.println();
         }
+    }
+
+    public boolean canPlaceWall(Player player, int row, int col, boolean isVertical) {
+        if (!isInsideArray(row, col, isVertical) || player.getNumberOfWalls() < 1 || !checkEscape() || (isVertical && verticalWalls[row][col]) || (!isVertical && horizontalWalls[row][col])) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isInsideArray(int row, int col, boolean isVertical) {
+        if (isVertical) {
+            return !(row < 0 || col < 0 || col >= verticalWalls[0].length || row >= verticalWalls.length);
+        } else {
+            return !(row < 0 || col < 0 || col >= horizontalWalls[0].length || row >= horizontalWalls.length);
+        }
+    }
+
+    private boolean checkEscape() {
+        return true;
+    }
+
+    public void placeWall(Player player, int row, int col, boolean isVertical) {
+        if (isVertical) {
+            verticalWalls[row][col] = true;
+        } else {
+            horizontalWalls[row][col] = true;
+        }
+        player.setNumberOfWalls(player.getNumberOfWalls()-1);
+    }
+
+    public boolean canMovePlayer(Player currentPlayer, int newRow, int newCol) {
+        int currentRow = currentPlayer.getRow();
+        int currentCol = currentPlayer.getCol();
+
+        if (!insideBoard(newRow, newCol) || wallBetween(currentRow, currentCol, newRow, newCol)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean wallBetween(int currentRow, int currentCol, int newRow, int newCol) {
+        if (currentRow - newRow == 0) {
+            return verticalWalls[currentRow][Math.min(currentCol, newCol)];
+        } else {
+            return horizontalWalls[Math.min(newRow, currentRow)][currentCol];
+        }
+    }
+
+    private boolean insideBoard(int newRow, int newCol) {
+        return !(newRow < 0 || newCol < 0 || newRow >= getBoardSize() || newCol >= getBoardSize());
+    }
+
+    public void movePlayer(Player player, int newRow, int newCol) {
+        board[newRow][newCol] = player.getColor();
+        board[player.getRow()][player.getCol()] = Constants.EMPTY_SQUARE;
+        player.setCol(newCol);
+        player.setRow(newRow);
     }
 }
