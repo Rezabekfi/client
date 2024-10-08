@@ -99,7 +99,7 @@ public class GameBoard extends JPanel {
                 
                 // If the square has changed (e.g., a player moved), update it
                 if (currentSquare.getSquareChar() != gamePosition[i][j]) {
-                    currentSquare.setSquareChar(gamePosition[i][j]);
+                    currentSquare.updateSquare(gamePosition[i][j]);
                     currentSquare.repaint();  // Repaint only this square
                 }
             }

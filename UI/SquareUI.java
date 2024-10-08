@@ -46,6 +46,14 @@ public class SquareUI extends JPanel {
         return squareChar;
     }
 
+    public void updateSquare(char squareChar) {
+        if (squareChar != Constants.EMPTY_SQUARE) {
+            // TODO: add or remove -> actionListner
+        }
+
+        setSquareChar(squareChar);
+    }
+
     public void setSquareChar(char squareChar) {
         this.squareChar = squareChar;
     }
