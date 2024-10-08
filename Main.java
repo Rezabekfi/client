@@ -9,5 +9,6 @@ public class Main {
         GameManager gm = wh.getGamePanel().getGameManager();
 
         gm.movePlayer(8, 5);
+        gm.placeWall(0, 0, false);
     }
 }

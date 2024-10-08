@@ -21,7 +21,7 @@ public class GameManager {
     public boolean placeWall(int row, int col, boolean isVertical) {
         if (board.canPlaceWall(currentPlayer, row, col, isVertical)) {
             board.placeWall(currentPlayer, row, col, isVertical);  // Update the game logic
-            gameBoardUI.updateBoard();              // Refresh the UI
+            gameBoardUI.updateBoard();             // Refresh the UI
             return true;
         }
         return false;

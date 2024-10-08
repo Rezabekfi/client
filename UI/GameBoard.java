@@ -19,6 +19,7 @@ public class GameBoard extends JPanel {
     
     private Board board;
     private WindowHandlerer mainFrame;
+    private JPanel boardPanel;
     private SquareUI[][] squares;
     private WallUI[][] verticalWalls = new WallUI[Constants.BOARD_SIZE][Constants.BOARD_SIZE-1];
     private WallUI[][] horizontalWalls = new WallUI[Constants.BOARD_SIZE-1][Constants.BOARD_SIZE];
@@ -36,7 +37,7 @@ public class GameBoard extends JPanel {
     }
 
     private JPanel setUpGameBoardUI() {
-        JPanel boardPanel = new JPanel(null);
+        this.boardPanel = new JPanel(null);
         char[][] gamePosition = this.board.getBoard();
         boolean[][] verticalWalls = this.board.getVerticalWalls();
         boolean[][] horizontalWalls = this.board.getHorizontalWalls();
@@ -51,7 +52,7 @@ public class GameBoard extends JPanel {
                 SquareUI currentSquare = new SquareUI(currentChar);
                 squares[i][j] = currentSquare;
                 currentSquare.setBounds(j*squareSize + j*wallGap, i*squareSize + i*wallGap, squareSize, squareSize);
-                boardPanel.add(currentSquare);
+                this.boardPanel.add(currentSquare);
             }
         }
         
@@ -60,7 +61,7 @@ public class GameBoard extends JPanel {
                 if (verticalWalls[i][j]) {
                     WallUI wall = new WallUI();
                     wall.setBounds((j+1)*squareSize + j*wallGap, i*squareSize + i*wallGap, wallGap, squareSize);
-                    boardPanel.add(wall);
+                    this.boardPanel.add(wall);
                 }
             }
         }
@@ -70,12 +71,12 @@ public class GameBoard extends JPanel {
                 if (horizontalWalls[i][j]) {
                     WallUI wall = new WallUI();
                     wall.setBounds(j*squareSize + j*wallGap, (i+1)*squareSize + i*wallGap, squareSize, wallGap);
-                    boardPanel.add(wall);
+                    this.boardPanel.add(wall);
                 }
             }
         }
         
-        return boardPanel;
+        return this.boardPanel;
     }
 
     // Method to update board UI dynamically
@@ -118,7 +119,7 @@ public class GameBoard extends JPanel {
                     int squareSize = mainFrame.getHeight() * 3 / 4 / 9 - wallGap;
                     wall.setBounds((j + 1) * squareSize + j * wallGap, i * squareSize + i * wallGap, wallGap, squareSize);
                     verticalWalls[i][j] = wall;
-                    this.add(wall);  // Add the new wall to the panel
+                    this.boardPanel.add(wall);  // Add the new wall to the panel
                     wall.repaint();
                 }
             }
@@ -133,11 +134,13 @@ public class GameBoard extends JPanel {
                     int squareSize = mainFrame.getHeight() * 3 / 4 / 9 - wallGap;
                     wall.setBounds(j * squareSize + j * wallGap, (i + 1) * squareSize + i * wallGap, squareSize, wallGap);
                     horizontalWalls[i][j] = wall;
-                    this.add(wall);  // Add the new wall to the panel
+                    this.boardPanel.add(wall);  // Add the new wall to the panel
                     wall.repaint();
                 }
             }
         }
+        boardPanel.repaint();
+        this.repaint();
     }
 
     public Board getBoard() {
