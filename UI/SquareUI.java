@@ -7,17 +7,25 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import GameLogic.Position;
 import Settings.Constants;
 
 public class SquareUI extends JPanel {
 
     private char squareChar;
     private boolean lightedUp;
+    private Position position;
+    private MouseListener mouseListener;
 
-    public SquareUI(char currentChar) {
+    public SquareUI(char currentChar, Position position) {
         this.squareChar = currentChar;
         this.setBackground(Constants.SQUARE_COLOR);
         this.setBorder(new LineBorder(Constants.OUTLINE_COLOR, 3));
+        this.position = position;
     }
 
     @Override
@@ -68,4 +76,21 @@ public class SquareUI extends JPanel {
     public boolean isLightedUp() {
         return this.lightedUp;
     }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public void setMouseListener(MouseListener listener) {
+        this.mouseListener = listener;
+    }
+
+    public MouseListener getMouseListener() {
+        return this.mouseListener;
+    }
+
 }

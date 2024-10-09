@@ -6,7 +6,10 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -52,7 +55,7 @@ public class GameBoard extends JPanel {
         for (int i = 0; i < this.board.getBoardSize(); i++) {
             for (int j = 0; j < this.board.getBoardSize(); j++) {
                 char currentChar = gamePosition[i][j];
-                SquareUI currentSquare = new SquareUI(currentChar);
+                SquareUI currentSquare = new SquareUI(currentChar, new Position(i, j));
                 squares[i][j] = currentSquare;
                 currentSquare.setBounds(j*squareSize + j*wallGap, i*squareSize + i*wallGap, squareSize, squareSize);
                 this.boardPanel.add(currentSquare);
@@ -99,17 +102,11 @@ public class GameBoard extends JPanel {
         for (int i = 0; i < this.board.getBoardSize(); i++) {
             for (int j = 0; j < this.board.getBoardSize(); j++) {
                 SquareUI currentSquare = squares[i][j];
-                
-                if (currentSquare.isLightedUp()) {
-                    currentSquare.setLightedUp(false);
-                }
 
                 // If the square has changed (e.g., a player moved), update it
                 if (currentSquare.getSquareChar() != gamePosition[i][j]) {
                     currentSquare.setSquareChar(gamePosition[i][j]);
-                    currentSquare.repaint();  // Repaint only this square
-
-
+                    currentSquare.repaint();
                 }
             }
         }
@@ -155,11 +152,15 @@ public class GameBoard extends JPanel {
         this.repaint();
     }
 
-    public void lightUpSquares(List<Position> list) {
+    public List<SquareUI> setUpPossibleSquares(List<Position> list) {
+        List<SquareUI> res = new ArrayList<SquareUI>();
         for (Position position : list) {
-            squares[position.getRow()][position.getCol()].setLightedUp(true);
-            squares[position.getRow()][position.getCol()].repaint();
+            SquareUI currentSquare = squares[position.getRow()][position.getCol()];
+            currentSquare.setLightedUp(true);
+            currentSquare.repaint();
+            res.add(currentSquare);
         }
+        return res;
     }
 
     public Board getBoard() {

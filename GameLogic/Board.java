@@ -165,10 +165,25 @@ public class Board {
     }
 
     public void movePlayer(Player player, int newRow, int newCol) {
+        if (board[newRow][newCol] != Constants.EMPTY_SQUARE) {
+            handlePlayerToPlayerMove(player, newRow, newCol);
+        }
+
         board[newRow][newCol] = player.getColor();
         board[player.getRow()][player.getCol()] = Constants.EMPTY_SQUARE;
         player.setCol(newCol);
         player.setRow(newRow);
+    }
+
+    private void handlePlayerToPlayerMove(Player player, int newRow, int newCol) {
+        char kickedOutPlayer = board[newRow][newCol];
+        for (int i = 0; i < players.length; i++) {
+            if(players[i].getColor() == kickedOutPlayer) {
+                Player kickedPlayer = players[i];
+                kickedPlayer = createPlayer(kickedPlayer.getDriection()); 
+                board[kickedPlayer.getRow()][kickedPlayer.getCol()] = kickedPlayer.getColor();
+            }
+        }
     }
 
     public List<Position> possibleMoves(Player player) {
