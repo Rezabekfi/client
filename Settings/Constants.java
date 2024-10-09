@@ -18,9 +18,10 @@ public class Constants{
         put('p', Color.PINK);
     }};
 
-    public static Color squareColor = Color.WHITE;
-    public static Color outlineColor = Color.LIGHT_GRAY;
-    public static Color wallColor = Color.GREEN;
+    public static Color SQUARE_COLOR = Color.WHITE;
+    public static Color OUTLINE_COLOR = Color.LIGHT_GRAY;
+    public static Color WALL_COLOR = Color.GREEN;
+    public static Color POSSIBLE_SQUARE_COLLOR = Color.GRAY;
 
     //WINDOW SETTINGS 
     public static int WINDOW_WIDTH = 1920/2;

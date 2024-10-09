@@ -1,6 +1,9 @@
 package GameLogic;
 
 import UI.GameBoard;
+
+import java.util.List;
+
 import Settings.Constants;
 
 public class GameManager {
@@ -39,9 +42,21 @@ public class GameManager {
 
     // Optional: Handling turns
     public void nextTurn() {
+        gameBoardUI.updateBoard();
         if (++playerIndex == board.getPlayers().length) {
             playerIndex = 0;
         }
         currentPlayer = board.getPlayers()[playerIndex];
+        highlightPossibleMoves();
+    }
+
+    private void highlightPossibleMoves() {
+        List<Position> list = board.possibleMoves(currentPlayer);
+        gameBoardUI.lightUpSquares(list);
+    }
+
+    // for debugging - current development tested here
+    public void debbugRand() {
+        System.out.println("debbuging - nothing");
     }
 }

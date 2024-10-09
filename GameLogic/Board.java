@@ -1,6 +1,7 @@
 package GameLogic;
 
 import Settings.Constants;
+import java.util.*;
 
 public class Board {
     private char[][] board;
@@ -76,7 +77,7 @@ public class Board {
                 break;
         }
 
-        return new Player(goalDirection, row, col, color);
+        return new Player(goalDirection, new Position(row, col), color);
     }
 
     public char[][] getBoard() {
@@ -168,5 +169,27 @@ public class Board {
         board[player.getRow()][player.getCol()] = Constants.EMPTY_SQUARE;
         player.setCol(newCol);
         player.setRow(newRow);
+    }
+
+    public List<Position> possibleMoves(Player player) {
+        List<Position> list = new ArrayList<Position>();
+        int row = player.getRow();
+        int col = player.getCol();
+        int newRow, newCol;
+        for (int i = 0; i < 2; i++) {
+            for (int j = -1; j < 2; j+=2) {
+                if (i == 0) {
+                    newCol = col + j;
+                    newRow = row;
+                } else {
+                    newRow = row + j;
+                    newCol = col;
+                }
+                if(canMovePlayer(player, newRow, newCol)) {
+                    list.add(new Position(newRow, newCol));
+                }
+            }
+        }
+        return list;
     }
 }

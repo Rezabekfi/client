@@ -7,7 +7,7 @@ public class Player {
 
     private GoalDirection driection;
     private int numberOfWalls;
-    private int row, col;
+    private Position position;
     private char color; 
     private Color color_2d;
 
@@ -15,11 +15,10 @@ public class Player {
         return color_2d;
     }
 
-    public Player(GoalDirection direction, int row, int col, char color){
+    public Player(GoalDirection direction, Position position, char color){
         this.driection = direction;
         this.numberOfWalls = Constants.STARTING_NUMBER_OF_WALLS;
-        this.row = row;
-        this.col = col;
+        this.position = position;
         this.color = color;
         this.color_2d = Constants.CHAR_TO_COLOR.get(color);
     }
@@ -41,19 +40,19 @@ public class Player {
     }
 
     public int getRow() {
-        return row;
+        return position.getRow();
     }
 
     public void setRow(int row) {
-        this.row = row;
+        this.position.setRow(row);
     }
 
     public int getCol() {
-        return col;
+        return position.getCol();
     }
 
     public void setCol(int col) {
-        this.col = col;
+        this.position.setCol(col);
     }
 
     public char getColor() {
@@ -66,7 +65,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player [driection=" + driection + ", numberOfWalls=" + numberOfWalls + ", row=" + row + ", col=" + col
+        return "Player [driection=" + driection + ", numberOfWalls=" + numberOfWalls + ", row=" + getRow() + ", col=" + getCol()
                 + ", color=" + color + "]";
     }
 

@@ -8,7 +8,12 @@ public class Main {
         WindowHandlerer wh = new WindowHandlerer();
         GameManager gm = wh.getGamePanel().getGameManager();
 
-        gm.movePlayer(8, 5);
-        gm.placeWall(0, 0, false);
+        gm.movePlayer(7, 5);
+        gm.placeWall(0, 3, true);
+
+        gm.debbugRand();
+        gm.nextTurn();
+        gm.nextTurn();
+
     }
 }

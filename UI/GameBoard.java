@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,6 +24,8 @@ public class GameBoard extends JPanel {
     private SquareUI[][] squares;
     private WallUI[][] verticalWalls = new WallUI[Constants.BOARD_SIZE][Constants.BOARD_SIZE-1];
     private WallUI[][] horizontalWalls = new WallUI[Constants.BOARD_SIZE-1][Constants.BOARD_SIZE];
+
+    private Position newPosition;
 
     public GameBoard(Board board, WindowHandlerer mainFrame) {
         this.board = board;
@@ -97,16 +100,25 @@ public class GameBoard extends JPanel {
             for (int j = 0; j < this.board.getBoardSize(); j++) {
                 SquareUI currentSquare = squares[i][j];
                 
+                if (currentSquare.isLightedUp()) {
+                    currentSquare.setLightedUp(false);
+                }
+
                 // If the square has changed (e.g., a player moved), update it
                 if (currentSquare.getSquareChar() != gamePosition[i][j]) {
-                    currentSquare.updateSquare(gamePosition[i][j]);
+                    currentSquare.setSquareChar(gamePosition[i][j]);
                     currentSquare.repaint();  // Repaint only this square
+
+
                 }
             }
         }
     }
 
     private void updateWalls() {
+
+        // TODO: zkrášlit metodu
+
         boolean[][] verticalWallState = this.board.getVerticalWalls();
         boolean[][] horizontalWallState = this.board.getHorizontalWalls();
 
@@ -141,6 +153,13 @@ public class GameBoard extends JPanel {
         }
         boardPanel.repaint();
         this.repaint();
+    }
+
+    public void lightUpSquares(List<Position> list) {
+        for (Position position : list) {
+            squares[position.getRow()][position.getCol()].setLightedUp(true);
+            squares[position.getRow()][position.getCol()].repaint();
+        }
     }
 
     public Board getBoard() {
@@ -183,5 +202,12 @@ public class GameBoard extends JPanel {
         this.horizontalWalls = horizontalWalls;
     }
 
+    public Position getNewPosition() {
+        return newPosition;
+    }
+
+    public void setNewPosition(Position newPosition) {
+        this.newPosition = newPosition;
+    }
     
 }
