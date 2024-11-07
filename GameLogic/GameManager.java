@@ -140,6 +140,7 @@ public class GameManager {
         }
         currentPlayer = board.getPlayers()[playerIndex];
         highlightPossibleMoves();
+        this.board.printBoardDebugging();
     }
 
     private void removeSelectedSquares() {
