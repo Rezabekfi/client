@@ -2,6 +2,7 @@ package GameLogic;
 
 import UI.GameBoard;
 import UI.SquareUI;
+import UI.WallUI;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -16,19 +17,63 @@ public class GameManager {
     private Player currentPlayer;
     private int playerIndex;
     private List<SquareUI> squares;
+    private List<WallUI> walls;
 
     public GameManager(Board board, GameBoard gameBoardUI) {
         this.board = board;
         this.gameBoardUI = gameBoardUI;
         this.playerIndex = 0;
         this.currentPlayer = board.getPlayers()[playerIndex];
+        this.walls = gameBoardUI.getAllWalls();
+        setWallActionListener();
+    }
+
+    public void setWallActionListener() {
+        for (WallUI wall : walls) {
+            if (wall.isPlaced()) continue;
+            wall.addMouseListener(new MouseListener() {
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (placeWall(wall.getRow(), wall.getCol(), wall.isVertical())) {
+                        nextTurn();
+                    }
+
+                    
+                }
+    
+                @Override
+                public void mousePressed(MouseEvent e) {
+                }
+    
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                }
+    
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    wall.setSelected(true);
+                }
+    
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    wall.setSelected(false);
+                }
+                
+            });
+        }
     }
 
     // Handle placing a wall
     public boolean placeWall(int row, int col, boolean isVertical) {
         if (board.canPlaceWall(currentPlayer, row, col, isVertical)) {
             board.placeWall(currentPlayer, row, col, isVertical);  // Update the game logic
-            gameBoardUI.updateBoard();             // Refresh the UI
+            if (isVertical) {
+                gameBoardUI.getVerticalWalls()[row][col].setPlaced(true);
+            } else {
+                gameBoardUI.getHorizontalWalls()[row][col].setPlaced(true);
+            }
+            gameBoardUI.updateBoard();          // Refresh the UI
             return true;
         }
         return false;
@@ -43,6 +88,7 @@ public class GameManager {
         if (board.canMovePlayer(currentPlayer,position.getRow(), position.getCol())) {
             board.movePlayer(currentPlayer, position.getRow(), position.getCol());  // Update player position in game logic
             gameBoardUI.updateBoard();
+            board.printBoardDebugging();  
             return true;
         }
         return false;
@@ -82,10 +128,10 @@ public class GameManager {
     private void highlightPossibleMoves() {
         List<Position> list = board.possibleMoves(currentPlayer);
         squares = gameBoardUI.setUpPossibleSquares(list);
-        setActionListener();
+        setSquaresActionListener();
     }
 
-    private void setActionListener() {
+    private void setSquaresActionListener() {
         for (SquareUI square : squares) {
             MouseListener listener = new MouseListener() {
     

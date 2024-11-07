@@ -64,21 +64,21 @@ public class GameBoard extends JPanel {
         
         for (int i = 0; i < Constants.BOARD_SIZE; i++) {
             for (int j = 0; j < Constants.BOARD_SIZE-1; j++) {
-                if (verticalWalls[i][j]) {
-                    WallUI wall = new WallUI();
-                    wall.setBounds((j+1)*squareSize + j*wallGap, i*squareSize + i*wallGap, wallGap, squareSize);
-                    this.boardPanel.add(wall);
-                }
+                WallUI wall = new WallUI(i,j,true, verticalWalls[i][j]);
+                wall.setBounds((j+1)*squareSize + j*wallGap, i*squareSize + i*wallGap, wallGap, squareSize);    
+                this.boardPanel.add(wall);
+                this.verticalWalls[i][j] = wall;
+                wall.repaint();
             }
         }
 
         for (int i = 0; i < Constants.BOARD_SIZE-1; i++) {
             for (int j = 0; j < Constants.BOARD_SIZE; j++) {
-                if (horizontalWalls[i][j]) {
-                    WallUI wall = new WallUI();
-                    wall.setBounds(j*squareSize + j*wallGap, (i+1)*squareSize + i*wallGap, squareSize, wallGap);
-                    this.boardPanel.add(wall);
-                }
+                WallUI wall = new WallUI(i, j, false, horizontalWalls[i][j]);
+                wall.setBounds(j*squareSize + j*wallGap, (i+1)*squareSize + i*wallGap, squareSize, wallGap);
+                this.boardPanel.add(wall);
+                this.horizontalWalls[i][j] = wall;
+                wall.repaint();
             }
         }
         
@@ -118,18 +118,15 @@ public class GameBoard extends JPanel {
 
         boolean[][] verticalWallState = this.board.getVerticalWalls();
         boolean[][] horizontalWallState = this.board.getHorizontalWalls();
-
+        int wallGap = 5;
         // Check and repaint vertical walls
         for (int i = 0; i < Constants.BOARD_SIZE; i++) {
             for (int j = 0; j < Constants.BOARD_SIZE - 1; j++) {
-                if (verticalWallState[i][j] && verticalWalls[i][j] == null) {
-                    WallUI wall = new WallUI();  // Create the new wall
-                    int wallGap = 5;
+                if (verticalWallState[i][j] && !verticalWalls[i][j].isPlaced()) {
+                    verticalWalls[i][j].setPlaced(true);  // Create the new wall
                     int squareSize = mainFrame.getHeight() * 3 / 4 / 9 - wallGap;
-                    wall.setBounds((j + 1) * squareSize + j * wallGap, i * squareSize + i * wallGap, wallGap, squareSize);
-                    verticalWalls[i][j] = wall;
-                    this.boardPanel.add(wall);  // Add the new wall to the panel
-                    wall.repaint();
+                    verticalWalls[i][j].setBounds((j + 1) * squareSize + j * wallGap, i * squareSize + i * wallGap, wallGap, squareSize);
+                    verticalWalls[i][j].repaint();
                 }
             }
         }
@@ -137,14 +134,11 @@ public class GameBoard extends JPanel {
         // Check and repaint horizontal walls
         for (int i = 0; i < Constants.BOARD_SIZE - 1; i++) {
             for (int j = 0; j < Constants.BOARD_SIZE; j++) {
-                if (horizontalWallState[i][j] && horizontalWalls[i][j] == null) {
-                    WallUI wall = new WallUI();  // Create the new wall
-                    int wallGap = 5;
+                if (horizontalWallState[i][j] && !horizontalWalls[i][j].isPlaced()) {
+                    horizontalWalls[i][j].setPlaced(true);
                     int squareSize = mainFrame.getHeight() * 3 / 4 / 9 - wallGap;
-                    wall.setBounds(j * squareSize + j * wallGap, (i + 1) * squareSize + i * wallGap, squareSize, wallGap);
-                    horizontalWalls[i][j] = wall;
-                    this.boardPanel.add(wall);  // Add the new wall to the panel
-                    wall.repaint();
+                    horizontalWalls[i][j].setBounds(j * squareSize + j * wallGap, (i + 1) * squareSize + i * wallGap, squareSize, wallGap);
+                    horizontalWalls[i][j].repaint();
                 }
             }
         }
@@ -197,6 +191,21 @@ public class GameBoard extends JPanel {
 
     public WallUI[][] getHorizontalWalls() {
         return horizontalWalls;
+    }
+
+    public List<WallUI> getAllWalls() {
+        List<WallUI> res = new ArrayList<WallUI>();
+        for (int i = 0; i < verticalWalls.length; i++) {
+            for (int j = 0; j < verticalWalls[0].length; j++) {
+                res.add(verticalWalls[i][j]);
+            }
+        }
+        for (int i = 0; i < horizontalWalls.length; i++) {
+            for (int j = 0; j < horizontalWalls[0].length; j++) {
+                res.add(horizontalWalls[i][j]);
+            }
+        }
+        return res;
     }
 
     public void setHorizontalWalls(WallUI[][] horizontalWalls) {
