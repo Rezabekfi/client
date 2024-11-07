@@ -37,9 +37,7 @@ public class GameManager {
                 public void mouseClicked(MouseEvent e) {
                     if (placeWall(wall.getRow(), wall.getCol(), wall.isVertical())) {
                         nextTurn();
-                    }
-
-                    
+                    }                    
                 }
     
                 @Override
