@@ -18,6 +18,7 @@ public class GameManager {
     private int playerIndex;
     private List<SquareUI> squares;
     private List<WallUI> walls;
+    private WallUI[] doubleWall;
 
     public GameManager(Board board, GameBoard gameBoardUI) {
         this.board = board;
@@ -25,6 +26,7 @@ public class GameManager {
         this.playerIndex = 0;
         this.currentPlayer = board.getPlayers()[playerIndex];
         this.walls = gameBoardUI.getAllWalls();
+        this.doubleWall = new WallUI[2];
         setWallActionListener();
     }
 
@@ -35,9 +37,26 @@ public class GameManager {
 
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    if (placeWall(wall.getRow(), wall.getCol(), wall.isVertical())) {
+                    if (doubleWall[0] == null) {
+                        doubleWall[0] = wall;
+                    } else if (doubleWall[1] == null) {
+                        doubleWall[1] = wall;
+                    }
+
+                    if (possibleDoubleWall()) {
+                        placeDoubleWall();
+                        doubleWall[0].setSelected(false);
+                        doubleWall[1].setSelected(false);
+                        doubleWall[0] = null;
+                        doubleWall[1] = null;
                         nextTurn();
-                    }                    
+                    } else if (doubleWall[0] != null && doubleWall[1]!= null) {
+                        doubleWall[0].setSelected(false);
+                        doubleWall[1].setSelected(false);
+                        doubleWall[0] = null;
+                        doubleWall[1] = null;
+                    }
+
                 }
     
                 @Override
@@ -56,10 +75,31 @@ public class GameManager {
                 @Override
                 public void mouseExited(MouseEvent e) {
                     wall.setSelected(false);
+                    if ((doubleWall[0] == null && doubleWall[1] != null && doubleWall[1].equals(wall)) || (doubleWall[0] != null && doubleWall[1] == null && doubleWall[0].equals(wall))
+                    || (doubleWall[0] != null && doubleWall[1] != null && doubleWall[0].equals(wall)) || (doubleWall[0] != null && doubleWall[1] != null && doubleWall[1].equals(wall))) {
+                        wall.setSelected(true);
+                    }
                 }
                 
             });
         }
+    }
+
+
+    public void placeDoubleWall() {
+        if (!placeWall(doubleWall[0].getRow(), doubleWall[0].getCol(), doubleWall[0].isVertical()) 
+        || !placeWall(doubleWall[1].getRow(), doubleWall[1].getCol(), doubleWall[1].isVertical())) {
+            doubleWall[0].setPlaced(false);
+            doubleWall[1].setPlaced(false);
+        }
+    }
+
+    public boolean possibleDoubleWall() {
+        if (doubleWall[0] == null || doubleWall[1] == null) return false;
+        return (doubleWall[0] != null && doubleWall[1] != null && !doubleWall[0].equals(doubleWall[1]) && doubleWall[0].isVertical() == doubleWall[1].isVertical()
+        && (doubleWall[0].isVertical()) ? (Math.abs(doubleWall[0].getRow() - doubleWall[1].getRow()) == 1 && doubleWall[0].getCol() == doubleWall[1].getCol()) : 
+        (Math.abs(doubleWall[0].getCol() - doubleWall[1].getCol()) == 1 && doubleWall[0].getRow() == doubleWall[1].getRow())
+        && !doubleWall[0].isPlaced() && !doubleWall[1].isPlaced());
     }
 
     // Handle placing a wall
@@ -85,8 +125,7 @@ public class GameManager {
 
         if (board.canMovePlayer(currentPlayer,position.getRow(), position.getCol())) {
             board.movePlayer(currentPlayer, position.getRow(), position.getCol());  // Update player position in game logic
-            gameBoardUI.updateBoard();
-            board.printBoardDebugging();  
+            gameBoardUI.updateBoard();  
             return true;
         }
         return false;
