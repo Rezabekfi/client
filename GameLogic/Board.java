@@ -105,6 +105,7 @@ public class Board {
     }
 
     public void printBoardDebugging() {
+        System.out.println("----------BOARD---------");
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
                 System.out.print(this.board[i][j]);
