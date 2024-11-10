@@ -44,7 +44,7 @@ public class GameManager {
                     }
 
                     if (possibleDoubleWall()) {
-                        placeDoubleWall();
+                        placeWall(doubleWall[0].getRow(), doubleWall[0].getCol(), doubleWall[1].getRow(), doubleWall[1].getCol(), doubleWall[0].isVertical());
                         doubleWall[0].setSelected(false);
                         doubleWall[1].setSelected(false);
                         doubleWall[0] = null;
@@ -69,7 +69,10 @@ public class GameManager {
     
                 @Override
                 public void mouseEntered(MouseEvent e) {
-                    wall.setSelected(true);
+                    if (!wall.isPlaced()) {
+                        wall.setPlayerColor(currentPlayer.getColor_2d());
+                        wall.setSelected(true);
+                    }
                 }
     
                 @Override
@@ -85,32 +88,41 @@ public class GameManager {
         }
     }
 
-
-    public void placeDoubleWall() {
-        if (!placeWall(doubleWall[0].getRow(), doubleWall[0].getCol(), doubleWall[0].isVertical()) 
-        || !placeWall(doubleWall[1].getRow(), doubleWall[1].getCol(), doubleWall[1].isVertical())) {
-            doubleWall[0].setPlaced(false);
-            doubleWall[1].setPlaced(false);
-        }
-    }
-
     public boolean possibleDoubleWall() {
         if (doubleWall[0] == null || doubleWall[1] == null) return false;
-        return (doubleWall[0] != null && doubleWall[1] != null && !doubleWall[0].equals(doubleWall[1]) && doubleWall[0].isVertical() == doubleWall[1].isVertical()
-        && (doubleWall[0].isVertical()) ? (Math.abs(doubleWall[0].getRow() - doubleWall[1].getRow()) == 1 && doubleWall[0].getCol() == doubleWall[1].getCol()) : 
-        (Math.abs(doubleWall[0].getCol() - doubleWall[1].getCol()) == 1 && doubleWall[0].getRow() == doubleWall[1].getRow())
-        && !doubleWall[0].isPlaced() && !doubleWall[1].isPlaced());
-    }
-
-    // Handle placing a wall
-    public boolean placeWall(int row, int col, boolean isVertical) {
-        if (board.canPlaceWall(currentPlayer, row, col, isVertical)) {
-            board.placeWall(currentPlayer, row, col, isVertical);  // Update the game logic
-            if (isVertical) {
-                gameBoardUI.getVerticalWalls()[row][col].setPlaced(true);
-            } else {
-                gameBoardUI.getHorizontalWalls()[row][col].setPlaced(true);
+    
+        // Check that both walls exist, aren't the same, and are both unplaced
+        if (doubleWall[0] != null && doubleWall[1] != null 
+            && !doubleWall[0].equals(doubleWall[1]) 
+            && doubleWall[0].isVertical() == doubleWall[1].isVertical()
+            && !doubleWall[0].isPlaced() && !doubleWall[1].isPlaced()) {
+            
+            if (doubleWall[0].isVertical()) {
+                return Math.abs(doubleWall[0].getRow() - doubleWall[1].getRow()) == 1 
+                       && doubleWall[0].getCol() == doubleWall[1].getCol();
             }
+            else {
+                return Math.abs(doubleWall[0].getCol() - doubleWall[1].getCol()) == 1 
+                       && doubleWall[0].getRow() == doubleWall[1].getRow();
+            }
+        }
+        return false;
+    }
+    
+
+    public boolean placeWall(int row_1, int col_1, int row_2, int col_2, boolean isVertical) {
+        if (board.canPlaceWall(currentPlayer, row_1, col_1, isVertical) && board.canPlaceWall(currentPlayer, row_2, col_2, isVertical)) {
+            board.placeWall(currentPlayer, row_1, col_1, isVertical);  // Update the game logic
+            board.placeWall(currentPlayer, row_2, col_2, isVertical);
+            if (isVertical) {
+                gameBoardUI.getVerticalWalls()[row_1][col_1].setPlaced(true);
+                gameBoardUI.getVerticalWalls()[row_2][col_2].setPlaced(true);
+
+            } else {
+                gameBoardUI.getHorizontalWalls()[row_1][col_1].setPlaced(true);
+                gameBoardUI.getHorizontalWalls()[row_2][col_2].setPlaced(true);
+            }
+            currentPlayer.placedWall();
             gameBoardUI.updateBoard();          // Refresh the UI
             return true;
         }

@@ -69,5 +69,7 @@ public class Player {
                 + ", color=" + color + "]";
     }
 
-
+    public void placedWall() {
+        numberOfWalls--;
+    }
 }

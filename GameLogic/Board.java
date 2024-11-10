@@ -139,7 +139,6 @@ public class Board {
         } else {
             horizontalWalls[row][col] = true;
         }
-        player.setNumberOfWalls(player.getNumberOfWalls()-1);
     }
 
     public boolean canMovePlayer(Player currentPlayer, int newRow, int newCol) {

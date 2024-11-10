@@ -17,6 +17,7 @@ public class WallUI extends JPanel {
     public boolean placed;
     public boolean isVertical;
     public boolean selected;
+    public Color playerColor;
 
     public int row;
     public int col;
@@ -26,17 +27,18 @@ public class WallUI extends JPanel {
         this.col = col;
         this.isVertical = isVertical;
         this.placed = placed;
-        this.selected = false;
+        this.selected = false; 
+        this.playerColor = Color.BLACK;
     }
 
     @Override
     public void paint(Graphics g) {
         if (isPlaced()) {
             this.setBackground(Color.BLACK);
-            this.setBorder(new LineBorder(Color.BLACK, 1));    
+            this.setBorder(new LineBorder(playerColor, 1));    
         } else if(isSelected()) {
             this.setBackground(Color.WHITE);
-            this.setBorder(new LineBorder(Color.BLUE, 2));    
+            this.setBorder(new LineBorder(playerColor, 2));    
         } else {
             this.setBackground(Color.WHITE);
             this.setBorder(new LineBorder(Color.WHITE, 1));
@@ -82,5 +84,13 @@ public class WallUI extends JPanel {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public Color getPlayerColor() {
+        return playerColor;
+    }
+
+    public void setPlayerColor(Color playerColor) {
+        this.playerColor = playerColor;
     }
 }
