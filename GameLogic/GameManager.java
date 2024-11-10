@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
 
-import Settings.Constants;
+// import Settings.Constants;
 
 public class GameManager {
 

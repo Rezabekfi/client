@@ -1,16 +1,12 @@
 package UI;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
-import Settings.Constants;
+//import Settings.Constants;
 
 public class WallUI extends JPanel {
 

@@ -1,7 +1,5 @@
 package UI;
 import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,7 +8,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import GameLogic.Board;
 import Settings.Constants;
 
 public class SettingsPanel extends JPanel {
@@ -36,6 +33,9 @@ public class SettingsPanel extends JPanel {
         });
         buttonPanel.add(backButton);
         this.add(buttonPanel, BorderLayout.SOUTH);
-        
+    }
+
+    public WindowHandlerer getMainFrame() {
+        return mainFrame;
     }
 }
