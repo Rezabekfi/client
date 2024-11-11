@@ -10,12 +10,10 @@ public class Player {
     private Position position;
     private char color; 
     private Color color_2d;
+    private String playerName;
 
-    public Color getColor_2d() {
-        return color_2d;
-    }
-
-    public Player(GoalDirection direction, Position position, char color){
+    public Player(String playerName, GoalDirection direction, Position position, char color){
+        this.playerName = playerName;
         this.driection = direction;
         this.numberOfWalls = Constants.STARTING_NUMBER_OF_WALLS;
         this.position = position;
@@ -72,4 +70,16 @@ public class Player {
     public void placedWall() {
         numberOfWalls--;
     }
+
+    public String getName() {
+        return playerName;
+    }
+
+    public void setName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public Color getColor_2d() {
+        return color_2d;
+    }   
 }

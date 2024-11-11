@@ -77,7 +77,7 @@ public class Board {
                 break;
         }
 
-        return new Player(goalDirection, new Position(row, col), color);
+        return new Player("XXX",goalDirection, new Position(row, col), color);
     }
 
     public char[][] getBoard() {
