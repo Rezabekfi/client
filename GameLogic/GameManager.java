@@ -8,6 +8,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
 
+import Settings.Constants;
+
 // import Settings.Constants;
 
 public class GameManager {
@@ -145,6 +147,8 @@ public class GameManager {
 
     // Optional: Handling turns
     public void nextTurn() {
+        //updatePlayerPosition();
+        //updateGameState -bettet
         removeSelectedSquares();
         gameBoardUI.updateBoard();
         if (++playerIndex == board.getPlayers().length) {
@@ -153,6 +157,25 @@ public class GameManager {
         currentPlayer = board.getPlayers()[playerIndex];
         highlightPossibleMoves();
         this.board.printBoardDebugging();
+    }
+
+    // currently not used but might be usefull later
+    // TODO: most likely delete
+    private void updatePlayerPosition() {
+        char[][] board = this.board.getBoard();
+        Player[] players = this.board.getPlayers();
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[i][j] != Constants.EMPTY_SQUARE) {
+                    for (int k = 0; k < players.length; k++) {
+                        if (players[k].getColor() == board[i][j]) {
+                            players[k].setRow(i);
+                            players[k].setCol(j);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void removeSelectedSquares() {

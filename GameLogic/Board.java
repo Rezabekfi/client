@@ -179,9 +179,8 @@ public class Board {
         char kickedOutPlayer = board[newRow][newCol];
         for (int i = 0; i < players.length; i++) {
             if(players[i].getColor() == kickedOutPlayer) {
-                Player kickedPlayer = players[i];
-                kickedPlayer = createPlayer(kickedPlayer.getDriection()); 
-                board[kickedPlayer.getRow()][kickedPlayer.getCol()] = kickedPlayer.getColor();
+                players[i] = createPlayer(players[i].getDriection()); 
+                board[players[i].getRow()][players[i].getCol()] = players[i].getColor();
             }
         }
     }
