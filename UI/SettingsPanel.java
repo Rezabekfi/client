@@ -12,30 +12,29 @@ import Settings.Constants;
 
 public class SettingsPanel extends JPanel {
     
-    private WindowHandlerer mainFrame;
+    private QuoridorApp mainWindow;
 
-    public SettingsPanel(WindowHandlerer mainFrame) {
-        this.mainFrame = mainFrame;
+    public SettingsPanel(QuoridorApp mainWindow) {
+        this.mainWindow = mainWindow;
         this.setLayout(new BorderLayout());
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
         JLabel title = new JLabel("SETTINGS", SwingConstants.CENTER);
         titlePanel.add(title);
-        this.add(titlePanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
         JButton backButton = new JButton("Back to menu.");
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.showCard(Constants.MENU_CARD);
+                mainWindow.showCard(Constants.MENU_CARD);
             }
         });
         buttonPanel.add(backButton);
         this.add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    public WindowHandlerer getMainFrame() {
-        return mainFrame;
+    public QuoridorApp getmainWindow() {
+        return mainWindow;
     }
 }

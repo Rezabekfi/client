@@ -9,7 +9,7 @@ import java.awt.event.MouseListener;
 import java.util.List;
 
 import Settings.Constants;
-
+import UI.PopupWindow;
 // import Settings.Constants;
 
 public class GameManager {
@@ -181,9 +181,22 @@ public class GameManager {
         }
     }
 
-    // TODO: doplnit (zatim nic)
     private void handleGameEnded() {
+        PopupWindow.showMessage("Game Over! Player " + getWinner().getName() + " wins!");
+        board = new Board(board.getNumberOfPlayers());
+        gameBoardUI.setBoard(board);
+        playerIndex = 0;
+        currentPlayer = board.getPlayers()[playerIndex];
+        
+        // Reset walls
+        walls = gameBoardUI.getAllWalls();
+        doubleWall = new WallUI[2];
+        
+        // Reset UI
+        gameBoardUI.updateBoard();
+        setWallActionListener();
 
+        gameLoop();
     }
 
     private void removeSelectedSquares() {

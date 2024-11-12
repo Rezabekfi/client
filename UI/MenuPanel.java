@@ -14,10 +14,10 @@ import Settings.Constants;
 
 public class MenuPanel extends JPanel {
 
-    private WindowHandlerer mainFrame;
+    private QuoridorApp mainWindow;
 
-    public MenuPanel(WindowHandlerer mainFrame) {
-        this.mainFrame = mainFrame;
+    public MenuPanel(QuoridorApp mainWindow) {
+        this.mainWindow = mainWindow;
         this.setLayout(new BorderLayout());
 
         setUpMenuTitle();        
@@ -28,7 +28,7 @@ public class MenuPanel extends JPanel {
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
         JLabel title = new JLabel(Constants.GAME_NAME, SwingConstants.CENTER);
-        title.setFont(new Font("SansSerif", Font.BOLD, mainFrame.getHeight()/4));
+        title.setFont(new Font("SansSerif", Font.BOLD, mainWindow.getHeight()/4));
         titlePanel.add(title);
         this.add(titlePanel, BorderLayout.CENTER);
     }
@@ -70,7 +70,7 @@ public class MenuPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.showCard(Constants.GAME_ON_CARD);
+                mainWindow.showCard(Constants.GAME_ON_CARD);
             }
         };
     }
@@ -79,7 +79,7 @@ public class MenuPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.showCard(Constants.SETTINGS_CARD);
+                mainWindow.showCard(Constants.SETTINGS_CARD);
             }
         };
     }

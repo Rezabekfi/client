@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 
 import Settings.Constants;
 
-public class WindowHandlerer extends JFrame {
+public class QuoridorApp extends JFrame {
 
     private JPanel mainPanel;
 
@@ -16,7 +16,7 @@ public class WindowHandlerer extends JFrame {
 
     private SettingsPanel settingsPanel;
     
-    public WindowHandlerer() {
+    public QuoridorApp() {
         createWindow(this, Constants.GAME_NAME, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
 
         this.mainPanel = new JPanel();

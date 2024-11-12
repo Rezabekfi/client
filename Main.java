@@ -5,7 +5,7 @@ public class Main {
     
     public static void main(String[] args) {
         
-        WindowHandlerer wh = new WindowHandlerer();
+        QuoridorApp wh = new QuoridorApp();
         GameManager gm = wh.getGamePanel().getGameManager();
 
         gm.gameLoop();

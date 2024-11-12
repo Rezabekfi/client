@@ -10,7 +10,7 @@ import Settings.Constants;
 public class GameBoard extends JPanel {
     
     private Board board;
-    private WindowHandlerer mainFrame;
+    private QuoridorApp mainWindow;
     private JPanel boardPanel;
     private SquareUI[][] squares;
     private WallUI[][] verticalWalls = new WallUI[Constants.BOARD_SIZE][Constants.BOARD_SIZE-1];
@@ -18,9 +18,9 @@ public class GameBoard extends JPanel {
 
     private Position newPosition;
 
-    public GameBoard(Board board, WindowHandlerer mainFrame) {
+    public GameBoard(Board board, QuoridorApp mainWindow) {
         this.board = board;
-        this.mainFrame = mainFrame;
+        this.mainWindow = mainWindow;
         this.setLayout(new BorderLayout());
         this.squares = new SquareUI[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
         
@@ -38,7 +38,7 @@ public class GameBoard extends JPanel {
         
         
         int wallGap = 5;
-        int squareSize = mainFrame.getHeight()*3/4 /9 - wallGap;
+        int squareSize = mainWindow.getHeight()*3/4 /9 - wallGap;
 
         for (int i = 0; i < this.board.getBoardSize(); i++) {
             for (int j = 0; j < this.board.getBoardSize(); j++) {
@@ -77,7 +77,7 @@ public class GameBoard extends JPanel {
     public void updateBoard() {
         // Check for player movement and repaint the affected squares
         updateSquares();
-        mainFrame.getGamePanel().updatePlayerPanels();
+        mainWindow.getGamePanel().updatePlayerPanels();
         // Check for wall placement and repaint affected walls
         updateWalls();
         
@@ -112,7 +112,7 @@ public class GameBoard extends JPanel {
             for (int j = 0; j < Constants.BOARD_SIZE - 1; j++) {
                 if (verticalWallState[i][j] && !verticalWalls[i][j].isPlaced()) {
                     verticalWalls[i][j].setPlaced(true);  // Create the new wall
-                    int squareSize = mainFrame.getHeight() * 3 / 4 / 9 - wallGap;
+                    int squareSize = mainWindow.getHeight() * 3 / 4 / 9 - wallGap;
                     verticalWalls[i][j].setBounds((j + 1) * squareSize + j * wallGap, i * squareSize + i * wallGap, wallGap, squareSize);
                     verticalWalls[i][j].repaint();
                 }
@@ -124,7 +124,7 @@ public class GameBoard extends JPanel {
             for (int j = 0; j < Constants.BOARD_SIZE; j++) {
                 if (horizontalWallState[i][j] && !horizontalWalls[i][j].isPlaced()) {
                     horizontalWalls[i][j].setPlaced(true);
-                    int squareSize = mainFrame.getHeight() * 3 / 4 / 9 - wallGap;
+                    int squareSize = mainWindow.getHeight() * 3 / 4 / 9 - wallGap;
                     horizontalWalls[i][j].setBounds(j * squareSize + j * wallGap, (i + 1) * squareSize + i * wallGap, squareSize, wallGap);
                     horizontalWalls[i][j].repaint();
                 }
@@ -153,12 +153,12 @@ public class GameBoard extends JPanel {
         this.board = board;
     }
 
-    public WindowHandlerer getMainFrame() {
-        return mainFrame;
+    public QuoridorApp getmainWindow() {
+        return mainWindow;
     }
 
-    public void setMainFrame(WindowHandlerer mainFrame) {
-        this.mainFrame = mainFrame;
+    public void setmainWindow(QuoridorApp mainWindow) {
+        this.mainWindow = mainWindow;
     }
 
     public SquareUI[][] getSquares() {

@@ -101,5 +101,9 @@ public class Player {
 
     public Color getColor_2d() {
         return color_2d;
-    }   
+    }
+
+    public Position getPosition() {
+        return position;
+    }
 }

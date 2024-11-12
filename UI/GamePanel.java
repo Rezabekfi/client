@@ -17,27 +17,27 @@ import Settings.Constants;
 
 public class GamePanel extends JPanel {
 
-    private WindowHandlerer mainFrame;
+    private QuoridorApp mainWindow;
     private GameBoard gb;
     private GameManager gm;
     private PlayerPanel p1;
     private PlayerPanel p2;
 
-    public GamePanel(WindowHandlerer mainFrame) {
-        this.mainFrame = mainFrame;
+    public GamePanel(QuoridorApp mainWindow) {
+        this.mainWindow = mainWindow;
         this.setLayout(null);
 
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
         JLabel title = new JLabel("GAME", SwingConstants.CENTER);
         titlePanel.add(title);
-        titlePanel.setBounds(0, 0, this.mainFrame.getWidth(), this.mainFrame.getHeight()/12);
+        titlePanel.setBounds(0, 0, this.mainWindow.getWidth(), this.mainWindow.getHeight()/12);
         titlePanel.setBackground(Color.GRAY);
         this.add(titlePanel);
 
         Board board =new Board();
-        this.gb = new GameBoard(board, this.mainFrame);
-        this.gb.setBounds((int)(this.mainFrame.getWidth()/2 - this.mainFrame.getHeight()*3.0/8.0), (int)(this.mainFrame.getHeight()/12), (int)(this.mainFrame.getHeight()*3.0/4), (int)(this.mainFrame.getHeight()*3.0/4));;
+        this.gb = new GameBoard(board, this.mainWindow);
+        this.gb.setBounds((int)(this.mainWindow.getWidth()/2 - this.mainWindow.getHeight()*3.0/8.0), (int)(this.mainWindow.getHeight()/12), (int)(this.mainWindow.getHeight()*3.0/4), (int)(this.mainWindow.getHeight()*3.0/4));;
         this.add(this.gb);
 
         this.gm = new GameManager(board, gb);
@@ -47,11 +47,11 @@ public class GamePanel extends JPanel {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.showCard(Constants.MENU_CARD);
+                mainWindow.showCard(Constants.MENU_CARD);
             }
         });
         buttonPanel.add(backButton);
-        buttonPanel.setBounds(0, (int)(this.mainFrame.getHeight()*5.0/6), this.mainFrame.getWidth(), (int)(this.mainFrame.getHeight()/6.0));
+        buttonPanel.setBounds(0, (int)(this.mainWindow.getHeight()*5.0/6), this.mainWindow.getWidth(), (int)(this.mainWindow.getHeight()/6.0));
         buttonPanel.setBackground(Color.GRAY);
         this.add(buttonPanel);
 
@@ -66,7 +66,7 @@ public class GamePanel extends JPanel {
         titlePanel.setLayout(new BorderLayout());
         JLabel title = new JLabel("GAME", SwingConstants.CENTER);
         titlePanel.add(title);
-        titlePanel.setBounds(0, 0, this.mainFrame.getWidth(), this.mainFrame.getHeight()/12);
+        titlePanel.setBounds(0, 0, this.mainWindow.getWidth(), this.mainWindow.getHeight()/12);
         titlePanel.setBackground(Color.GRAY);
         this.add(titlePanel);
     }
@@ -80,16 +80,16 @@ public class GamePanel extends JPanel {
     public void updatePlayerPanels() {
         p1 = new PlayerPanel(gb.getBoard().getPlayers()[0], true);
         p2 = new PlayerPanel(gb.getBoard().getPlayers()[1], true);
-        p1.setBounds(0,(int)((1.0/12.0)*this.mainFrame.getHeight()), (int)((this.mainFrame.getWidth()-(3.0/4.0)*this.mainFrame.getHeight())/2), (int)((3.0/4)*this.mainFrame.getHeight()));
-        p2.setBounds((int)((this.mainFrame.getWidth() - (3.0/4)*this.mainFrame.getHeight())/2 + (3.0/4)*this.mainFrame.getHeight()),(int)((1.0/12)*this.mainFrame.getHeight()), (int)((this.mainFrame.getWidth()-(3.0/4)*this.mainFrame.getHeight())/2), (int)((3.0/4)*this.mainFrame.getHeight()));
+        p1.setBounds(0,(int)((1.0/12.0)*this.mainWindow.getHeight()), (int)((this.mainWindow.getWidth()-(3.0/4.0)*this.mainWindow.getHeight())/2), (int)((3.0/4)*this.mainWindow.getHeight()));
+        p2.setBounds((int)((this.mainWindow.getWidth() - (3.0/4)*this.mainWindow.getHeight())/2 + (3.0/4)*this.mainWindow.getHeight()),(int)((1.0/12)*this.mainWindow.getHeight()), (int)((this.mainWindow.getWidth()-(3.0/4)*this.mainWindow.getHeight())/2), (int)((3.0/4)*this.mainWindow.getHeight()));
         this.add(p1);
         this.add(p2);
     }
 
 
 
-    public WindowHandlerer getMainFrame() {
-        return mainFrame;
+    public QuoridorApp getmainWindow() {
+        return mainWindow;
     }
 
     public GameBoard getGameBoard() {
