@@ -151,12 +151,15 @@ public class GameManager {
         //updateGameState -bettet
         removeSelectedSquares();
         gameBoardUI.updateBoard();
+        if (getWinner() != null) {
+            handleGameEnded();
+            return;
+        }
         if (++playerIndex == board.getPlayers().length) {
             playerIndex = 0;
         }
         currentPlayer = board.getPlayers()[playerIndex];
         highlightPossibleMoves();
-        this.board.printBoardDebugging();
     }
 
     // currently not used but might be usefull later
@@ -176,6 +179,11 @@ public class GameManager {
                 }
             }
         }
+    }
+
+    // TODO: doplnit (zatim nic)
+    private void handleGameEnded() {
+
     }
 
     private void removeSelectedSquares() {
@@ -240,5 +248,16 @@ public class GameManager {
     // for debugging - current development tested here
     public void debbugRand() {
         System.out.println("debbuging - nothing");
+    }
+
+    public Player getWinner() {
+        Player[] players = this.board.getPlayers();
+        
+        for (int i = 0; i < players.length; i++) {
+            if (players[i].isPlayerFinished()) {
+                return players[i];
+            }
+        }
+        return null;
     }
 }

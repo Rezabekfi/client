@@ -79,6 +79,26 @@ public class Player {
         this.playerName = playerName;
     }
 
+    public boolean isPlayerFinished() {
+        switch (driection) {
+            case NORTH:
+                if (this.getRow() == 0) return true;
+                break;
+            case EAST:
+                if (this.getCol() == Constants.BOARD_SIZE-1) return true;
+                break;
+            case SOUTH:
+                if (this.getRow() == Constants.BOARD_SIZE-1) return true;
+                break;
+            case WEST:
+                if (this.getCol() == 0) return true;
+                break;
+            default:
+                return false;
+        }
+        return false;
+    }
+
     public Color getColor_2d() {
         return color_2d;
     }   
