@@ -1,4 +1,4 @@
-package UI;
+package UI.Components;
 import java.awt.BorderLayout;
 import java.util.List;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 
 import GameLogic.*;
 import Settings.Constants;
+import UI.Windows.QuoridorApp;
 
 public class GameBoard extends JPanel {
     
@@ -97,6 +98,13 @@ public class GameBoard extends JPanel {
                     currentSquare.repaint();
                 }
             }
+        }
+    }
+
+    public void clearAllWalls() {
+        for (WallUI wall : this.getAllWalls()) {
+            wall.setPlaced(false);
+            wall.repaint();
         }
     }
 

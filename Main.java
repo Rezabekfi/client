@@ -1,10 +1,10 @@
 import UI.*;
-import GameLogic.*;
+import UI.Windows.QuoridorApp;
 
 public class Main {
     
     public static void main(String[] args) {
         
-        QuoridorApp wh = new QuoridorApp();
+        new QuoridorApp();
     }
 }

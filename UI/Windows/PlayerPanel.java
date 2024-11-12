@@ -1,4 +1,4 @@
-package UI;
+package UI.Windows;
 
 import java.awt.Color;
 import java.awt.GridLayout;

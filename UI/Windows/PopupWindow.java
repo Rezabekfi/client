@@ -1,4 +1,4 @@
-package UI;
+package UI.Windows;
 
 import javax.swing.*;
 import java.awt.*;

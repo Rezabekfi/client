@@ -1,4 +1,4 @@
-package UI;
+package UI.Windows;
 import java.awt.CardLayout;
 import GameLogic.*;
 
@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import Settings.Constants;
+import UI.Components.GameBoard;
 
 public class QuoridorApp extends JFrame {
 
@@ -36,7 +37,7 @@ public class QuoridorApp extends JFrame {
         mainPanel.add(this.menuPanel, Constants.MENU_CARD);
         mainPanel.add(this.gamePanel, Constants.GAME_ON_CARD);
         mainPanel.add(this.settingsPanel, Constants.SETTINGS_CARD);
-
+        this.playerName = Constants.DEFAULT_PLAYER_NAME;
         this.add(this.mainPanel);
         this.setVisible(true);
     }

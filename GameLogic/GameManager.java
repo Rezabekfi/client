@@ -1,16 +1,13 @@
 package GameLogic;
 
-import UI.GameBoard;
-import UI.SquareUI;
-import UI.WallUI;
+import UI.Components.GameBoard;
+import UI.Components.SquareUI;
+import UI.Components.WallUI;
+import UI.Windows.PopupWindow;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
-
-import Settings.Constants;
-import UI.PopupWindow;
-// import Settings.Constants;
 
 public class GameManager {
 
@@ -34,7 +31,6 @@ public class GameManager {
 
     public void setWallActionListener() {
         for (WallUI wall : walls) {
-            if (wall.isPlaced()) continue;
             wall.addMouseListener(new MouseListener() {
 
                 @Override
@@ -148,7 +144,8 @@ public class GameManager {
     // Optional: Handling turns
     public void nextTurn() {
         //updatePlayerPosition();
-        //updateGameState -bettet
+        //updateGameState -better
+        removeSelectedWalls();
         removeSelectedSquares();
         gameBoardUI.updateBoard();
         if (getWinner() != null) {
@@ -160,25 +157,6 @@ public class GameManager {
         }
         currentPlayer = board.getPlayers()[playerIndex];
         highlightPossibleMoves();
-    }
-
-    // currently not used but might be usefull later
-    // TODO: most likely delete
-    private void updatePlayerPosition() {
-        char[][] board = this.board.getBoard();
-        Player[] players = this.board.getPlayers();
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
-                if (board[i][j] != Constants.EMPTY_SQUARE) {
-                    for (int k = 0; k < players.length; k++) {
-                        if (players[k].getColor() == board[i][j]) {
-                            players[k].setRow(i);
-                            players[k].setCol(j);
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private void handleGameEnded() {
@@ -193,8 +171,8 @@ public class GameManager {
         doubleWall = new WallUI[2];
         
         // Reset UI
+        gameBoardUI.clearAllWalls();
         gameBoardUI.updateBoard();
-        setWallActionListener();
 
         gameLoop();
     }
@@ -272,5 +250,11 @@ public class GameManager {
             }
         }
         return null;
+    }
+
+    private void removeSelectedWalls() {
+        for (WallUI wall : walls) {
+            wall.setSelected(false);
+        }
     }
 }

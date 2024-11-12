@@ -1,19 +1,17 @@
-package UI;
+package UI.Windows;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Rectangle2D;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import GameLogic.Board;
 import GameLogic.GameManager;
 import Settings.Constants;
+import UI.Components.GameBoard;
 
 public class GamePanel extends JPanel {
 

@@ -1,4 +1,4 @@
-package UI;
+package UI.Windows;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
