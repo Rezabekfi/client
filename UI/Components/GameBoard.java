@@ -216,4 +216,7 @@ public class GameBoard extends JPanel {
         this.newPosition = newPosition;
     }
     
+    public void setNewGame() {
+        mainWindow.startNewGame();
+    }
 }

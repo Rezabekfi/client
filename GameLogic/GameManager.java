@@ -161,20 +161,7 @@ public class GameManager {
 
     private void handleGameEnded() {
         PopupWindow.showMessage("Game Over! Player " + getWinner().getName() + " wins!");
-        board = new Board(board.getNumberOfPlayers());
-        gameBoardUI.setBoard(board);
-        playerIndex = 0;
-        currentPlayer = board.getPlayers()[playerIndex];
-        
-        // Reset walls
-        walls = gameBoardUI.getAllWalls();
-        doubleWall = new WallUI[2];
-        
-        // Reset UI
-        gameBoardUI.clearAllWalls();
-        gameBoardUI.updateBoard();
-
-        gameLoop();
+        gameBoardUI.setNewGame();
     }
 
     private void removeSelectedSquares() {
