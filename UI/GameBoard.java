@@ -77,7 +77,7 @@ public class GameBoard extends JPanel {
     public void updateBoard() {
         // Check for player movement and repaint the affected squares
         updateSquares();
-        
+        mainFrame.getGamePanel().updatePlayerPanels();
         // Check for wall placement and repaint affected walls
         updateWalls();
         

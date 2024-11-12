@@ -20,6 +20,8 @@ public class GamePanel extends JPanel {
     private WindowHandlerer mainFrame;
     private GameBoard gb;
     private GameManager gm;
+    private PlayerPanel p1;
+    private PlayerPanel p2;
 
     public GamePanel(WindowHandlerer mainFrame) {
         this.mainFrame = mainFrame;
@@ -40,10 +42,6 @@ public class GamePanel extends JPanel {
 
         this.gm = new GameManager(board, gb);
 
-
-
-
-        // dont know about this button might
         JPanel buttonPanel = new JPanel();
         JButton backButton = new JButton("Back to menu.");
         backButton.addActionListener(new ActionListener() {
@@ -60,12 +58,7 @@ public class GamePanel extends JPanel {
 
         board.getPlayers()[0].setName("Franta");
         board.getPlayers()[1].setName("Jirka");
-        PlayerPanel p1 = new PlayerPanel(board.getPlayers()[0], true);
-        PlayerPanel p2 = new PlayerPanel(board.getPlayers()[1], true);
-        p1.setBounds(0,(int)((1.0/12.0)*this.mainFrame.getHeight()), (int)((this.mainFrame.getWidth()-(3.0/4.0)*this.mainFrame.getHeight())/2), (int)((3.0/4)*this.mainFrame.getHeight()));
-        p2.setBounds((int)((this.mainFrame.getWidth() - (3.0/4)*this.mainFrame.getHeight())/2 + (3.0/4)*this.mainFrame.getHeight()),(int)((1.0/12)*this.mainFrame.getHeight()), (int)((this.mainFrame.getWidth()-(3.0/4)*this.mainFrame.getHeight())/2), (int)((3.0/4)*this.mainFrame.getHeight()));
-        this.add(p1);
-        this.add(p2);
+        updatePlayerPanels();
     }
 
     public void setUpTitle() {
@@ -82,6 +75,15 @@ public class GamePanel extends JPanel {
     public void repaint() {
         super.repaint();
 
+    }
+
+    public void updatePlayerPanels() {
+        p1 = new PlayerPanel(gb.getBoard().getPlayers()[0], true);
+        p2 = new PlayerPanel(gb.getBoard().getPlayers()[1], true);
+        p1.setBounds(0,(int)((1.0/12.0)*this.mainFrame.getHeight()), (int)((this.mainFrame.getWidth()-(3.0/4.0)*this.mainFrame.getHeight())/2), (int)((3.0/4)*this.mainFrame.getHeight()));
+        p2.setBounds((int)((this.mainFrame.getWidth() - (3.0/4)*this.mainFrame.getHeight())/2 + (3.0/4)*this.mainFrame.getHeight()),(int)((1.0/12)*this.mainFrame.getHeight()), (int)((this.mainFrame.getWidth()-(3.0/4)*this.mainFrame.getHeight())/2), (int)((3.0/4)*this.mainFrame.getHeight()));
+        this.add(p1);
+        this.add(p2);
     }
 
 
