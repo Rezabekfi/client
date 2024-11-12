@@ -47,7 +47,7 @@ public class QuoridorApp extends JFrame {
         cl.show(this.mainPanel, panel);
     }
 
-    public void startNewGame() {
+    public void startNewGame(int startingPlayer) {
         // Clean up any existing game
         gamePanel.cleanupGame();
         
@@ -66,6 +66,10 @@ public class QuoridorApp extends JFrame {
         gamePanel.setGameManager(gm);
         gamePanel.updatePlayerPanels();
         gb.updateBoard();
+        if (startingPlayer >= board.getNumberOfPlayers()) {
+            startingPlayer = 0;
+        }
+        gm.setCurrentPlayer(board.getPlayers()[startingPlayer], startingPlayer);
         gm.gameLoop();
     }
 

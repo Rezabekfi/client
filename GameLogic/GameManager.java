@@ -152,16 +152,22 @@ public class GameManager {
             handleGameEnded();
             return;
         }
+        getNextPlayer();
+        highlightPossibleMoves();
+    }
+
+    private void getNextPlayer() {
         if (++playerIndex == board.getPlayers().length) {
             playerIndex = 0;
         }
         currentPlayer = board.getPlayers()[playerIndex];
-        highlightPossibleMoves();
     }
 
     private void handleGameEnded() {
-        PopupWindow.showMessage("Game Over! Player " + getWinner().getName() + " wins!");
-        gameBoardUI.setNewGame();
+        Player winner = getWinner();
+        PopupWindow.showMessage("Game Over! Player " + winner.getName() + " wins!");
+        getNextPlayer();
+        gameBoardUI.setNewGame(playerIndex);
     }
 
     private void removeSelectedSquares() {
@@ -243,5 +249,10 @@ public class GameManager {
         for (WallUI wall : walls) {
             wall.setSelected(false);
         }
+    }
+
+    public void setCurrentPlayer(Player player, int playerIndex) {
+        this.currentPlayer = player;
+        this.playerIndex = playerIndex;
     }
 }
