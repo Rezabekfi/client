@@ -59,4 +59,13 @@ public class PlayerPanel extends JPanel {
         colorLabel.setForeground(player.getColor_2d()); // Assuming player has a getColor() method returning Color
         this.add(colorLabel);
     }
+
+    public void updatePlayerInfo() {
+        this.removeAll();  // Clear existing components
+        displayPlayer();   // Redisplay with updated info
+        this.revalidate();
+        this.repaint();
+    }
+
+    
 }

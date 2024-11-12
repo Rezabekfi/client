@@ -70,6 +70,7 @@ public class MenuPanel extends JPanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mainWindow.startNewGame();
                 mainWindow.showCard(Constants.GAME_ON_CARD);
             }
         };

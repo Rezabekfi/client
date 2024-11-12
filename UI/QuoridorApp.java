@@ -1,5 +1,6 @@
 package UI;
 import java.awt.CardLayout;
+import GameLogic.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,6 +16,8 @@ public class QuoridorApp extends JFrame {
     private MenuPanel menuPanel;
 
     private SettingsPanel settingsPanel;
+
+    private String playerName;
     
     public QuoridorApp() {
         createWindow(this, Constants.GAME_NAME, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
@@ -43,8 +46,27 @@ public class QuoridorApp extends JFrame {
         cl.show(this.mainPanel, panel);
     }
 
-    
-
+    public void startNewGame() {
+        // Clean up any existing game
+        gamePanel.cleanupGame();
+        
+        // Create new game components
+        Board board = new Board();
+        
+        // Set up player names BEFORE creating GameBoard
+        board.getPlayers()[0].setName(getPlayerName());
+        board.getPlayers()[1].setName("Player1");
+        
+        GameBoard gb = new GameBoard(board, this);
+        GameManager gm = new GameManager(board, gb);
+        
+        gb.setBoard(board);
+        gamePanel.setGameBoard(gb);
+        gamePanel.setGameManager(gm);
+        gamePanel.updatePlayerPanels();
+        gb.updateBoard();
+        gm.gameLoop();
+    }
 
     public static void createWindow(JFrame window, String title, int width, int height) {
         window.setTitle(title);
@@ -70,6 +92,12 @@ public class QuoridorApp extends JFrame {
         return settingsPanel;
     }
 
-    
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
 }
 

@@ -32,5 +32,7 @@ public class Constants{
     public static String GAME_OFF_CARD = "Game";
     public static String SETTINGS_CARD = "Settings";
 
+    public static String DEFAULT_PLAYER_NAME = "Player";
+
     public static int EXIT_SUCCES = 0;
 }
