@@ -3,9 +3,15 @@ package com.quoridor.GameLogic;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
+
 public class GameMessage implements Serializable {
+    
     private MessageType type;
-    private Map<String, Object> data;
 
     public enum MessageType {
         WELCOME,
@@ -23,8 +29,7 @@ public class GameMessage implements Serializable {
     }
 
     public GameMessage(MessageType type, Map<String, Object> data) {
-        this.type = type;
-        this.data = data;
+        
     }
 
     public MessageType getType() {
@@ -35,38 +40,48 @@ public class GameMessage implements Serializable {
         this.type = type;
     }
 
-    public Map<String, Object> getData() {
-        return data;
+    public static GameMessage fromJSON(String jsonString) {
+        return null;
     }
 
-    public void setData(Map<String, Object> data) {
-        this.data = data;
+    // Method to parse board string into char[][]
+    public char[][] getBoardArray() {
+        return null;
     }
 
-    // Helper method to get specific data fields
+    // Method to get wall positions
+    public List<Position> getWallPositions(String wallType) {
+        return null;
+    }
+
+    // Method to get player information
+    public List<Player> getPlayers() {
+        return null;
+    }
+
+    private char getColorChar(String color) {
+        return 'p';
+    }
+
+    private GoalDirection determineDirection(Position position) {
+        return GoalDirection.NORTH;
+    }
+
+    // Method to create a move message
+    public static GameMessage createMoveMessage(String playerId, boolean isHorizontal, Position... positions) {
+        return null;
+    }
+
+    // Method to create a name response message
+    public static GameMessage createNameResponse(String name) {
+        return null;
+    }
+
     public String getStringData(String key) {
-        Object value = data.get(key);
-        return value != null ? value.toString() : null;
+        return null;
     }
 
-    public Integer getIntData(String key) {
-        Object value = data.get(key);
-        return value != null ? Integer.parseInt(value.toString()) : null;
-    }
-
-    public Boolean getBooleanData(String key) {
-        Object value = data.get(key);
-        return value != null ? Boolean.parseBoolean(value.toString()) : null;
-    }
-
-    // might be dangerous
-    public List<Position> getPositionListData(String key) {
-        Object value = data.get(key);
-        return value != null ? (List<Position>) value : null;
-    }
-
-    public Player getPlayerData(String key) {
-        Object value = data.get(key);
-        return value != null ? (Player) value : null;
+    public Object getData(String key) {
+        return null;
     }
 } 

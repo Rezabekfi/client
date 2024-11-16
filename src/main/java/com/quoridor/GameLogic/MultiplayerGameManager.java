@@ -26,7 +26,7 @@ public class MultiplayerGameManager extends GameManager {
             }
         }).start();
     }
-
+    
     private void handleNetworkMessage(GameMessage message) {
         if (message == null) return;
         
@@ -95,8 +95,8 @@ public class MultiplayerGameManager extends GameManager {
     }
 
     private void handleNextTurn(GameMessage message) {
-        String currentPlayerId = message.getStringData("current_player_id");
-        isMyTurn = playerId.equals(currentPlayerId);
+        //String currentPlayerId = message.getStringData("current_player_id");
+        //isMyTurn = playerId.equals(currentPlayerId);
         
         // Update board state
         updateGameState(message);
@@ -105,7 +105,7 @@ public class MultiplayerGameManager extends GameManager {
 
     private void updateGameState(GameMessage message) {
         // Update board based on message data
-        String boardString = message.getStringData("board");
+        //String boardString = message.getStringData("board");
         // Update walls
         // Update player positions
         // etc.
