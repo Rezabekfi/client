@@ -40,7 +40,15 @@ public class PopupWindow extends JDialog {
     }
     
     public static void showMessage(String message) {
-        PopupWindow popup = new PopupWindow(message, "Message", 300, 150);
+        // Create a temporary label to calculate required width
+        JLabel dummyLabel = new JLabel(message);
+        Dimension preferredSize = dummyLabel.getPreferredSize();
+        
+        // Add padding and calculate dimensions
+        int width = Math.max(300, preferredSize.width + 50);  // minimum 300px, or message width + padding
+        int height = Math.max(150, preferredSize.height + 100);  // minimum 150px, or message height + padding
+        
+        PopupWindow popup = new PopupWindow(message, "Message", width, height);
         popup.setVisible(true);
     }
 } 

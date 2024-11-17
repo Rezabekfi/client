@@ -1,5 +1,7 @@
 package com.quoridor.UI.Windows;
 import java.awt.CardLayout;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -131,9 +133,22 @@ public class QuoridorApp extends JFrame {
         }
         JSONObject connectionSettings = FileManager.readJSONFromFile("connection_settings.txt");
         NetworkManager networkManager = new NetworkManager(connectionSettings.getString("address"), connectionSettings.getInt("port"));
+        
         if (networkManager.connect()) {
-            startMultiplayerGame(networkManager);
-            showCard(Constants.GAME_ON_CARD);
+            // Wait for initial messages
+            GameMessage welcomeMsg = networkManager.receiveMessage();
+            if (welcomeMsg != null && welcomeMsg.getType() == GameMessage.MessageType.WELCOME) {
+                GameMessage nameRequest = networkManager.receiveMessage();
+                if (nameRequest != null && nameRequest.getType() == GameMessage.MessageType.NAME_REQUEST) {
+                    // Send name response
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("name", playerName);
+                    networkManager.sendMessage(new GameMessage(GameMessage.MessageType.NAME_RESPONSE, data));
+                    
+                    startMultiplayerGame(networkManager);
+                    showCard(Constants.GAME_ON_CARD);
+                }
+            }
         } else {
             PopupWindow.showMessage("Failed to connect to server. Please check your connection settings.");
         }

@@ -44,7 +44,8 @@ public class NetworkManager {
 
     public void sendMessage(GameMessage message) {
         try {
-            output.writeObject(message);
+            String jsonString = message.toJSON();
+            output.writeUTF(jsonString);
             output.flush();
         } catch (Exception e) {
             System.err.println("Send error: " + e.getMessage());
@@ -53,7 +54,8 @@ public class NetworkManager {
 
     public GameMessage receiveMessage() {
         try {
-            return (GameMessage) input.readObject();
+            String jsonString = input.readUTF();
+            return GameMessage.fromJSON(jsonString);
         } catch (Exception e) {
             System.err.println("Receive error: " + e.getMessage());
             return null;
