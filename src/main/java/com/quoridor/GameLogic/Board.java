@@ -134,7 +134,7 @@ public class Board {
         return true;
     }
 
-    public void placeWall(Player player, int row, int col, boolean isVertical) {
+    public void placeWall(int row, int col, boolean isVertical) {
         if (isVertical) {
             verticalWalls[row][col] = true;
         } else {

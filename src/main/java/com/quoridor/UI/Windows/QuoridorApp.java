@@ -4,6 +4,10 @@ import java.awt.CardLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.json.JSONObject;
+
+import com.quoridor.Settings.FileManager;
+
 import com.quoridor.Settings.Constants;
 import com.quoridor.UI.Components.GameBoard;
 import com.quoridor.GameLogic.*;
@@ -84,8 +88,8 @@ public class QuoridorApp extends JFrame {
         gb.setBoard(board);
         gamePanel.setGameBoard(gb);
         gamePanel.setGameManager(gm);
+        gm.startNetworkListener();
 
-        gm.gameLoop();
     }
 
     public static void createWindow(JFrame window, String title, int width, int height) {
@@ -118,6 +122,21 @@ public class QuoridorApp extends JFrame {
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
+    }
+
+    public void tryNewMultiplayerGame() {
+        if (playerName.equals(Constants.DEFAULT_PLAYER_NAME)) {
+            PopupWindow.showMessage("Please enter a name first. You can change it in the settings menu.");
+            return;
+        }
+        JSONObject connectionSettings = FileManager.readJSONFromFile("connection_settings.txt");
+        NetworkManager networkManager = new NetworkManager(connectionSettings.getString("address"), connectionSettings.getInt("port"));
+        if (networkManager.connect()) {
+            startMultiplayerGame(networkManager);
+            showCard(Constants.GAME_ON_CARD);
+        } else {
+            PopupWindow.showMessage("Failed to connect to server. Please check your connection settings.");
+        }
     }
 }
 

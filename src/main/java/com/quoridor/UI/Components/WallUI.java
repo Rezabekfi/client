@@ -1,7 +1,10 @@
 package com.quoridor.UI.Components;
 
+import com.quoridor.GameLogic.Position;
+
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
@@ -17,6 +20,8 @@ public class WallUI extends JPanel {
 
     public int row;
     public int col;
+
+    private MouseListener mouseListener;
 
     public WallUI(int row, int col, boolean isVertical, boolean placed) {
         this.row = row;
@@ -74,6 +79,10 @@ public class WallUI extends JPanel {
         this.col = col;
     }
 
+    public Position getPosition() {
+        return new Position(row, col);
+    }
+
     public boolean isSelected() {
         return selected;
     }
@@ -88,5 +97,13 @@ public class WallUI extends JPanel {
 
     public void setPlayerColor(Color playerColor) {
         this.playerColor = playerColor;
+    }
+
+    public void setMouseListener(MouseListener listener) {
+        this.mouseListener = listener;
+    }
+
+    public MouseListener getMouseListener() {
+        return mouseListener;
     }
 }

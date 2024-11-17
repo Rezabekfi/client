@@ -11,13 +11,13 @@ import com.quoridor.UI.Windows.PopupWindow;
 
 public class GameManager {
 
-    private Board board;             // Game state (e.g., players, walls)
-    private GameBoard gameBoardUI;   // UI component for the game board
-    private Player currentPlayer;
-    private int playerIndex;
-    private List<SquareUI> squares;
-    private List<WallUI> walls;
-    private WallUI[] doubleWall;
+    protected Board board;             // Game state (e.g., players, walls)
+    protected GameBoard gameBoardUI;   // UI component for the game board
+    protected Player currentPlayer;
+    protected int playerIndex;
+    protected List<SquareUI> squares;
+    protected List<WallUI> walls;
+    protected WallUI[] doubleWall;
 
     public GameManager(Board board, GameBoard gameBoardUI) {
         this.board = board;
@@ -110,8 +110,8 @@ public class GameManager {
 
     public boolean placeWall(int row_1, int col_1, int row_2, int col_2, boolean isVertical) {
         if (board.canPlaceWall(currentPlayer, row_1, col_1, isVertical) && board.canPlaceWall(currentPlayer, row_2, col_2, isVertical)) {
-            board.placeWall(currentPlayer, row_1, col_1, isVertical);  // Update the game logic
-            board.placeWall(currentPlayer, row_2, col_2, isVertical);
+            board.placeWall(row_1, col_1, isVertical);  // Update the game logic
+            board.placeWall(row_2, col_2, isVertical);
             if (isVertical) {
                 gameBoardUI.getVerticalWalls()[row_1][col_1].setPlaced(true);
                 gameBoardUI.getVerticalWalls()[row_2][col_2].setPlaced(true);
@@ -181,6 +181,12 @@ public class GameManager {
         squares = null;
     }
 
+    private void highlightPossibleMoves() {
+        List<Position> list = board.possibleMoves(currentPlayer);
+        squares = gameBoardUI.setUpPossibleSquares(list);
+        setSquaresActionListener();
+    }
+
     public void gameLoop() {
         setUpFirstMove();
     }
@@ -188,12 +194,6 @@ public class GameManager {
     private void setUpFirstMove() {
         gameBoardUI.updateBoard();
         highlightPossibleMoves();
-    }
-
-    private void highlightPossibleMoves() {
-        List<Position> list = board.possibleMoves(currentPlayer);
-        squares = gameBoardUI.setUpPossibleSquares(list);
-        setSquaresActionListener();
     }
 
     private void setSquaresActionListener() {

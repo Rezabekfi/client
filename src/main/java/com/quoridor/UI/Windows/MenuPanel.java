@@ -44,7 +44,7 @@ public class MenuPanel extends JPanel {
 
         JPanel playMultiplayerPanel = new JPanel();
         JButton playMultiplayerButton = new JButton("Play Online");
-        playMultiplayerButton.addActionListener(playSoloAction());
+        playMultiplayerButton.addActionListener(playMultiplayerAction());
         playMultiplayerPanel.add(playMultiplayerButton);
 
         
@@ -81,6 +81,15 @@ public class MenuPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mainWindow.showCard(Constants.SETTINGS_CARD);
+            }
+        };
+    }
+
+    private ActionListener playMultiplayerAction() {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainWindow.tryNewMultiplayerGame();
             }
         };
     }

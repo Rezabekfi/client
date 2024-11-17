@@ -11,6 +11,7 @@ public class Player {
     private char color; 
     private Color color_2d;
     private String playerName;
+    private String id;
 
     public Player(String playerName, GoalDirection direction, Position position, char color){
         this.playerName = playerName;
@@ -105,5 +106,13 @@ public class Player {
 
     public Position getPosition() {
         return position;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
