@@ -48,37 +48,37 @@ public class Board {
     // CAREFUL DIRECTION IS DIRECTION WHICH PLAYER WILL BE FACING AND TRYING TO GET TO NOT THE ONE WEHRE HE STARTS!
     private Player createPlayer(GoalDirection goalDirection) {
         int row, col;
-        char color;
+        char playerNumber;
         switch (goalDirection) {
             case NORTH:
                 col = this.board.length/2;
                 row = this.board.length - 1;
-                color = Constants.PLAYER_COLORS[0];
+                playerNumber = Constants.PLAYER_1_CHAR;
                 break;
             case EAST:
                 col = 0;
                 row = this.board.length/2;
-                color = Constants.PLAYER_COLORS[2];
+                playerNumber = Constants.PLAYER_3_CHAR;
                 break;
             case SOUTH:
                 col = this.board.length/2;
                 row = 0;
-                color = Constants.PLAYER_COLORS[1];
+                playerNumber = Constants.PLAYER_2_CHAR;
                 break;
             case WEST:
                 col = this.board.length - 1;
                 row = this.board.length/2;
-                color = Constants.PLAYER_COLORS[3];
+                playerNumber = Constants.PLAYER_4_CHAR;
                 break;
             default:
                 System.out.println("DISASTER!!! X Y SET TO 0 0");
                 col = 0;
                 row = 0;
-                color = Constants.PLAYER_COLORS[4];
+                playerNumber = '5';
                 break;
         }
 
-        return new Player("XXX",goalDirection, new Position(row, col), color);
+        return new Player("XXX", goalDirection, new Position(row, col), playerNumber);
     }
 
     public char[][] getBoard() {
@@ -140,6 +140,10 @@ public class Board {
         } else {
             horizontalWalls[row][col] = true;
         }
+    }
+
+    public void placeWall(Position wall, boolean isVertical) {
+        placeWall(wall.getRow(), wall.getCol(), isVertical);
     }
 
     public boolean canMovePlayer(Player currentPlayer, int newRow, int newCol) {
@@ -206,5 +210,9 @@ public class Board {
             }
         }
         return list;
+    }
+
+    public void setPlayers(Player[] players) {
+        this.players = players;
     }
 }

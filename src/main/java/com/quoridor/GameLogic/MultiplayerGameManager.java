@@ -126,7 +126,11 @@ public class MultiplayerGameManager extends GameManager {
         if (isMyTurn(message)) {
             isMyTurn = true;
             highlightPossibleMoves();
+        } else {
+            isMyTurn = false;
+            removeSelectedSquares();
         }
+        gameBoardUI.updateBoard();
     }
 
     private void setCurrentPlayer(GameMessage message) {
@@ -134,9 +138,10 @@ public class MultiplayerGameManager extends GameManager {
     }
 
     private void updateGameState(GameMessage message) {
-        updateBoard(message);
         updatePlayers(message);
+        updateBoard(message);
         updateWalls(message);
+        gameBoardUI.updateBoard();
     }
 
     private boolean isMyTurn(GameMessage message) {
@@ -144,23 +149,27 @@ public class MultiplayerGameManager extends GameManager {
     }
 
     private void updateWalls(GameMessage message) {
-        List<Position[]> horizontalWalls = message.getHorizontalWalls();
-        List<Position[]> verticalWalls = message.getVerticalWalls();
-        for (Position[] wall : horizontalWalls) {
-            placeWallServer(wall[0].getRow(), wall[0].getCol(), wall[1].getRow(), wall[1].getCol(), true);
+        List<Position> horizontalWalls = message.getHorizontalWalls();
+        List<Position> verticalWalls = message.getVerticalWalls();
+        for (Position wall : horizontalWalls) {
+            placeWallServer(wall, true);
         }
-        for (Position[] wall : verticalWalls) {
-            placeWallServer(wall[0].getRow(), wall[0].getCol(), wall[1].getRow(), wall[1].getCol(), false);
+        for (Position wall : verticalWalls) {
+            placeWallServer(wall, false);
         }
     }
 
-    private void placeWallServer(int row1, int col1, int row2, int col2, boolean isHorizontal) {
-        board.placeWall(row1, col1, isHorizontal);
-        board.placeWall(row2, col2, isHorizontal);
+    private void placeWallServer(Position wall, boolean isHorizontal) {
+        board.placeWall(wall, !isHorizontal);
     }
 
     private void updatePlayers(GameMessage message) {
         players = message.getPlayers();
+        Player[] playersArray = new Player[players.size()];
+        for (int i = 0; i < players.size(); i++) {
+            playersArray[i] = players.get(i);
+        }
+        board.setPlayers(playersArray);
     }
 
     private void updateBoard(GameMessage message) {
@@ -192,6 +201,7 @@ public class MultiplayerGameManager extends GameManager {
 
         removeSelectedSquares();
         removeWallActionListener();
+        gameBoardUI.updateBoard();
 
         sendAck();
     }
@@ -233,9 +243,12 @@ public class MultiplayerGameManager extends GameManager {
 
     public void sendMove(Position position) {
         Map<String, Object> data = new HashMap<>();
-        data.put("player_id", playerId);
+        data.put("player_id", Integer.parseInt(playerId)-1);
         data.put("is_horizontal", false);
-        data.put("position", new Position[]{position});
+        
+        // Create position array in format [[x,y]]
+        int[][] positionArray = new int[][]{{position.getRow(), position.getCol()}};
+        data.put("position", positionArray);
         
         GameMessage message = new GameMessage(GameMessage.MessageType.MOVE, data);
         networkManager.sendMessage(message);
@@ -243,9 +256,15 @@ public class MultiplayerGameManager extends GameManager {
     
     public void sendWallPlacement(Position wall1, Position wall2, boolean isHorizontal) {
         Map<String, Object> data = new HashMap<>();
-        data.put("player_id", playerId);
+        data.put("player_id", Integer.parseInt(playerId)-1);
         data.put("is_horizontal", isHorizontal);
-        data.put("position", new Position[]{wall1, wall2});
+        
+        // Create position array in format [[x1,y1], [x2,y2]]
+        int[][] positionArray = new int[][]{
+            {wall1.getRow(), wall1.getCol()},
+            {wall2.getRow(), wall2.getCol()}
+        };
+        data.put("position", positionArray);
         
         GameMessage message = new GameMessage(GameMessage.MessageType.MOVE, data);
         networkManager.sendMessage(message);
@@ -280,7 +299,7 @@ public class MultiplayerGameManager extends GameManager {
                     }
 
                     if (possibleDoubleWall()) {
-                        sendWallPlacement(doubleWall[0].getPosition(), doubleWall[1].getPosition(), doubleWall[0].isVertical());
+                        sendWallPlacement(doubleWall[0].getPosition(), doubleWall[1].getPosition(), !doubleWall[0].isVertical());
                         doubleWall[0].setSelected(false);
                         doubleWall[1].setSelected(false);
                         doubleWall[0] = null;

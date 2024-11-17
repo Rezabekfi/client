@@ -84,28 +84,24 @@ public class GameMessage implements Serializable {
         return messageData.optString("board");
     }
 
-    public List<Position[]> getHorizontalWalls() {
+    public List<Position> getHorizontalWalls() {
         return getWallsList("horizontal_walls");
     }
 
-    public List<Position[]> getVerticalWalls() {
+    public List<Position> getVerticalWalls() {
         return getWallsList("vertical_walls");
     }
 
-    private List<Position[]> getWallsList(String key) {
-        List<Position[]> walls = new ArrayList<>();
+    private List<Position> getWallsList(String key) {
+        List<Position> walls = new ArrayList<>();
         JSONArray wallsArray = messageData.optJSONArray(key);
         if (wallsArray == null) return walls;
-
+        
         for (int i = 0; i < wallsArray.length(); i++) {
-            JSONArray wallPos = wallsArray.getJSONArray(i);
-            Position[] wall = new Position[2];
-            wall[0] = new Position(wallPos.getInt(0), wallPos.getInt(1));
-            if (wallPos.length() > 2) {
-                wall[1] = new Position(wallPos.getInt(2), wallPos.getInt(3));
-            }
-            walls.add(wall);
+            JSONArray wall = wallsArray.getJSONArray(i);
+            walls.add(new Position(wall.getInt(0), wall.getInt(1)));
         }
+        
         return walls;
     }
 
@@ -157,6 +153,7 @@ public class GameMessage implements Serializable {
             );
             player.setId(id);
             player.setNumberOfWalls(playerData.getInt("walls_left"));
+            player.setName(playerData.getString("name"));
             players.add(player);
         }
         return players;
@@ -174,11 +171,11 @@ public class GameMessage implements Serializable {
 
     private char getColorChar(String color) {
         switch (color.toLowerCase()) {
-            case "red": return 'r';
-            case "blue": return 'b';
-            case "green": return 'g';
-            case "yellow": return 'y';
-            default: return 'p';
+            case "blue": return '1';
+            case "red": return '2';
+            case "green": return '3';
+            case "yellow": return '4';
+            default: return '5';
         }
     }
 

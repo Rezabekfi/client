@@ -68,8 +68,8 @@ public class NetworkManager {
                 System.err.println("Invalid JSON format received: " + jsonString);
                 return null;
             }
-            
-            System.out.println("Received message: " + jsonString);
+            if (GameMessage.fromJSON(jsonString).getType() != GameMessage.MessageType.ACK &&
+            GameMessage.fromJSON(jsonString).getType() != GameMessage.MessageType.HEARTBEAT) System.out.println("Received message: " + jsonString);
             return GameMessage.fromJSON(jsonString);
         } catch (Exception e) {
             System.err.println("Receive error: " + e.getMessage());

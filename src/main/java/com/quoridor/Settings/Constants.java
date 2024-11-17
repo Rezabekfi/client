@@ -9,13 +9,17 @@ public class Constants{
     public static int LEAST_POSSIBLE_PLAYERS = 2;
     public static int MAXIMUM_POSSIBLE_PLAYERS = 4;
     public static char EMPTY_SQUARE = 'X';
+    public static char PLAYER_1_CHAR = '1';
+    public static char PLAYER_2_CHAR = '2';
+    public static char PLAYER_3_CHAR = '3';
+    public static char PLAYER_4_CHAR = '4';
     public static char[] PLAYER_COLORS = {'b','r','g','y','p'};
     public static HashMap<Character, Color> CHAR_TO_COLOR = new HashMap<Character, Color>() {{
-        put('b', Color.BLUE);
-        put('r', Color.RED);
-        put('g', Color.GREEN);
-        put('y', Color.YELLOW);
-        put('p', Color.PINK);
+        put('1', Color.BLUE);
+        put('2', Color.RED);
+        put('3', Color.GREEN);
+        put('4', Color.YELLOW);
+        put('5', Color.PINK);
     }};
 
     public static Color SQUARE_COLOR = Color.WHITE;

@@ -115,4 +115,14 @@ public class Player {
     public void setId(String id) {
         this.id = id;
     }
+
+    public void updatePlayer(Player player) {
+        this.driection = player.getDriection();
+        this.numberOfWalls = player.getNumberOfWalls();
+        this.position = player.getPosition();
+        this.color = player.getColor();
+        this.color_2d = player.getColor_2d();
+        this.playerName = player.getName();
+        this.id = player.getId();
+    }
 }

@@ -195,6 +195,7 @@ public class GameManager {
     }
 
     private void setUpFirstMove() {
+        initializeWalls();
         gameBoardUI.updateBoard();
         highlightPossibleMoves();
     }
