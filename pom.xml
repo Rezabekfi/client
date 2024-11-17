@@ -51,7 +51,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.quoridor.Main</mainClass>
+                            <mainClass>com.quoridor.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -27,9 +27,13 @@ public class MultiplayerGameManager extends GameManager {
 
     public MultiplayerGameManager(Board board, GameBoard gameBoardUI, NetworkManager networkManager) {
         super(board, gameBoardUI);
+        this.board = board;
+        this.gameBoardUI = gameBoardUI;
         this.networkManager = networkManager;
         this.playerId = "";
         this.isMyTurn = false;
+        this.doubleWall = new WallUI[2];
+        initializeWalls();
     }
 
     public void startNetworkListener() {
@@ -117,11 +121,16 @@ public class MultiplayerGameManager extends GameManager {
 
     private void handleNextTurn(GameMessage message) {
         sendAck();
+        setCurrentPlayer(message);
         updateGameState(message);
         if (isMyTurn(message)) {
             isMyTurn = true;
             highlightPossibleMoves();
         }
+    }
+
+    private void setCurrentPlayer(GameMessage message) {
+        currentPlayer = message.getCurrentPlayer();
     }
 
     private void updateGameState(GameMessage message) {

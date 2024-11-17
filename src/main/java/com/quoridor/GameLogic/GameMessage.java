@@ -122,6 +122,18 @@ public class GameMessage implements Serializable {
         return null;
     }
 
+    public Player getCurrentPlayer() {
+        return getPlayerById(getCurrentPlayerId());
+    }
+
+    public Player getPlayerById(String id) {
+        List<Player> players = getPlayers();
+        for (Player player : players) {
+            if (player.getId().equals(id)) return player;
+        }
+        return null;
+    }
+
     // ment to be used at game start (declaring determineDirection wont work after first move)
     public List<Player> getPlayers() {
         List<Player> players = new ArrayList<>();

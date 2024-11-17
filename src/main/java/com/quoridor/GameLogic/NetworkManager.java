@@ -1,13 +1,14 @@
 package com.quoridor.GameLogic;
 
 import java.net.Socket;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class NetworkManager {
     private Socket socket;
-    private ObjectInputStream input;
-    private ObjectOutputStream output;
+    private PrintWriter output;
+    private BufferedReader input;
     private boolean connected;
     private String serverAddress;
     private int serverPort;
@@ -21,8 +22,9 @@ public class NetworkManager {
     public boolean connect() {
         try {
             socket = new Socket(serverAddress, serverPort);
-            output = new ObjectOutputStream(socket.getOutputStream());
-            input = new ObjectInputStream(socket.getInputStream());
+            socket.setTcpNoDelay(true);
+            output = new PrintWriter(socket.getOutputStream(), true);
+            input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             connected = true;
             return true;
         } catch (Exception e) {
@@ -45,8 +47,8 @@ public class NetworkManager {
     public void sendMessage(GameMessage message) {
         try {
             String jsonString = message.toJSON();
-            output.writeUTF(jsonString);
-            output.flush();
+            if (message.getType() != GameMessage.MessageType.ACK) System.out.println("Sending message: " + jsonString);
+            output.println(jsonString);
         } catch (Exception e) {
             System.err.println("Send error: " + e.getMessage());
         }
@@ -54,10 +56,24 @@ public class NetworkManager {
 
     public GameMessage receiveMessage() {
         try {
-            String jsonString = input.readUTF();
+            String jsonString = input.readLine();
+            if (jsonString == null || jsonString.trim().isEmpty()) {
+                connected = false;
+                return null;
+            }
+            
+            // Validate that we have a proper JSON string
+            jsonString = jsonString.trim();
+            if (!jsonString.startsWith("{")) {
+                System.err.println("Invalid JSON format received: " + jsonString);
+                return null;
+            }
+            
+            System.out.println("Received message: " + jsonString);
             return GameMessage.fromJSON(jsonString);
         } catch (Exception e) {
             System.err.println("Receive error: " + e.getMessage());
+            connected = false;
             return null;
         }
     }

@@ -24,8 +24,11 @@ public class GameManager {
         this.gameBoardUI = gameBoardUI;
         this.playerIndex = 0;
         this.currentPlayer = board.getPlayers()[playerIndex];
-        this.walls = gameBoardUI.getAllWalls();
         this.doubleWall = new WallUI[2];
+    }
+
+    protected void initializeWalls() {
+        this.walls = gameBoardUI.getAllWalls();
         setWallActionListener();
     }
 
