@@ -1,6 +1,7 @@
 package com.quoridor.UI.Windows;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -12,6 +13,7 @@ import javax.swing.SwingConstants;
 import com.quoridor.GameLogic.GameManager;
 import com.quoridor.Settings.Constants;
 import com.quoridor.UI.Components.GameBoard;
+import com.quoridor.GameLogic.Player;
 
 public class GamePanel extends JPanel {
 
@@ -64,18 +66,20 @@ public class GamePanel extends JPanel {
 
     }
 
-    public void updatePlayerPanels() {
+    public void updatePlayerPanels(List<Player> players) {
         if (p1 == null || p2 == null) {
-            createPlayerPanels();
+            createPlayerPanels(players);
         } else {
+            p1.setPlayer(players.get(0));
+            p2.setPlayer(players.get(1));
             p1.updatePlayerInfo();
             p2.updatePlayerInfo();
         }
     }
 
-    public void createPlayerPanels() {
-        p1 = new PlayerPanel(gb.getBoard().getPlayers()[0], true);
-        p2 = new PlayerPanel(gb.getBoard().getPlayers()[1], true);
+    public void createPlayerPanels(List<Player> players) {
+        p1 = new PlayerPanel(players.get(0), true);
+        p2 = new PlayerPanel(players.get(1), true);
         p1.setBounds(0,(int)((1.0/12.0)*this.mainWindow.getHeight()), 
                     (int)((this.mainWindow.getWidth()-(3.0/4.0)*this.mainWindow.getHeight())/2), 
                     (int)((3.0/4)*this.mainWindow.getHeight()));

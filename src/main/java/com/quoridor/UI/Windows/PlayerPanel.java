@@ -67,5 +67,9 @@ public class PlayerPanel extends JPanel {
         this.repaint();
     }
 
+    public void setPlayer(Player p) {
+        this.player = p;
+    }
+
     
 }

@@ -1,5 +1,7 @@
 package com.quoridor.UI.Windows;
 import java.awt.CardLayout;
+import java.util.List;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,7 +72,9 @@ public class QuoridorApp extends JFrame {
         gb.setBoard(board);
         gamePanel.setGameBoard(gb);
         gamePanel.setGameManager(gm);
-        gamePanel.updatePlayerPanels();
+        Player[] players = board.getPlayers();
+        List<Player> playerList = Arrays.asList(players);
+        gamePanel.updatePlayerPanels(playerList);
         gb.updateBoard();
         if (startingPlayer >= board.getNumberOfPlayers()) {
             startingPlayer = 0;

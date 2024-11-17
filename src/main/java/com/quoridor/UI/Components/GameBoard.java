@@ -2,6 +2,8 @@ package com.quoridor.UI.Components;
 import java.awt.BorderLayout;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.swing.JPanel;
 
 import com.quoridor.GameLogic.*;
@@ -78,7 +80,9 @@ public class GameBoard extends JPanel {
     public void updateBoard() {
         // Check for player movement and repaint the affected squares
         updateSquares();
-        mainWindow.getGamePanel().updatePlayerPanels();
+        Player[] players = board.getPlayers();
+        List<Player> playerList = Arrays.asList(players);
+        mainWindow.getGamePanel().updatePlayerPanels(playerList);
         // Check for wall placement and repaint affected walls
         updateWalls();
         
