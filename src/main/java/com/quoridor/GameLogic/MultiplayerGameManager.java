@@ -82,10 +82,38 @@ public class MultiplayerGameManager extends GameManager {
             case GAME_STARTED:
                 handleGameStarted(message);
                 break;
+            case PLAYER_DISCONNECTED:
+                handlePlayerDisconnected(message);
+                break;
+            case PLAYER_RECONNECTED:
+                handlePlayerReconnected(message);
+                break;
             default:
                 System.out.println("Unknown message type: " + message.getType());
                 break;
         }
+    }
+
+    private void handlePlayerReconnected(GameMessage message) {
+        Player[] players = board.getPlayers();
+        for (Player player : players) {
+            if (player.getId().equals(message.getReconnectedPlayerId())) {
+                player.setConnected(true);
+                break;
+            }
+        }
+        gameBoardUI.updateBoard();
+    }
+
+    private void handlePlayerDisconnected(GameMessage message) {
+        Player[] players = board.getPlayers();
+        for (Player player : players) {
+            if (player.getId().equals(message.getDisconnectedPlayerId())) {
+                player.setConnected(false);
+                break;
+            }
+        }
+        gameBoardUI.updateBoard();
     }
 
     private void handleNameRequest(GameMessage message) {

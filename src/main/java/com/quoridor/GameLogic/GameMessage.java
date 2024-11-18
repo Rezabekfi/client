@@ -29,7 +29,9 @@ public class GameMessage implements Serializable {
         NEXT_TURN,
         NAME_REQUEST,
         NAME_RESPONSE,
-        HEARTBEAT
+        HEARTBEAT,
+        PLAYER_DISCONNECTED,
+        PLAYER_RECONNECTED
     }
 
     public GameMessage() {
@@ -66,6 +68,10 @@ public class GameMessage implements Serializable {
         return new GameMessage(type, data);
     }
 
+    public String getReconnectedPlayerId() {
+        return messageData.optString("reconnected_player_id");
+    }
+
     // Helper methods for specific message types
     public String getMessage() {
         return messageData.optString("message");
@@ -73,6 +79,10 @@ public class GameMessage implements Serializable {
 
     public String getLobbyId() {
         return messageData.optString("lobby_id");
+    }
+
+    public String getDisconnectedPlayerId() {
+        return messageData.optString("disconnected_player_id");
     }
 
     public String getCurrentPlayerId() {
