@@ -2,32 +2,33 @@ package com.quoridor.GameLogic;
 import java.awt.*;
 
 import com.quoridor.Settings.Constants;
+import com.quoridor.Settings.PlayerColor;
 
 public class Player {
 
-    private GoalDirection driection;
+    private GoalDirection direction;
     private int numberOfWalls;
     private Position position;
-    private char color; 
-    private Color color_2d;
+    private PlayerColor playerColor;
     private String playerName;
     private String id;
+    private boolean isConnected;
 
-    public Player(String playerName, GoalDirection direction, Position position, char color){
+    public Player(String playerName, GoalDirection direction, Position position, PlayerColor playerColor) {
         this.playerName = playerName;
-        this.driection = direction;
+        this.direction = direction;
         this.numberOfWalls = Constants.STARTING_NUMBER_OF_WALLS;
         this.position = position;
-        this.color = color;
-        this.color_2d = Constants.CHAR_TO_COLOR.get(color);
+        this.playerColor = playerColor;
+        this.isConnected = true;
     }
 
-    public GoalDirection getDriection() {
-        return driection;
+    public GoalDirection getDirection() {
+        return direction;
     }
 
-    public void setDriection(GoalDirection driection) {
-        this.driection = driection;
+    public void setDirection(GoalDirection direction) {
+        this.direction = direction;
     }
 
     public int getNumberOfWalls() {
@@ -54,18 +55,18 @@ public class Player {
         this.position.setCol(col);
     }
 
-    public char getColor() {
-        return color;
+    public char getColorSymbol() {
+        return playerColor.getSymbol();
     }
 
-    public void setColor(char color) {
-        this.color = color;
+    public PlayerColor getPlayerColor() {
+        return playerColor;
     }
 
     @Override
     public String toString() {
-        return "Player [driection=" + driection + ", numberOfWalls=" + numberOfWalls + ", row=" + getRow() + ", col=" + getCol()
-                + ", color=" + color + "]";
+        return "Player [direction=" + direction + ", numberOfWalls=" + numberOfWalls + ", row=" + getRow() + ", col=" + getCol()
+                + ", color=" + playerColor.getSymbol() + "]";
     }
 
     public void placedWall() {
@@ -81,7 +82,7 @@ public class Player {
     }
 
     public boolean isPlayerFinished() {
-        switch (driection) {
+        switch (direction) {
             case NORTH:
                 if (this.getRow() == 0) return true;
                 break;
@@ -100,8 +101,8 @@ public class Player {
         return false;
     }
 
-    public Color getColor_2d() {
-        return color_2d;
+    public Color getColor2D() {
+        return playerColor.getColor();
     }
 
     public Position getPosition() {
@@ -117,12 +118,19 @@ public class Player {
     }
 
     public void updatePlayer(Player player) {
-        this.driection = player.getDriection();
+        this.direction = player.getDirection();
         this.numberOfWalls = player.getNumberOfWalls();
         this.position = player.getPosition();
-        this.color = player.getColor();
-        this.color_2d = player.getColor_2d();
+        this.playerColor = player.getPlayerColor();
         this.playerName = player.getName();
         this.id = player.getId();
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public void setConnected(boolean isConnected) {
+        this.isConnected = isConnected;
     }
 }

@@ -8,7 +8,7 @@ import javax.swing.border.LineBorder;
 
 import com.quoridor.GameLogic.Position;
 import com.quoridor.Settings.Constants;
-
+import com.quoridor.Settings.PlayerColor;
 import java.awt.event.MouseListener;
 
 public class SquareUI extends JPanel {
@@ -41,7 +41,7 @@ public class SquareUI extends JPanel {
         }
 
         // Set the color for the circle
-        g2d.setColor(Constants.CHAR_TO_COLOR.get(squareChar)); // You can use a constant or dynamic color if needed
+        g2d.setColor(PlayerColor.fromSymbol(squareChar).getColor()); // You can use a constant or dynamic color if needed
 
         // Draw the circle (as an oval with equal width and height)
         int diameter = Math.min(getWidth(), getHeight()) - 10;  // Circle size slightly smaller than the panel size

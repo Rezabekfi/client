@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.JSONObject;
+
+import com.quoridor.Settings.PlayerColor;
+
 import org.json.JSONArray;
 
 public class GameMessage implements Serializable {
@@ -140,8 +143,8 @@ public class GameMessage implements Serializable {
             JSONObject playerData = playersArray.getJSONObject(i);
             JSONArray posArray = playerData.getJSONArray("position");
             Position pos = new Position(posArray.getInt(0), posArray.getInt(1));
+            char symbol = playerData.getString("board_char").charAt(0);
             String id = playerData.getString("id");
-            
             // Determine direction based on position
             GoalDirection direction = determineDirection(pos);
             
@@ -149,7 +152,7 @@ public class GameMessage implements Serializable {
                 playerData.getString("name"),
                 direction,
                 pos,
-                getColorChar(playerData.getString("color"))
+                PlayerColor.fromSymbol(symbol)
             );
             player.setId(id);
             player.setNumberOfWalls(playerData.getInt("walls_left"));

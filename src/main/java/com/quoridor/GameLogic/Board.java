@@ -3,6 +3,7 @@ package com.quoridor.GameLogic;
 import java.util.*;
 
 import com.quoridor.Settings.Constants;
+import com.quoridor.Settings.PlayerColor;
 
 public class Board {
     private char[][] board;
@@ -39,7 +40,7 @@ public class Board {
         GoalDirection[] dirs = GoalDirection.values();
         for(int i = 0; i < this.numberOfPlayers; i++) {
             this.players[i] = createPlayer(dirs[i]);
-            this.board[players[i].getRow()][players[i].getCol()] = players[i].getColor();
+            this.board[players[i].getRow()][players[i].getCol()] = players[i].getColorSymbol();
         }
 
     }
@@ -48,37 +49,34 @@ public class Board {
     // CAREFUL DIRECTION IS DIRECTION WHICH PLAYER WILL BE FACING AND TRYING TO GET TO NOT THE ONE WEHRE HE STARTS!
     private Player createPlayer(GoalDirection goalDirection) {
         int row, col;
-        char playerNumber;
+        PlayerColor playerColor;
+        
         switch (goalDirection) {
             case NORTH:
                 col = this.board.length/2;
                 row = this.board.length - 1;
-                playerNumber = Constants.PLAYER_1_CHAR;
+                playerColor = PlayerColor.BLUE;
                 break;
             case EAST:
                 col = 0;
                 row = this.board.length/2;
-                playerNumber = Constants.PLAYER_3_CHAR;
+                playerColor = PlayerColor.GREEN;
                 break;
             case SOUTH:
                 col = this.board.length/2;
                 row = 0;
-                playerNumber = Constants.PLAYER_2_CHAR;
+                playerColor = PlayerColor.RED;
                 break;
             case WEST:
                 col = this.board.length - 1;
                 row = this.board.length/2;
-                playerNumber = Constants.PLAYER_4_CHAR;
+                playerColor = PlayerColor.YELLOW;
                 break;
             default:
-                System.out.println("DISASTER!!! X Y SET TO 0 0");
-                col = 0;
-                row = 0;
-                playerNumber = '5';
-                break;
+                throw new IllegalStateException("Invalid direction");
         }
 
-        return new Player("XXX", goalDirection, new Position(row, col), playerNumber);
+        return new Player("XXX", goalDirection, new Position(row, col), playerColor);
     }
 
     public char[][] getBoard() {
@@ -174,7 +172,7 @@ public class Board {
             handlePlayerToPlayerMove(player, newRow, newCol);
         }
 
-        board[newRow][newCol] = player.getColor();
+        board[newRow][newCol] = player.getColorSymbol();
         board[player.getRow()][player.getCol()] = Constants.EMPTY_SQUARE;
         player.setCol(newCol);
         player.setRow(newRow);
@@ -183,9 +181,9 @@ public class Board {
     private void handlePlayerToPlayerMove(Player player, int newRow, int newCol) {
         char kickedOutPlayer = board[newRow][newCol];
         for (int i = 0; i < players.length; i++) {
-            if(players[i].getColor() == kickedOutPlayer) {
-                players[i] = createPlayer(players[i].getDriection()); 
-                board[players[i].getRow()][players[i].getCol()] = players[i].getColor();
+            if(players[i].getColorSymbol() == kickedOutPlayer) {
+                players[i] = createPlayer(players[i].getDirection()); 
+                board[players[i].getRow()][players[i].getCol()] = players[i].getColorSymbol();
             }
         }
     }

@@ -8,16 +8,14 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 import com.quoridor.GameLogic.Player;
-import com.quoridor.Settings.ColorUtils;
 
 public class PlayerPanel extends JPanel {
 
     Player player;
-    boolean connected;
 
-    public PlayerPanel(Player p, boolean connected) {
+
+    public PlayerPanel(Player p) {
         this.player = p;
-        this.connected = connected;
         setPlayerPanel();
     }
 
@@ -49,14 +47,18 @@ public class PlayerPanel extends JPanel {
         this.add(wallsLabel);
 
         // Display connection status
-        JLabel statusLabel = new JLabel("Status: " + (connected ? "Connected" : "Disconnected"), SwingConstants.CENTER);
+        // if disconected change color to red
+        JLabel statusLabel = new JLabel("Status: " + (player.isConnected() ? "Connected" : "Disconnected"), SwingConstants.CENTER);
         statusLabel.setBorder(new LineBorder(Color.BLACK, 1));
+        if (!player.isConnected()) {
+            statusLabel.setForeground(Color.RED);
+        }
         this.add(statusLabel);
 
         // Display player color
-        JLabel colorLabel = new JLabel("Color:" + ColorUtils.getColorName(player.getColor_2d()), SwingConstants.CENTER);
+        JLabel colorLabel = new JLabel("Color:" + player.getPlayerColor().getColorName(), SwingConstants.CENTER);
         colorLabel.setBorder(new LineBorder(Color.BLACK, 1));
-        colorLabel.setForeground(player.getColor_2d()); // Assuming player has a getColor() method returning Color
+        colorLabel.setForeground(player.getPlayerColor().getColor()); // Assuming player has a getColor() method returning Color
         this.add(colorLabel);
     }
 

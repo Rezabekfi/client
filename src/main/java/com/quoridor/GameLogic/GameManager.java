@@ -71,7 +71,7 @@ public class GameManager {
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     if (!wall.isPlaced()) {
-                        wall.setPlayerColor(currentPlayer.getColor_2d());
+                        wall.setPlayerColor(currentPlayer.getPlayerColor().getColor());
                         wall.setSelected(true);
                     }
                 }

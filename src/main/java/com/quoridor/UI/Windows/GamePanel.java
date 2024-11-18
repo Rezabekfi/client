@@ -78,8 +78,8 @@ public class GamePanel extends JPanel {
     }
 
     public void createPlayerPanels(List<Player> players) {
-        p1 = new PlayerPanel(players.get(0), true);
-        p2 = new PlayerPanel(players.get(1), true);
+        p1 = new PlayerPanel(players.get(0));
+        p2 = new PlayerPanel(players.get(1));
         p1.setBounds(0,(int)((1.0/12.0)*this.mainWindow.getHeight()), 
                     (int)((this.mainWindow.getWidth()-(3.0/4.0)*this.mainWindow.getHeight())/2), 
                     (int)((3.0/4)*this.mainWindow.getHeight()));

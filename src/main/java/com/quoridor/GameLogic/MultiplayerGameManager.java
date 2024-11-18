@@ -325,7 +325,7 @@ public class MultiplayerGameManager extends GameManager {
                 public void mouseEntered(MouseEvent e) {
                     if (!isMyTurn) return;
                     if (!wall.isPlaced()) {
-                        wall.setPlayerColor(currentPlayer.getColor_2d());
+                        wall.setPlayerColor(currentPlayer.getPlayerColor().getColor());
                         wall.setSelected(true);
                     }
                 }
