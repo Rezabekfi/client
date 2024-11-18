@@ -1,5 +1,4 @@
 package com.quoridor.Settings;
-import java.util.HashMap;
 import java.awt.*;
 
 public class Constants{
