@@ -24,6 +24,7 @@ public class MultiplayerGameManager extends GameManager {
     private Player currentPlayer;
     private List<Player> players;
     private WallUI[] doubleWall;
+    private volatile boolean running = true;
 
     public MultiplayerGameManager(Board board, GameBoard gameBoardUI, NetworkManager networkManager) {
         super(board, gameBoardUI);
@@ -38,11 +39,25 @@ public class MultiplayerGameManager extends GameManager {
 
     public void startNetworkListener() {
         new Thread(() -> {
-            while (networkManager.isConnected()) {
-                GameMessage message = networkManager.receiveMessage();
-                handleNetworkMessage(message);
+            while (running) {
+                if (networkManager.isConnected()) {
+                    GameMessage message = networkManager.receiveMessage();
+                    handleNetworkMessage(message);
+                } else {
+                    // Add small sleep to prevent CPU spinning when disconnected
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
+                }
             }
         }).start();
+    }
+
+    public void stopNetworkListener() {
+        running = false;
     }
     
     private void handleNetworkMessage(GameMessage message) {
@@ -230,7 +245,7 @@ public class MultiplayerGameManager extends GameManager {
         removeSelectedSquares();
         removeWallActionListener();
         gameBoardUI.updateBoard();
-
+        stopNetworkListener();
         sendAck();
     }
 

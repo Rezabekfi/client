@@ -94,6 +94,7 @@ public class QuoridorApp extends JFrame {
         gb.setBoard(board);
         gamePanel.setGameBoard(gb);
         gamePanel.setGameManager(gm);
+        gamePanel.setNetworkManager(networkManager);
         gm.startNetworkListener();
 
     }

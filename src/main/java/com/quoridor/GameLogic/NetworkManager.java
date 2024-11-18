@@ -12,6 +12,7 @@ public class NetworkManager {
     private boolean connected;
     private String serverAddress;
     private int serverPort;
+    private boolean simulatedDisconnect = false;
 
     public NetworkManager(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
@@ -79,6 +80,18 @@ public class NetworkManager {
     }
 
     public boolean isConnected() {
-        return connected;
+        return connected && !simulatedDisconnect;
+    }
+
+    public void simulateDisconnect() {
+        simulatedDisconnect = true;
+        connected = false;
+    }
+
+    public void simulateReconnect() {
+        if (simulatedDisconnect) {
+            simulatedDisconnect = false;
+            connected = true;
+        }
     }
 } 

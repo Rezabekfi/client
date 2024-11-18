@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -14,6 +16,7 @@ import com.quoridor.GameLogic.GameManager;
 import com.quoridor.Settings.Constants;
 import com.quoridor.UI.Components.GameBoard;
 import com.quoridor.GameLogic.Player;
+import com.quoridor.GameLogic.NetworkManager;
 
 public class GamePanel extends JPanel {
 
@@ -22,10 +25,30 @@ public class GamePanel extends JPanel {
     private GameManager gm;
     private PlayerPanel p1;
     private PlayerPanel p2;
+    private NetworkManager networkManager;
+    private boolean isMultiplayerGame;
 
     public GamePanel(QuoridorApp mainWindow) {
         this.mainWindow = mainWindow;
         this.setLayout(null);
+        this.isMultiplayerGame = false;
+        
+        // Make panel focusable to receive key events
+        this.setFocusable(true);
+        
+        // Add key listener
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (!isMultiplayerGame) return;
+                
+                if (e.getKeyCode() == KeyEvent.VK_D) { // 'D' for disconnect
+                    simulateDisconnect();
+                } else if (e.getKeyCode() == KeyEvent.VK_C) { // 'C' for connect
+                    simulateReconnect();
+                }
+            }
+        });
 
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
@@ -127,5 +150,24 @@ public class GamePanel extends JPanel {
         p1 = null;
         p2 = null;
         repaint();
+    }
+
+    private void simulateDisconnect() {
+        if (networkManager != null) {
+            networkManager.simulateDisconnect();
+            PopupWindow.showMessage("Simulated Disconnect");
+        }
+    }
+
+    private void simulateReconnect() {
+        if (networkManager != null) {
+            networkManager.simulateReconnect();
+            PopupWindow.showMessage("Simulated Reconnect");
+        }
+    }
+
+    public void setNetworkManager(NetworkManager networkManager) {
+        this.networkManager = networkManager;
+        this.isMultiplayerGame = true;
     }
 }
