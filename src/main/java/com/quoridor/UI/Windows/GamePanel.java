@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import com.quoridor.GameLogic.GameManager;
 import com.quoridor.Settings.Constants;
@@ -32,12 +33,17 @@ public class GamePanel extends JPanel {
         this.mainWindow = mainWindow;
         this.setLayout(null);
         this.isMultiplayerGame = false;
-        
-        // Make panel focusable to receive key events
-        this.setFocusable(true);
-        
-        // Add key listener
-        this.addKeyListener(new KeyAdapter() {
+
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BorderLayout());
+        JLabel title = new JLabel("GAME", SwingConstants.CENTER);
+        titlePanel.add(title);
+        titlePanel.setBounds(0, 0, this.mainWindow.getWidth(), this.mainWindow.getHeight()/12);
+        titlePanel.setBackground(Color.GRAY);
+
+        // Adding the key listener to the title panel -> only for testing in "production" should be removed
+        titlePanel.setFocusable(true);
+        titlePanel.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (!isMultiplayerGame) return;
@@ -49,13 +55,6 @@ public class GamePanel extends JPanel {
                 }
             }
         });
-
-        JPanel titlePanel = new JPanel();
-        titlePanel.setLayout(new BorderLayout());
-        JLabel title = new JLabel("GAME", SwingConstants.CENTER);
-        titlePanel.add(title);
-        titlePanel.setBounds(0, 0, this.mainWindow.getWidth(), this.mainWindow.getHeight()/12);
-        titlePanel.setBackground(Color.GRAY);
         this.add(titlePanel);
 
         JPanel buttonPanel = new JPanel();
@@ -154,15 +153,27 @@ public class GamePanel extends JPanel {
 
     private void simulateDisconnect() {
         if (networkManager != null) {
-            networkManager.simulateDisconnect();
-            PopupWindow.showMessage("Simulated Disconnect");
+            SwingUtilities.invokeLater(() -> {
+                networkManager.simulateDisconnect();
+                PopupWindow.showMessage("Simulated Disconnect");
+                if (p1 != null) p1.updatePlayerInfo();
+                if (p2 != null) p2.updatePlayerInfo();
+                revalidate();
+                repaint();
+            });
         }
     }
 
     private void simulateReconnect() {
         if (networkManager != null) {
-            networkManager.simulateReconnect();
-            PopupWindow.showMessage("Simulated Reconnect");
+            SwingUtilities.invokeLater(() -> {
+                networkManager.simulateReconnect();
+                PopupWindow.showMessage("Simulated Reconnect");
+                if (p1 != null) p1.updatePlayerInfo();
+                if (p2 != null) p2.updatePlayerInfo();
+                revalidate();
+                repaint();
+            });
         }
     }
 

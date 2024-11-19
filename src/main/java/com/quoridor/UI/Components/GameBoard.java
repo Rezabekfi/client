@@ -19,7 +19,7 @@ public class GameBoard extends JPanel {
     private WallUI[][] verticalWalls = new WallUI[Constants.BOARD_SIZE][Constants.BOARD_SIZE-1];
     private WallUI[][] horizontalWalls = new WallUI[Constants.BOARD_SIZE-1][Constants.BOARD_SIZE];
 
-    private Position newPosition;
+    private Position newPosition; // completely forgot why is this here
 
     public GameBoard(Board board, QuoridorApp mainWindow) {
         this.board = board;

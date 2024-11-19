@@ -27,6 +27,8 @@ public class QuoridorApp extends JFrame {
     private SettingsPanel settingsPanel;
 
     private String playerName;
+
+    private String playerName2;
     
     public QuoridorApp() {
         createWindow(this, Constants.GAME_NAME, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
@@ -46,6 +48,7 @@ public class QuoridorApp extends JFrame {
         mainPanel.add(this.gamePanel, Constants.GAME_ON_CARD);
         mainPanel.add(this.settingsPanel, Constants.SETTINGS_CARD);
         this.playerName = Constants.DEFAULT_PLAYER_NAME;
+        this.playerName2 = Constants.DEFAULT_PLAYER_2_NAME;
         this.add(this.mainPanel);
         this.setVisible(true);
     }
@@ -64,7 +67,7 @@ public class QuoridorApp extends JFrame {
         
         // Set up player names BEFORE creating GameBoard
         board.getPlayers()[0].setName(getPlayerName());
-        board.getPlayers()[1].setName("Player1");
+        board.getPlayers()[1].setName(getPlayerName2());
         
         GameBoard gb = new GameBoard(board, this);
         GameManager gm = new GameManager(board, gb);
@@ -129,6 +132,14 @@ public class QuoridorApp extends JFrame {
 
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
+    }
+
+    public String getPlayerName2() {
+        return playerName2;
+    }
+
+    public void setPlayerName2(String playerName2) {
+        this.playerName2 = playerName2;
     }
 
     public void tryNewMultiplayerGame() {
