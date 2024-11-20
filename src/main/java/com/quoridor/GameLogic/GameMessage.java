@@ -182,6 +182,7 @@ public class GameMessage implements Serializable {
         return GoalDirection.NORTH; // default
     }
 
+    /* 
     private char getColorChar(String color) {
         switch (color.toLowerCase()) {
             case "blue": return '1';
@@ -191,6 +192,7 @@ public class GameMessage implements Serializable {
             default: return '5';
         }
     }
+    */
 
     // Factory methods for creating specific message types
     public static GameMessage createMoveMessage(String playerId, boolean isHorizontal, Position... positions) {
