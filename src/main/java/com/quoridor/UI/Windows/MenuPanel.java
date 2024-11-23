@@ -49,7 +49,7 @@ public class MenuPanel extends JPanel {
 
         
         JPanel settingsPanel = new JPanel();
-        JButton settingsButton = new JButton("Settings");
+        JButton settingsButton = new JButton("Player Settings");
         settingsButton.addActionListener(settingsAction());
         settingsPanel.add(settingsButton);
 
