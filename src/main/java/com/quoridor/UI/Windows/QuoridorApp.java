@@ -152,10 +152,14 @@ public class QuoridorApp extends JFrame {
         
         if (networkManager.connect()) {
             // Wait for initial messages
-            GameMessage welcomeMsg = networkManager.receiveMessage();
-            if (welcomeMsg != null && welcomeMsg.getType() == GameMessage.MessageType.WELCOME) {
+            GameMessage msg = networkManager.receiveMessage();
+            if (msg != null && msg.getType() == GameMessage.MessageType.WELCOME) {
                 GameMessage nameRequest = networkManager.receiveMessage();
-                if (nameRequest != null && nameRequest.getType() == GameMessage.MessageType.NAME_REQUEST) {
+                if (nameRequest == null) {
+                    PopupWindow.showMessage("Server disconnected. Please check your connection settings.");
+                    return;
+                }
+                if (nameRequest.getType() == GameMessage.MessageType.NAME_REQUEST) {
                     // Send name response
                     Map<String, Object> data = new HashMap<>();
                     data.put("name", playerName);
@@ -164,6 +168,9 @@ public class QuoridorApp extends JFrame {
                     startMultiplayerGame(networkManager);
                     showCard(Constants.GAME_ON_CARD);
                 }
+            } else if (msg != null && msg.getType() == GameMessage.MessageType.ERROR) {
+                PopupWindow.showMessage(msg.getMessage());
+                return;
             }
         } else {
             PopupWindow.showMessage("Failed to connect to server. Please check your connection settings.");
