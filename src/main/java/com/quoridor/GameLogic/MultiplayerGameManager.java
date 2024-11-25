@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.quoridor.Settings.Constants;
+
 import com.quoridor.UI.Components.GameBoard;
 import com.quoridor.UI.Components.SquareUI;
 import com.quoridor.UI.Components.WallUI;
@@ -257,8 +259,8 @@ public class MultiplayerGameManager extends GameManager {
     }
 
     private void handleError(GameMessage message) {
-        // something went wrong ig end game and return to lobby
-        //TODO: implement
+        gameBoardUI.getMainWindow().showCard(Constants.MENU_CARD);
+        PopupWindow.showMessage(message.getMessage());
     }
 
     private void handleWrongMessage(GameMessage message) {

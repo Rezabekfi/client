@@ -168,9 +168,6 @@ public class QuoridorApp extends JFrame {
                     startMultiplayerGame(networkManager);
                     showCard(Constants.GAME_ON_CARD);
                 }
-            } else if (msg != null && msg.getType() == GameMessage.MessageType.ERROR) {
-                PopupWindow.showMessage(msg.getMessage());
-                return;
             }
         } else {
             PopupWindow.showMessage("Failed to connect to server. Please check your connection settings.");
