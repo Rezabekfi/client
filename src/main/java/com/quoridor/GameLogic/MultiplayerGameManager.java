@@ -28,6 +28,8 @@ public class MultiplayerGameManager extends GameManager {
     private WallUI[] doubleWall;
     private volatile boolean running = true;
 
+    Player disconectedPlayer;
+
     public MultiplayerGameManager(Board board, GameBoard gameBoardUI, NetworkManager networkManager) {
         super(board, gameBoardUI);
         this.board = board;
@@ -116,6 +118,7 @@ public class MultiplayerGameManager extends GameManager {
         for (Player player : players) {
             if (player.getId().equals(message.getReconnectedPlayerId())) {
                 player.setConnected(true);
+                disconectedPlayer = null;
                 break;
             }
         }
@@ -127,6 +130,7 @@ public class MultiplayerGameManager extends GameManager {
         for (Player player : players) {
             if (player.getId().equals(message.getDisconnectedPlayerId())) {
                 player.setConnected(false);
+                disconectedPlayer = player;
                 break;
             }
         }
@@ -213,6 +217,9 @@ public class MultiplayerGameManager extends GameManager {
         Player[] playersArray = new Player[players.size()];
         for (int i = 0; i < players.size(); i++) {
             playersArray[i] = players.get(i);
+            if (disconectedPlayer != null && players.get(i).getName().equals(disconectedPlayer.getName())) {
+                playersArray[i].setConnected(false);
+            }
         }
         board.setPlayers(playersArray);
     }
@@ -249,6 +256,10 @@ public class MultiplayerGameManager extends GameManager {
         gameBoardUI.updateBoard();
         stopNetworkListener();
         sendAck();
+
+        // TODO: zkontrolovat
+        networkManager.sendMessage(GameMessage.createAbandonMessage());
+        networkManager.disconnect();
     }
 
     private void removeWallActionListener() {

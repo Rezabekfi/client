@@ -14,6 +14,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import com.quoridor.GameLogic.GameManager;
+import com.quoridor.GameLogic.GameMessage;
 import com.quoridor.Settings.Constants;
 import com.quoridor.UI.Components.GameBoard;
 import com.quoridor.GameLogic.Player;
@@ -58,14 +59,8 @@ public class GamePanel extends JPanel {
         this.add(titlePanel);
 
         JPanel buttonPanel = new JPanel();
-        JButton backButton = new JButton("Back to menu.");
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cleanupGame();
-                mainWindow.showCard(Constants.MENU_CARD);
-            }
-        });
+        JButton backButton = new JButton("Abandon Game");
+        backButton.addActionListener(backToMenuAction());
         buttonPanel.add(backButton);
         buttonPanel.setBounds(0, (int)(this.mainWindow.getHeight()*5.0/6), this.mainWindow.getWidth(), (int)(this.mainWindow.getHeight()/6.0));
         buttonPanel.setBackground(Color.GRAY);
@@ -80,6 +75,24 @@ public class GamePanel extends JPanel {
         titlePanel.setBounds(0, 0, this.mainWindow.getWidth(), this.mainWindow.getHeight()/12);
         titlePanel.setBackground(Color.GRAY);
         this.add(titlePanel);
+    }
+
+    public ActionListener backToMenuAction() {
+        ActionListener al = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!isMultiplayerGame) {
+                    cleanupGame();
+                } else {
+                    // send abandon message that will delete user from waiting players and also from game
+                    // will act as a surrender button and an disconect button
+                    networkManager.sendMessage(GameMessage.createAbandonMessage());
+                    networkManager.disconnect();
+                }
+                mainWindow.showCard(Constants.MENU_CARD);
+            }
+        };
+        return al;
     }
     
     @Override

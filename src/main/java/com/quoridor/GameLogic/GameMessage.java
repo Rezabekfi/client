@@ -31,7 +31,8 @@ public class GameMessage implements Serializable {
         NAME_RESPONSE,
         HEARTBEAT,
         PLAYER_DISCONNECTED,
-        PLAYER_RECONNECTED
+        PLAYER_RECONNECTED,
+        ABANDON
     }
 
     public GameMessage() {
@@ -211,5 +212,9 @@ public class GameMessage implements Serializable {
 
     public static GameMessage createAckMessage() {
         return new GameMessage(MessageType.ACK, new HashMap<>());
+    }
+
+    public static GameMessage createAbandonMessage() {
+        return new GameMessage(MessageType.ABANDON, new HashMap<>());
     }
 } 
