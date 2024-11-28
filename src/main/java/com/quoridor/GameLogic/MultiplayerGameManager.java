@@ -243,7 +243,7 @@ public class MultiplayerGameManager extends GameManager {
         } else {
             PopupWindow.showMessage("Game ended. Winner: " + winner.getName());
         }
-
+        updateBoard(message);
         removeSelectedSquares();
         removeWallActionListener();
         gameBoardUI.updateBoard();
