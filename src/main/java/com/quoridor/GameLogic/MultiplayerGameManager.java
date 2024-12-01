@@ -271,12 +271,19 @@ public class MultiplayerGameManager extends GameManager {
 
     private void handleError(GameMessage message) {
         // TODO: cleanup if needed and disconect
-        gameBoardUI.getMainWindow().showCard(Constants.MENU_CARD);
-        PopupWindow.showMessage(message.getMessage());
+        if (message.getMessage().equals("Invalid move")) {
+            PopupWindow.showMessage("Invalid move. Please try again. This rule isn't well known. You CANNOT block opponent comepletely.");
+        } else {
+            handleWrongMessage(message);
+        }
     }
 
     private void handleWrongMessage(GameMessage message) {
         // clean up and disconect
+        networkManager.sendMessage(GameMessage.createAbandonMessage());
+        stopNetworkListener();
+        networkManager.disconnect();
+        gameBoardUI.getMainWindow().getGamePanel().cleanupGame();
         gameBoardUI.getMainWindow().showCard(Constants.MENU_CARD);
         PopupWindow.showMessage("Wrong message received: " + message.getMessage() + "\nDisconnecting from the server.");
     }
@@ -305,7 +312,6 @@ public class MultiplayerGameManager extends GameManager {
         data.put("player_id", Integer.parseInt(playerId)-1);
         data.put("is_horizontal", false);
         
-        // Create position array in format [[x,y]]
         int[][] positionArray = new int[][]{{position.getRow(), position.getCol()}};
         data.put("position", positionArray);
         
