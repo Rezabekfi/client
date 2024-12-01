@@ -61,12 +61,85 @@ public class GameMessage implements Serializable {
     }
 
     public static GameMessage fromJSON(String jsonString) {
-        JSONObject json = new JSONObject(jsonString);
-        MessageType type = MessageType.valueOf(json.getString("type").toUpperCase());
-        JSONObject jsonData = json.getJSONObject("data");
-        
-        Map<String, Object> data = jsonData.toMap();
-        return new GameMessage(type, data);
+        try {
+            JSONObject json = new JSONObject(jsonString);
+            MessageType type = MessageType.valueOf(json.getString("type").toUpperCase());
+            JSONObject jsonData = json.getJSONObject("data");
+            
+            Map<String, Object> data = jsonData.toMap();
+            if (!isValidMessage(type, data)) {
+                GameMessage message = new GameMessage();
+                message.messageData.put("message", "Invalid message format for type: " + type);
+                return message;
+            }
+            return new GameMessage(type, data);
+        } catch (Exception e) {
+            GameMessage message = new GameMessage();
+            message.messageData.put("message", "Invalid message format: " + e.getMessage());
+            return message;
+        }
+    }
+
+    private static boolean isValidMessage(MessageType type, Map<String, Object> data) {
+        switch (type) {
+            case WELCOME:
+                return data.containsKey("message") && data.get("message") instanceof String;
+            case WAITING:
+                return data.isEmpty();
+            case NAME_REQUEST:
+                return data.isEmpty();
+            case NAME_RESPONSE:
+                return data.containsKey("name") && data.get("name") instanceof String;
+            case GAME_STARTED:
+            case NEXT_TURN:
+                return isValidGameStartedOrNextTurn(data);
+            case MOVE:
+                return data.containsKey("player_id") && data.get("player_id") instanceof Integer &&
+                       data.containsKey("is_horizontal") && data.get("is_horizontal") instanceof Boolean &&
+                       data.containsKey("position") && data.get("position") instanceof List;
+            case ERROR:
+                return data.containsKey("message") && data.get("message") instanceof String;
+            case GAME_ENDED:
+                return data.containsKey("lobby_id") && data.get("lobby_id") instanceof Integer &&
+                       data.containsKey("winner_id") && data.get("winner_id") instanceof String;
+            case HEARTBEAT:
+                return data.isEmpty();
+            case ACK:
+                return data.isEmpty();
+            case PLAYER_DISCONNECTED:
+                return data.containsKey("disconnected_player_id") && data.get("disconnected_player_id") instanceof String;
+            case PLAYER_RECONNECTED:
+                return data.containsKey("reconnected_player_id") && data.get("reconnected_player_id") instanceof String;
+            case ABANDON:
+                return data.isEmpty();
+            default:
+                return false;
+        }
+    }
+
+    private static boolean isValidGameStartedOrNextTurn(Map<String, Object> data) {
+        return data.containsKey("lobby_id") && data.get("lobby_id") instanceof Integer &&
+               data.containsKey("board") && data.get("board") instanceof String &&
+               data.containsKey("current_player_id") && data.get("current_player_id") instanceof String &&
+               data.containsKey("horizontal_walls") && data.get("horizontal_walls") instanceof List &&
+               data.containsKey("vertical_walls") && data.get("vertical_walls") instanceof List &&
+               data.containsKey("players") && data.get("players") instanceof List &&
+               isValidPlayers(data.get("players"));
+    }
+
+    private static boolean isValidPlayers(Object playersObj) {
+        if (!(playersObj instanceof List)) return false;
+        List<?> players = (List<?>) playersObj;
+        for (Object playerObj : players) {
+            if (!(playerObj instanceof Map)) return false;
+            Map<?, ?> player = (Map<?, ?>) playerObj;
+            if (!player.containsKey("id") || !(player.get("id") instanceof String)) return false;
+            if (!player.containsKey("position") || !(player.get("position") instanceof List)) return false;
+            if (!player.containsKey("name") || !(player.get("name") instanceof String)) return false;
+            if (!player.containsKey("walls_left") || !(player.get("walls_left") instanceof Integer)) return false;
+            if (!player.containsKey("board_char") || !(player.get("board_char") instanceof String)) return false; // Added check for board_char
+        }
+        return true;
     }
 
     public String getReconnectedPlayerId() {
@@ -217,4 +290,4 @@ public class GameMessage implements Serializable {
     public static GameMessage createAbandonMessage() {
         return new GameMessage(MessageType.ABANDON, new HashMap<>());
     }
-} 
+}

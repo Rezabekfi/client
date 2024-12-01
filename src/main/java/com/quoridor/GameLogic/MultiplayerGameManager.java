@@ -270,12 +270,15 @@ public class MultiplayerGameManager extends GameManager {
     }
 
     private void handleError(GameMessage message) {
+        // TODO: cleanup if needed and disconect
         gameBoardUI.getMainWindow().showCard(Constants.MENU_CARD);
         PopupWindow.showMessage(message.getMessage());
     }
 
     private void handleWrongMessage(GameMessage message) {
-        System.out.println("Wrong message type: " + message.getType());
+        // clean up and disconect
+        gameBoardUI.getMainWindow().showCard(Constants.MENU_CARD);
+        PopupWindow.showMessage("Wrong message received: " + message.getMessage() + "\nDisconnecting from the server.");
     }
 
     private void handleAck(GameMessage message) {
@@ -451,6 +454,12 @@ public class MultiplayerGameManager extends GameManager {
         return allSquares;
     }
 
+    public void cleanupGame() {
+        // TODO: check if anything else is needed
+        stopNetworkListener();
+        networkManager.disconnect();
+    }
+
     private void setSquaresActionListener() {
         List<Position> list = board.possibleMoves(currentPlayer);
         List<SquareUI> squares = gameBoardUI.setUpPossibleSquares(list);
@@ -498,4 +507,4 @@ public class MultiplayerGameManager extends GameManager {
         // Wall placement is handled by network messages
         return false;
     }
-} 
+}

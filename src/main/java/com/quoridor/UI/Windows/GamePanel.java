@@ -88,6 +88,7 @@ public class GamePanel extends JPanel {
                     // will act as a surrender button and an disconect button
                     networkManager.sendMessage(GameMessage.createAbandonMessage());
                     networkManager.disconnect();
+                    cleanupGame();
                 }
                 mainWindow.showCard(Constants.MENU_CARD);
             }
@@ -161,6 +162,8 @@ public class GamePanel extends JPanel {
         gm = null;
         p1 = null;
         p2 = null;
+        networkManager = null;
+        isMultiplayerGame = false;
         repaint();
     }
 
