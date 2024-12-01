@@ -270,8 +270,8 @@ public class MultiplayerGameManager extends GameManager {
     }
 
     private void handleError(GameMessage message) {
-        // TODO: cleanup if needed and disconect
         if (message.getMessage().equals("Invalid move")) {
+            // NOTE THIS IS A SPECIAL RULE NOT KNOWN BY A LOT OF PLAYERS, SO WE WONT KICK RIGHT AWAY
             PopupWindow.showMessage("Invalid move. Please try again. This rule isn't well known. You CANNOT block opponent comepletely.");
         } else {
             handleWrongMessage(message);

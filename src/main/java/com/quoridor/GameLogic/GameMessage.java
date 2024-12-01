@@ -93,10 +93,6 @@ public class GameMessage implements Serializable {
             case GAME_STARTED:
             case NEXT_TURN:
                 return isValidGameStartedOrNextTurn(data);
-            case MOVE:
-                return data.containsKey("player_id") && data.get("player_id") instanceof Integer &&
-                       data.containsKey("is_horizontal") && data.get("is_horizontal") instanceof Boolean &&
-                       data.containsKey("position") && data.get("position") instanceof List;
             case ERROR:
                 return data.containsKey("message") && data.get("message") instanceof String;
             case GAME_ENDED:
@@ -110,8 +106,6 @@ public class GameMessage implements Serializable {
                 return data.containsKey("disconnected_player_id") && data.get("disconnected_player_id") instanceof String;
             case PLAYER_RECONNECTED:
                 return data.containsKey("reconnected_player_id") && data.get("reconnected_player_id") instanceof String;
-            case ABANDON:
-                return data.isEmpty();
             default:
                 return false;
         }
@@ -124,7 +118,22 @@ public class GameMessage implements Serializable {
                data.containsKey("horizontal_walls") && data.get("horizontal_walls") instanceof List &&
                data.containsKey("vertical_walls") && data.get("vertical_walls") instanceof List &&
                data.containsKey("players") && data.get("players") instanceof List &&
+               isValidWalls(data.get("horizontal_walls")) &&
+               isValidWalls(data.get("vertical_walls")) &&
                isValidPlayers(data.get("players"));
+    }
+
+    private static boolean isValidWalls(Object wallsObj) {
+        if (!(wallsObj instanceof List)) return false;
+        List<?> walls = (List<?>) wallsObj;
+        for (Object wallObj : walls) {
+            if (!(wallObj instanceof List)) return false;
+            List<?> wall = (List<?>) wallObj;
+            if (wall.size() != 2) return false;
+            if (!(wall.get(0) instanceof Integer) || !(wall.get(1) instanceof Integer)) return false;
+            if ((Integer) wall.get(0) < 0 || (Integer) wall.get(1) < 0) return false;
+        }
+        return true;
     }
 
     private static boolean isValidPlayers(Object playersObj) {
@@ -135,9 +144,13 @@ public class GameMessage implements Serializable {
             Map<?, ?> player = (Map<?, ?>) playerObj;
             if (!player.containsKey("id") || !(player.get("id") instanceof String)) return false;
             if (!player.containsKey("position") || !(player.get("position") instanceof List)) return false;
+            List<?> position = (List<?>) player.get("position");
+            if (position.size() != 2) return false;
+            if (!(position.get(0) instanceof Integer) || !(position.get(1) instanceof Integer)) return false;
+            if ((Integer) position.get(0) < 0 || (Integer) position.get(1) < 0) return false;
             if (!player.containsKey("name") || !(player.get("name") instanceof String)) return false;
             if (!player.containsKey("walls_left") || !(player.get("walls_left") instanceof Integer)) return false;
-            if (!player.containsKey("board_char") || !(player.get("board_char") instanceof String)) return false; // Added check for board_char
+            if (!player.containsKey("board_char") || !(player.get("board_char") instanceof String)) return false;
         }
         return true;
     }
