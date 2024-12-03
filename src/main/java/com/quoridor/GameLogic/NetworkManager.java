@@ -45,6 +45,14 @@ public class NetworkManager {
         }
     }
 
+    public void sendMessage(String message) {
+        try {
+            output.println(message);
+        } catch (Exception e) {
+            System.err.println("Send error: " + e.getMessage());
+        }
+    }
+
     public void sendMessage(GameMessage message) {
         try {
             String jsonString = message.toJSON();

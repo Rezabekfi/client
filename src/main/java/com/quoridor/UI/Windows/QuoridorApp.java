@@ -147,31 +147,17 @@ public class QuoridorApp extends JFrame {
             PopupWindow.showMessage("Please enter a name first. You can change it in the settings menu.");
             return;
         }
-        JSONObject connectionSettings = FileManager.readJSONFromFile("../connection_settings.txt");
+        JSONObject connectionSettings = FileManager.readJSONFromFile("../connection_settings_1.txt");
         NetworkManager networkManager = new NetworkManager(connectionSettings.getString("address"), connectionSettings.getInt("port"));
-        
-        if (networkManager.connect()) {
-            // Wait for initial messages
-            GameMessage msg = networkManager.receiveMessage();
-            if (msg != null && msg.getType() == GameMessage.MessageType.WELCOME) {
-                GameMessage nameRequest = networkManager.receiveMessage();
-                if (nameRequest == null) {
-                    PopupWindow.showMessage("Server disconnected. Please check your connection settings.");
-                    return;
-                }
-                if (nameRequest.getType() == GameMessage.MessageType.NAME_REQUEST) {
-                    // Send name response
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("name", playerName);
-                    networkManager.sendMessage(new GameMessage(GameMessage.MessageType.NAME_RESPONSE, data));
-                    
-                    startMultiplayerGame(networkManager);
-                    showCard(Constants.GAME_ON_CARD);
-                }
-            }
-        } else {
-            PopupWindow.showMessage("Failed to connect to server. Please check your connection settings.");
+
+        // check connection
+        if (!networkManager.connect()) {
+            PopupWindow.showMessage("Could not connect to server. Please check your connection settings.");
+            return;
         }
+
+        startMultiplayerGame(networkManager);
+        showCard(Constants.GAME_ON_CARD);
     }
 }
 

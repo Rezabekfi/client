@@ -14,6 +14,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import com.quoridor.GameLogic.GameManager;
+import com.quoridor.GameLogic.MultiplayerGameManager;
 import com.quoridor.GameLogic.GameMessage;
 import com.quoridor.Settings.Constants;
 import com.quoridor.UI.Components.GameBoard;
@@ -88,6 +89,8 @@ public class GamePanel extends JPanel {
                     // will act as a surrender button and an disconect button
                     networkManager.sendMessage(GameMessage.createAbandonMessage());
                     networkManager.disconnect();
+                    // if gm is instance of multiplayerGameManager then stop the network listener
+                    if (gm instanceof MultiplayerGameManager) ((MultiplayerGameManager) gm).stopNetworkListener();
                     cleanupGame();
                 }
                 mainWindow.showCard(Constants.MENU_CARD);

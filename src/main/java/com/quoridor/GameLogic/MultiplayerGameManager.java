@@ -28,6 +28,11 @@ public class MultiplayerGameManager extends GameManager {
     private WallUI[] doubleWall;
     private volatile boolean running = true;
 
+    private boolean nameSent = false;
+    private boolean welcomeReceived = false; // placak
+
+    private long lastHeartbeat;
+
     Player disconectedPlayer;
 
     public MultiplayerGameManager(Board board, GameBoard gameBoardUI, NetworkManager networkManager) {
@@ -39,6 +44,8 @@ public class MultiplayerGameManager extends GameManager {
         this.isMyTurn = false;
         this.doubleWall = new WallUI[2];
         initializeWalls();
+        startHeartbeatChecker();
+        lastHeartbeat = System.currentTimeMillis();
     }
 
     public void startNetworkListener() {
@@ -66,6 +73,30 @@ public class MultiplayerGameManager extends GameManager {
     
     private void handleNetworkMessage(GameMessage message) {
         if (message == null) return;
+
+        lastHeartbeat = System.currentTimeMillis();
+
+        if (message.getType() == GameMessage.MessageType.ACK) {
+            return;
+        }
+
+        if (!welcomeReceived) {
+            if (message.getType() == GameMessage.MessageType.WELCOME) {
+                welcomeReceived = true;
+            } else {
+                handleError(GameMessage.createErrorMessage("Expected WELCOME message"));
+                return;
+            }
+        } else if (!nameSent) {
+            if (message.getType() == GameMessage.MessageType.NAME_REQUEST) {
+                handleNameRequest(message);
+                return;
+            } else {
+                handleError(GameMessage.createErrorMessage("Expected NAME_REQUEST message"));
+                return;
+            }
+        }
+        
         
         switch (message.getType()) {
             case NEXT_TURN:
@@ -138,6 +169,7 @@ public class MultiplayerGameManager extends GameManager {
     }
 
     private void handleNameRequest(GameMessage message) {
+        nameSent = true;
         sendNameResponse(gameBoardUI.getMainWindow().getPlayerName());
     }
 
@@ -274,18 +306,19 @@ public class MultiplayerGameManager extends GameManager {
             // NOTE THIS IS A SPECIAL RULE NOT KNOWN BY A LOT OF PLAYERS, SO WE WONT KICK RIGHT AWAY
             PopupWindow.showMessage("Invalid move. Please try again. This rule isn't well known. You CANNOT block opponent comepletely.");
         } else {
+            message.setMessage("Server side error: " + message.getMessage());
             handleWrongMessage(message);
         }
     }
 
     private void handleWrongMessage(GameMessage message) {
         // clean up and disconect
-        networkManager.sendMessage(GameMessage.createAbandonMessage());
+        //networkManager.sendMessage(GameMessage.createAbandonMessage());
         stopNetworkListener();
         networkManager.disconnect();
         gameBoardUI.getMainWindow().getGamePanel().cleanupGame();
         gameBoardUI.getMainWindow().showCard(Constants.MENU_CARD);
-        PopupWindow.showMessage("Wrong message received: " + message.getMessage() + "\nDisconnecting from the server.");
+        PopupWindow.showMessage(message.getMessage() + "\nDisconnecting from the server.");
     }
 
     private void handleAck(GameMessage message) {
@@ -341,7 +374,7 @@ public class MultiplayerGameManager extends GameManager {
         
         GameMessage message = new GameMessage(GameMessage.MessageType.NAME_RESPONSE, data);
         networkManager.sendMessage(message);
-    }
+    }        
 
     private void sendAck() {
         networkManager.sendMessage(GameMessage.createAckMessage());
@@ -512,5 +545,24 @@ public class MultiplayerGameManager extends GameManager {
     public boolean placeWall(int row1, int col1, int row2, int col2, boolean isHorizontal) {
         // Wall placement is handled by network messages
         return false;
+    }
+
+    private void startHeartbeatChecker() {
+        new Thread(() -> {
+            while (running) {
+                if (networkManager.isConnected()) {
+                    networkManager.sendMessage(GameMessage.createHeartbeatMessage());
+                }
+                if (System.currentTimeMillis() - lastHeartbeat > 5000) {
+                    handleWrongMessage(GameMessage.createErrorMessage("Server is not responding!"));
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }).start();
     }
 }

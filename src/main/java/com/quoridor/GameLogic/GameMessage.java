@@ -164,6 +164,10 @@ public class GameMessage implements Serializable {
         return messageData.optString("message");
     }
 
+    public void setMessage(String message) {
+        messageData.put("message", message);
+    }
+
     public String getLobbyId() {
         return messageData.optString("lobby_id");
     }
@@ -302,5 +306,15 @@ public class GameMessage implements Serializable {
 
     public static GameMessage createAbandonMessage() {
         return new GameMessage(MessageType.ABANDON, new HashMap<>());
+    }
+
+    public static GameMessage createErrorMessage(String message) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("message", message);
+        return new GameMessage(MessageType.ERROR, data);
+    }
+
+    public static GameMessage createHeartbeatMessage() {
+        return new GameMessage(MessageType.HEARTBEAT, new HashMap<>());
     }
 }
