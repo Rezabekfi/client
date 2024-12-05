@@ -40,6 +40,12 @@ public class GameMessage implements Serializable {
         this.messageData = new JSONObject();
     }
 
+    public GameMessage(String message) {
+        this.type = MessageType.WRONG_MESSAGE;
+        this.messageData = new JSONObject();
+        this.messageData.put("message", message);
+    }
+
     public GameMessage(MessageType type, Map<String, Object> data) {
         this.type = type;
         this.messageData = new JSONObject(data);

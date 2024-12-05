@@ -67,23 +67,25 @@ public class NetworkManager {
         try {
             String jsonString = input.readLine();
             if (jsonString == null || jsonString.trim().isEmpty()) {
-                connected = false;
-                return null;
+                GameMessage invalidMessage = new GameMessage("Recieved nothing from server (wierdge)"); // TODO: make profesional
+                return invalidMessage;
             }
             
             // Validate that we have a proper JSON string
             jsonString = jsonString.trim();
             if (!jsonString.startsWith("{")) {
+                GameMessage invalidMessage = new GameMessage("Invalid JSON format received: " + jsonString);
                 System.err.println("Invalid JSON format received: " + jsonString);
-                return null;
+                return invalidMessage;
             }
             if (GameMessage.fromJSON(jsonString).getType() != GameMessage.MessageType.ACK &&
             GameMessage.fromJSON(jsonString).getType() != GameMessage.MessageType.HEARTBEAT) System.out.println("Received message: " + jsonString);
             return GameMessage.fromJSON(jsonString);
         } catch (Exception e) {
+            GameMessage invalidMessage = new GameMessage("Receive error: " + e.getMessage());
             System.err.println("Receive error: " + e.getMessage());
             connected = false;
-            return null;
+            return invalidMessage;
         }
     }
 
