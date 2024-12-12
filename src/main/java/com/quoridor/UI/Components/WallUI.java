@@ -35,8 +35,8 @@ public class WallUI extends JPanel {
     @Override
     public void paint(Graphics g) {
         if (isPlaced()) {
-            this.setBackground(Color.BLACK);
-            this.setBorder(new LineBorder(playerColor, 1));    
+            this.setBackground(Color.BLACK); 
+            this.setBorder(new LineBorder(Color.BLACK, 3));
         } else if(isSelected()) {
             this.setBackground(Color.WHITE);
             this.setBorder(new LineBorder(playerColor, 2));    

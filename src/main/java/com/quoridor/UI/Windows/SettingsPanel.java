@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagLayout;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -21,6 +22,8 @@ public class SettingsPanel extends JPanel {
     private QuoridorApp mainWindow;
     private JTextField playerNameField;
     private JTextField playerNameField2;
+    private static final int MAX_NAME_LENGTH = 16;
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_ ]*$");
 
     public SettingsPanel(QuoridorApp mainWindow) {
         this.mainWindow = mainWindow;
@@ -100,10 +103,18 @@ public class SettingsPanel extends JPanel {
     private void saveSettings() {
         String playerName = playerNameField.getText().trim();
         String playerName2 = playerNameField2.getText().trim();
-        if (!playerName.isEmpty()) {
+        
+        if (isValidName(playerName) && isValidName(playerName2)) {
             mainWindow.setPlayerName(playerName);
             mainWindow.setPlayerName2(playerName2);
+            mainWindow.showCard(Constants.MENU_CARD);
+        } else {
+            PopupWindow.showMessage("Names must be max " + MAX_NAME_LENGTH + " characters long and contain only letters, numbers, underscores, and spaces.");
         }
+    }
+
+    private boolean isValidName(String name) {
+        return name.length() <= MAX_NAME_LENGTH && NAME_PATTERN.matcher(name).matches();
     }
 
     public QuoridorApp getmainWindow() {

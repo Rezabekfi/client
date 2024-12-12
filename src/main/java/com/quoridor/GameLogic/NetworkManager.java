@@ -45,7 +45,7 @@ public class NetworkManager {
         }
     }
 
-    public void sendMessage(String message) {
+    public synchronized void sendMessage(String message) {
         try {
             output.println(message);
         } catch (Exception e) {
@@ -53,10 +53,13 @@ public class NetworkManager {
         }
     }
 
-    public void sendMessage(GameMessage message) {
+    public synchronized void sendMessage(GameMessage message) {
         try {
             String jsonString = message.toJSON();
-            if (message.getType() != GameMessage.MessageType.ACK) System.out.println("Sending message: " + jsonString);
+            if (message.getType() != GameMessage.MessageType.ACK && message.getType() != GameMessage.MessageType.HEARTBEAT) {
+                //System.out.println("Sending message: " + jsonString);
+            }
+            System.out.println("Sending message: " + jsonString);
             output.println(jsonString);
         } catch (Exception e) {
             System.err.println("Send error: " + e.getMessage());
@@ -82,10 +85,9 @@ public class NetworkManager {
             GameMessage.fromJSON(jsonString).getType() != GameMessage.MessageType.HEARTBEAT) System.out.println("Received message: " + jsonString);
             return GameMessage.fromJSON(jsonString);
         } catch (Exception e) {
-            GameMessage invalidMessage = new GameMessage("Receive error: " + e.getMessage());
             System.err.println("Receive error: " + e.getMessage());
             connected = false;
-            return invalidMessage;
+            return null;
         }
     }
 
@@ -104,4 +106,4 @@ public class NetworkManager {
             connected = true;
         }
     }
-} 
+}

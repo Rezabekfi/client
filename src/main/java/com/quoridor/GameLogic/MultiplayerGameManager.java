@@ -210,8 +210,18 @@ public class MultiplayerGameManager extends GameManager {
         } else {
             isMyTurn = false;
             removeSelectedSquares();
+            removeSelectedWalls();
         }
         gameBoardUI.updateBoard();
+    }
+
+    private void removeSelectedWalls() {
+        List<WallUI> walls = gameBoardUI.getAllWalls();
+        for (WallUI wall : walls) {
+            if (wall.selected && !wall.placed) {
+                wall.selected = false;
+            }
+        }
     }
 
     private void setCurrentPlayer(GameMessage message) {
@@ -311,7 +321,7 @@ public class MultiplayerGameManager extends GameManager {
         }
     }
 
-    private void handleWrongMessage(GameMessage message) {
+    synchronized private void handleWrongMessage(GameMessage message) {
         // clean up and disconect
         //networkManager.sendMessage(GameMessage.createAbandonMessage());
         stopNetworkListener();
@@ -553,11 +563,11 @@ public class MultiplayerGameManager extends GameManager {
                 if (networkManager.isConnected()) {
                     networkManager.sendMessage(GameMessage.createHeartbeatMessage());
                 }
-                if (System.currentTimeMillis() - lastHeartbeat > 5000) {
+                if (System.currentTimeMillis() - lastHeartbeat > 10000) {
                     handleWrongMessage(GameMessage.createErrorMessage("Server is not responding!"));
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;

@@ -147,7 +147,7 @@ public class QuoridorApp extends JFrame {
             PopupWindow.showMessage("Please enter a name first. You can change it in the settings menu.");
             return;
         }
-        JSONObject connectionSettings = FileManager.readJSONFromFile("../connection_settings_1.txt");
+        JSONObject connectionSettings = FileManager.readJSONFromFile("../connection_settings.txt");
         NetworkManager networkManager = new NetworkManager(connectionSettings.getString("address"), connectionSettings.getInt("port"));
 
         // check connection
