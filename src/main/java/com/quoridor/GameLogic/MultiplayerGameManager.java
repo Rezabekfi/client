@@ -563,7 +563,7 @@ public class MultiplayerGameManager extends GameManager {
                 if (networkManager.isConnected()) {
                     networkManager.sendMessage(GameMessage.createHeartbeatMessage());
                 }
-                if (System.currentTimeMillis() - lastHeartbeat > 10000) {
+                if (networkManager.isConnected() && (System.currentTimeMillis() - lastHeartbeat > 10000)) {
                     handleWrongMessage(GameMessage.createErrorMessage("Server is not responding!"));
                 }
                 try {
