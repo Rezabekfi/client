@@ -1,6 +1,8 @@
 package com.quoridor.GameLogic;
 
 import java.net.Socket;
+import java.net.InetSocketAddress;
+import java.net.SocketTimeoutException;
 import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -22,12 +24,16 @@ public class NetworkManager {
 
     public boolean connect() {
         try {
-            socket = new Socket(serverAddress, serverPort);
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(serverAddress, serverPort), 5000); // 5 seconds timeout
             socket.setTcpNoDelay(true);
             output = new PrintWriter(socket.getOutputStream(), true);
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             connected = true;
             return true;
+        } catch (SocketTimeoutException e) {
+            System.err.println("Connection timed out: " + e.getMessage());
+            return false;
         } catch (Exception e) {
             System.err.println("Connection failed: " + e.getMessage());
             return false;
