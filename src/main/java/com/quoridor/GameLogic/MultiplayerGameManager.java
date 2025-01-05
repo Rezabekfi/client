@@ -355,10 +355,10 @@ public class MultiplayerGameManager extends GameManager {
         data.put("player_id", Integer.parseInt(playerId)-1);
         data.put("is_horizontal", false);
         
-        int[][] positionArray = new int[][]{{position.getRow(), position.getCol()}};
-        data.put("position", positionArray);
+        data.put("position", "[" + position.getRow() + "," + position.getCol() + "]");
         
         GameMessage message = new GameMessage(GameMessage.MessageType.MOVE, data);
+        System.out.println("Sending move message" + message.toMessageString());
         networkManager.sendMessage(message);
     }
     
@@ -367,12 +367,7 @@ public class MultiplayerGameManager extends GameManager {
         data.put("player_id", Integer.parseInt(playerId)-1);
         data.put("is_horizontal", isHorizontal);
         
-        // Create position array in format [[x1,y1], [x2,y2]]
-        int[][] positionArray = new int[][]{
-            {wall1.getRow(), wall1.getCol()},
-            {wall2.getRow(), wall2.getCol()}
-        };
-        data.put("position", positionArray);
+        data.put("position", "[" + wall1.getRow() + "," + wall1.getCol() + "],[" + wall2.getRow() + "," + wall2.getCol() + "]");
         
         GameMessage message = new GameMessage(GameMessage.MessageType.MOVE, data);
         networkManager.sendMessage(message);

@@ -1,21 +1,16 @@
 package com.quoridor.GameLogic;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.json.JSONObject;
-
 import com.quoridor.Settings.PlayerColor;
 
-import org.json.JSONArray;
-
-public class GameMessage implements Serializable {
+public class GameMessage {
 
     private MessageType type;
-    private JSONObject messageData;
+    private Map<String, Object> messageData;
 
     public enum MessageType {
         WELCOME,
@@ -37,18 +32,18 @@ public class GameMessage implements Serializable {
 
     public GameMessage() {
         this.type = MessageType.WRONG_MESSAGE;
-        this.messageData = new JSONObject();
+        this.messageData = new HashMap<>();
     }
 
     public GameMessage(String message) {
         this.type = MessageType.WRONG_MESSAGE;
-        this.messageData = new JSONObject();
+        this.messageData = new HashMap<>();
         this.messageData.put("message", message);
     }
 
     public GameMessage(MessageType type, Map<String, Object> data) {
         this.type = type;
-        this.messageData = new JSONObject(data);
+        this.messageData = data;
     }
 
     public MessageType getType() {
@@ -59,20 +54,30 @@ public class GameMessage implements Serializable {
         this.type = type;
     }
 
-    public String toJSON() {
-        JSONObject json = new JSONObject();
-        json.put("type", type.toString().toLowerCase());
-        json.put("data", messageData);
-        return json.toString();
+    public String toMessageString() {
+        StringBuilder messageBuilder = new StringBuilder();
+        messageBuilder.append("type:").append(type.toString().toLowerCase()).append("|data:");
+        messageData.forEach((key, value) -> {
+            messageBuilder.append(key).append("=").append(value).append(";");
+        });
+        if (messageData.isEmpty()) {
+            messageBuilder.append(";");
+        }
+        return messageBuilder.toString();
     }
 
-    public static GameMessage fromJSON(String jsonString) {
+    public static GameMessage fromMessageString(String messageString) {
         try {
-            JSONObject json = new JSONObject(jsonString);
-            MessageType type = MessageType.valueOf(json.getString("type").toUpperCase());
-            JSONObject jsonData = json.getJSONObject("data");
-            
-            Map<String, Object> data = jsonData.toMap();
+            String[] parts = messageString.split("\\|data:");
+            MessageType type = MessageType.valueOf(parts[0].split(":")[1].toUpperCase());
+            String[] dataParts = parts[1].split(";");
+            Map<String, Object> data = new HashMap<>();
+            for (String dataPart : dataParts) {
+                if (!dataPart.isEmpty()) {
+                    String[] keyValue = dataPart.split("=");
+                    data.put(keyValue[0], keyValue[1]);
+                }
+            }
             if (!isValidMessage(type, data)) {
                 GameMessage message = new GameMessage();
                 message.messageData.put("message", "Invalid message format for type: " + type);
@@ -102,7 +107,7 @@ public class GameMessage implements Serializable {
             case ERROR:
                 return data.containsKey("message") && data.get("message") instanceof String;
             case GAME_ENDED:
-                return data.containsKey("lobby_id") && data.get("lobby_id") instanceof Integer &&
+                return data.containsKey("lobby_id") && data.get("lobby_id") instanceof String &&
                        data.containsKey("winner_id") && data.get("winner_id") instanceof String;
             case HEARTBEAT:
                 return data.isEmpty();
@@ -118,56 +123,21 @@ public class GameMessage implements Serializable {
     }
 
     private static boolean isValidGameStartedOrNextTurn(Map<String, Object> data) {
-        return data.containsKey("lobby_id") && data.get("lobby_id") instanceof Integer &&
+        return data.containsKey("lobby_id") && data.get("lobby_id") instanceof String &&
                data.containsKey("board") && data.get("board") instanceof String &&
                data.containsKey("current_player_id") && data.get("current_player_id") instanceof String &&
-               data.containsKey("horizontal_walls") && data.get("horizontal_walls") instanceof List &&
-               data.containsKey("vertical_walls") && data.get("vertical_walls") instanceof List &&
-               data.containsKey("players") && data.get("players") instanceof List &&
-               isValidWalls(data.get("horizontal_walls")) &&
-               isValidWalls(data.get("vertical_walls")) &&
-               isValidPlayers(data.get("players"));
-    }
-
-    private static boolean isValidWalls(Object wallsObj) {
-        if (!(wallsObj instanceof List)) return false;
-        List<?> walls = (List<?>) wallsObj;
-        for (Object wallObj : walls) {
-            if (!(wallObj instanceof List)) return false;
-            List<?> wall = (List<?>) wallObj;
-            if (wall.size() != 2) return false;
-            if (!(wall.get(0) instanceof Integer) || !(wall.get(1) instanceof Integer)) return false;
-            if ((Integer) wall.get(0) < 0 || (Integer) wall.get(1) < 0) return false;
-        }
-        return true;
-    }
-
-    private static boolean isValidPlayers(Object playersObj) {
-        if (!(playersObj instanceof List)) return false;
-        List<?> players = (List<?>) playersObj;
-        for (Object playerObj : players) {
-            if (!(playerObj instanceof Map)) return false;
-            Map<?, ?> player = (Map<?, ?>) playerObj;
-            if (!player.containsKey("id") || !(player.get("id") instanceof String)) return false;
-            if (!player.containsKey("position") || !(player.get("position") instanceof List)) return false;
-            List<?> position = (List<?>) player.get("position");
-            if (position.size() != 2) return false;
-            if (!(position.get(0) instanceof Integer) || !(position.get(1) instanceof Integer)) return false;
-            if ((Integer) position.get(0) < 0 || (Integer) position.get(1) < 0) return false;
-            if (!player.containsKey("name") || !(player.get("name") instanceof String)) return false;
-            if (!player.containsKey("walls_left") || !(player.get("walls_left") instanceof Integer)) return false;
-            if (!player.containsKey("board_char") || !(player.get("board_char") instanceof String)) return false;
-        }
-        return true;
+               data.containsKey("horizontal_walls") && data.get("horizontal_walls") instanceof String &&
+               data.containsKey("vertical_walls") && data.get("vertical_walls") instanceof String &&
+               data.containsKey("players") && data.get("players") instanceof String;
     }
 
     public String getReconnectedPlayerId() {
-        return messageData.optString("reconnected_player_id");
+        return (String) messageData.get("reconnected_player_id");
     }
 
     // Helper methods for specific message types
     public String getMessage() {
-        return messageData.optString("message");
+        return (String) messageData.get("message");
     }
 
     public void setMessage(String message) {
@@ -175,23 +145,23 @@ public class GameMessage implements Serializable {
     }
 
     public String getLobbyId() {
-        return messageData.optString("lobby_id");
+        return (String) messageData.get("lobby_id");
     }
 
     public String getDisconnectedPlayerId() {
-        return messageData.optString("disconnected_player_id");
+        return (String) messageData.get("disconnected_player_id");
     }
 
     public String getCurrentPlayerId() {
-        return messageData.optString("current_player_id");
+        return (String) messageData.get("current_player_id");
     }
 
     public String getWinnerId() {
-        return messageData.optString("winner_id");
+        return (String) messageData.get("winner_id");
     }
 
     public String getBoardString() {
-        return messageData.optString("board");
+        return (String) messageData.get("board");
     }
 
     public List<Position> getHorizontalWalls() {
@@ -204,26 +174,24 @@ public class GameMessage implements Serializable {
 
     private List<Position> getWallsList(String key) {
         List<Position> walls = new ArrayList<>();
-        JSONArray wallsArray = messageData.optJSONArray(key);
-        if (wallsArray == null) return walls;
-        
-        for (int i = 0; i < wallsArray.length(); i++) {
-            JSONArray wall = wallsArray.getJSONArray(i);
-            walls.add(new Position(wall.getInt(0), wall.getInt(1)));
+        String wallsString = (String) messageData.get(key);
+        if (wallsString == null || wallsString.equals("[]")) return walls;
+
+        String[] wallsArray = wallsString.split("\\],\\[");
+        for (String wall : wallsArray) {
+            String[] coords = wall.replace("[", "").replace("]", "").split(",");
+            walls.add(new Position(Integer.parseInt(coords[0]), Integer.parseInt(coords[1])));
         }
-        
         return walls;
     }
 
     public String getPlayerId(Player player) {
-        JSONArray playersArray = messageData.optJSONArray("players");
-        if (playersArray == null) return null;
+        String playersString = (String) messageData.get("players");
+        if (playersString == null) return null;
 
-        for (int i = 0; i < playersArray.length(); i++) {
-            JSONObject playerData = playersArray.getJSONObject(i);
-            if (playerData.getString("name").equals(player.getName())) {
-                return playerData.getString("id");
-            }
+        List<Player> players = getPlayers();
+        for (Player p : players) {
+            if (p.getName().equals(player.getName())) return p.getId();
         }
         return null;
     }
@@ -240,37 +208,52 @@ public class GameMessage implements Serializable {
         return null;
     }
 
-    // ment to be used at game start (declaring determineDirection wont work after first move)
     public List<Player> getPlayers() {
+        String id = "";
+        int row = 0;
+        int col = 0;
+        String name = "";
+        char board_char = ' ';
+        int wallsLeft = 0;
         List<Player> players = new ArrayList<>();
-        JSONArray playersArray = messageData.optJSONArray("players");
-        if (playersArray == null) return players;
-
-        for (int i = 0; i < playersArray.length(); i++) {
-            JSONObject playerData = playersArray.getJSONObject(i);
-            JSONArray posArray = playerData.getJSONArray("position");
-            Position pos = new Position(posArray.getInt(0), posArray.getInt(1));
-            char symbol = playerData.getString("board_char").charAt(0);
-            String id = playerData.getString("id");
-            // Determine direction based on position
-            GoalDirection direction = determineDirection(pos);
+        String playersString = (String) messageData.get("players");
+        if (playersString == null) return players;
+        String[] playersArray = playersString.split("\\],\\[");
+        for (String playerData : playersArray) {
             
+            String[] playerAttributes = playerData.replace("[", "").replace("]", "").split(",");
+
+            for (String atrubute : playerAttributes) {
+                String[] atrubuteArray = atrubute.split(":");
+                if (atrubuteArray[0].equals("id")) {
+                    id = atrubuteArray[1];
+                } else if (atrubuteArray[0].equals("row")) {
+                    row = Integer.parseInt(atrubuteArray[1]);
+                } else if (atrubuteArray[0].equals("col")) {
+                    col = Integer.parseInt(atrubuteArray[1]);
+                } else if (atrubuteArray[0].equals("name")) {
+                    name = atrubuteArray[1];
+                } else if (atrubuteArray[0].equals("board_char")) {
+                    board_char = atrubuteArray[1].charAt(0);
+                } else if (atrubuteArray[0].equals("walls_left")) {
+                    wallsLeft = Integer.parseInt(atrubuteArray[1]);
+                }
+            }
+            Position pos = new Position(row, col);
+            GoalDirection direction = determineDirection(pos);
             Player player = new Player(
-                playerData.getString("name"),
+                name,
                 direction,
                 pos,
-                PlayerColor.fromSymbol(symbol)
+                PlayerColor.fromSymbol(board_char)
             );
             player.setId(id);
-            player.setNumberOfWalls(playerData.getInt("walls_left"));
-            player.setName(playerData.getString("name"));
+            player.setNumberOfWalls(wallsLeft);
             players.add(player);
         }
         return players;
     }
 
-    // used at game start (declaring determineDirection wont work after first move)
-    // declared for 4 players but for now game is only for 2 players (possible future extension)
     private GoalDirection determineDirection(Position pos) {
         if (pos.getRow() == 0) return GoalDirection.SOUTH;
         if (pos.getRow() == 8) return GoalDirection.NORTH;
@@ -279,24 +262,12 @@ public class GameMessage implements Serializable {
         return GoalDirection.NORTH; // default
     }
 
-    /* 
-    private char getColorChar(String color) {
-        switch (color.toLowerCase()) {
-            case "blue": return '1';
-            case "red": return '2';
-            case "green": return '3';
-            case "yellow": return '4';
-            default: return '5';
-        }
-    }
-    */
-
     // Factory methods for creating specific message types
-    public static GameMessage createMoveMessage(String playerId, boolean isHorizontal, Position... positions) {
+    public static GameMessage createMoveMessage(String playerId, boolean isHorizontal, Position[] positions) {
         Map<String, Object> data = new HashMap<>();
         data.put("player_id", playerId);
         data.put("is_horizontal", isHorizontal);
-        data.put("position", positions);
+        data.put("position", "[" + positions[0].getRow() + "," + positions[0].getCol() + "]" + (positions.length > 1 ? ",[" + positions[1].getRow() + "," + positions[1].getCol() + "]" : ""));
         return new GameMessage(MessageType.MOVE, data);
     }
 

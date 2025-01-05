@@ -61,7 +61,7 @@ public class NetworkManager {
 
     public synchronized void sendMessage(GameMessage message) {
         try {
-            String jsonString = message.toJSON();
+            String jsonString = message.toMessageString();
             if (message.getType() != GameMessage.MessageType.ACK && message.getType() != GameMessage.MessageType.HEARTBEAT) {
                 //System.out.println("Sending message: " + jsonString);
             }
@@ -80,16 +80,9 @@ public class NetworkManager {
                 return invalidMessage;
             }
             
-            // Validate that we have a proper JSON string
-            jsonString = jsonString.trim();
-            if (!jsonString.startsWith("{")) {
-                GameMessage invalidMessage = new GameMessage("Invalid JSON format received: " + jsonString);
-                System.err.println("Invalid JSON format received: " + jsonString);
-                return invalidMessage;
-            }
-            if (GameMessage.fromJSON(jsonString).getType() != GameMessage.MessageType.ACK &&
-            GameMessage.fromJSON(jsonString).getType() != GameMessage.MessageType.HEARTBEAT) System.out.println("Received message: " + jsonString);
-            return GameMessage.fromJSON(jsonString);
+            if (GameMessage.fromMessageString(jsonString).getType() != GameMessage.MessageType.ACK &&
+            GameMessage.fromMessageString(jsonString).getType() != GameMessage.MessageType.HEARTBEAT) System.out.println("Received message: " + jsonString);
+            return GameMessage.fromMessageString(jsonString);
         } catch (Exception e) {
             System.err.println("Receive error: " + e.getMessage());
             connected = false;

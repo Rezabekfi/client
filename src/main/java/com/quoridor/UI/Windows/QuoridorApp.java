@@ -2,19 +2,17 @@ package com.quoridor.UI.Windows;
 import java.awt.CardLayout;
 import java.util.List;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.json.JSONObject;
-
-import com.quoridor.Settings.FileManager;
-
 import com.quoridor.Settings.Constants;
 import com.quoridor.UI.Components.GameBoard;
 import com.quoridor.GameLogic.*;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class QuoridorApp extends JFrame {
 
@@ -147,8 +145,19 @@ public class QuoridorApp extends JFrame {
             PopupWindow.showMessage("Please enter a name first. You can change it in the settings menu.");
             return;
         }
-        JSONObject connectionSettings = FileManager.readJSONFromFile("../connection_settings.txt");
-        NetworkManager networkManager = new NetworkManager(connectionSettings.getString("address"), connectionSettings.getInt("port"));
+
+        String address = "";
+        int port = 0;
+
+        try (BufferedReader br = new BufferedReader(new FileReader("../connection_settings.txt"))) {
+            address = br.readLine().trim();
+            port = Integer.parseInt(br.readLine().trim());
+        } catch (IOException e) {
+            PopupWindow.showMessage("Could not read connection settings. Please check your settings file.");
+            return;
+        }
+
+        NetworkManager networkManager = new NetworkManager(address, port);
 
         // check connection
         if (!networkManager.connect()) {
