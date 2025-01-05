@@ -22,7 +22,7 @@ public class NetworkManager {
         this.connected = false;
     }
 
-    public boolean connect() {
+    public synchronized boolean connect() {
         try {
             socket = new Socket();
             socket.connect(new InetSocketAddress(serverAddress, serverPort), 5000); // 5 seconds timeout
@@ -60,12 +60,16 @@ public class NetworkManager {
     }
 
     public synchronized void sendMessage(GameMessage message) {
+        if (!isConnected()) {
+            System.err.println("Cannot send message, not connected to the server.");
+            return;
+        }
+
         try {
             String jsonString = message.toMessageString();
             if (message.getType() != GameMessage.MessageType.ACK && message.getType() != GameMessage.MessageType.HEARTBEAT) {
-                //System.out.println("Sending message: " + jsonString);
+                System.out.println("Sending message: " + jsonString);
             }
-            System.out.println("Sending message: " + jsonString);
             output.println(jsonString);
         } catch (Exception e) {
             System.err.println("Send error: " + e.getMessage());
@@ -76,16 +80,19 @@ public class NetworkManager {
         try {
             String jsonString = input.readLine();
             if (jsonString == null || jsonString.trim().isEmpty()) {
-                GameMessage invalidMessage = new GameMessage("Recieved nothing from server (wierdge)"); // TODO: make profesional
+                GameMessage invalidMessage = new GameMessage("Received nothing from server");
                 return invalidMessage;
             }
-            
+
             if (GameMessage.fromMessageString(jsonString).getType() != GameMessage.MessageType.ACK &&
-            GameMessage.fromMessageString(jsonString).getType() != GameMessage.MessageType.HEARTBEAT) System.out.println("Received message: " + jsonString);
+                GameMessage.fromMessageString(jsonString).getType() != GameMessage.MessageType.HEARTBEAT) {
+                System.out.println("Received message: " + jsonString);
+            }
             return GameMessage.fromMessageString(jsonString);
         } catch (Exception e) {
             System.err.println("Receive error: " + e.getMessage());
             connected = false;
+            startReconnectionLoop(); // Start reconnection loop when connection is lost
             return null;
         }
     }
@@ -104,5 +111,23 @@ public class NetworkManager {
             simulatedDisconnect = false;
             connected = true;
         }
+    }
+
+    private void startReconnectionLoop() {
+        new Thread(() -> {
+            while (!connected) {
+                try {
+                    System.out.println("Attempting to reconnect...");
+                    if (connect()) {
+                        System.out.println("Reconnected to the server.");
+                        break;
+                    }
+                    Thread.sleep(5000); // Wait for 5 seconds before retrying
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }).start();
     }
 }
