@@ -92,8 +92,7 @@ public class NetworkManager {
         } catch (Exception e) {
             System.err.println("Receive error: " + e.getMessage());
             connected = false;
-            startReconnectionLoop(); // Start reconnection loop when connection is lost
-            return null;
+            return GameMessage.createLostConnection();
         }
     }
 
@@ -113,21 +112,7 @@ public class NetworkManager {
         }
     }
 
-    private void startReconnectionLoop() {
-        new Thread(() -> {
-            while (!connected) {
-                try {
-                    System.out.println("Attempting to reconnect...");
-                    if (connect()) {
-                        System.out.println("Reconnected to the server.");
-                        break;
-                    }
-                    Thread.sleep(5000); // Wait for 5 seconds before retrying
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-            }
-        }).start();
+    public static boolean validate_network_settings(String address, int port) {
+        return address != null && !address.isEmpty() && port > 0 && port < 65536;
     }
 }

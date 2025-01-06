@@ -27,7 +27,8 @@ public class GameMessage {
         HEARTBEAT,
         PLAYER_DISCONNECTED,
         PLAYER_RECONNECTED,
-        ABANDON
+        ABANDON,
+        LOST_CONNECTION
     }
 
     public GameMessage() {
@@ -293,5 +294,9 @@ public class GameMessage {
 
     public static GameMessage createHeartbeatMessage() {
         return new GameMessage(MessageType.HEARTBEAT, new HashMap<>());
+    }
+
+    public static GameMessage createLostConnection() {
+        return new GameMessage(MessageType.LOST_CONNECTION, new HashMap<>());
     }
 }

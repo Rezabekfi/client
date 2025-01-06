@@ -138,10 +138,38 @@ public class MultiplayerGameManager extends GameManager {
             case PLAYER_RECONNECTED:
                 handlePlayerReconnected(message);
                 break;
+            case LOST_CONNECTION:
+                handleConnectionLoss(); // message isnt inmportant here
             default:
                 System.out.println("Unknown message type: " + message.getType());
                 break;
         }
+    }
+
+    private void handleConnectionLoss() {
+        if (!running) return;
+        PopupWindow.showMessage("Connection lost!");
+        startReconnectionLoop();
+    }
+
+    private void startReconnectionLoop() {
+        new Thread(() -> {
+            while (!networkManager.isConnected()) {
+                try {
+                    System.out.println("Attempting to reconnect...");
+                    if (networkManager.connect()) {
+                        System.out.println("Reconnected to the server.");
+                        networkManager.sendMessage(GameMessage.createNameResponse(gameBoardUI.getMainWindow().getPlayerName()));
+                        PopupWindow.showMessage("Reconnected to the server!");
+                        break;
+                    }
+                    Thread.sleep(5000); // Wait for 5 seconds before retrying
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }).start();
     }
 
     private void handlePlayerReconnected(GameMessage message) {
@@ -299,7 +327,6 @@ public class MultiplayerGameManager extends GameManager {
         stopNetworkListener();
         sendAck();
 
-        // TODO: zkontrolovat
         networkManager.sendMessage(GameMessage.createAbandonMessage());
         networkManager.disconnect();
     }

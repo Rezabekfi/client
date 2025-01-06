@@ -27,6 +27,8 @@ public class QuoridorApp extends JFrame {
     private String playerName;
 
     private String playerName2;
+
+    private boolean isConnecting = false;
     
     public QuoridorApp() {
         createWindow(this, Constants.GAME_NAME, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
@@ -141,32 +143,46 @@ public class QuoridorApp extends JFrame {
     }
 
     public void tryNewMultiplayerGame() {
+        if (isConnecting) {
+            PopupWindow.showMessage("Already trying to connect. Please wait.");
+            return;
+        }
+
         if (playerName.equals(Constants.DEFAULT_PLAYER_NAME)) {
             PopupWindow.showMessage("Please enter a name first. You can change it in the settings menu.");
             return;
         }
 
-        String address = "";
-        int port = 0;
+        isConnecting = true;
+        new Thread(() -> {
+            String address = "";
+            int port = 0;
 
-        try (BufferedReader br = new BufferedReader(new FileReader("../connection_settings.txt"))) {
-            address = br.readLine().trim();
-            port = Integer.parseInt(br.readLine().trim());
-        } catch (IOException e) {
-            PopupWindow.showMessage("Could not read connection settings. Please check your settings file.");
-            return;
-        }
+            try (BufferedReader br = new BufferedReader(new FileReader("../connection_settings.txt"))) {
+                address = br.readLine().trim();
+                port = Integer.parseInt(br.readLine().trim());
+            } catch (IOException e) {
+                PopupWindow.showMessage("Could not read connection settings. Please check your settings file.");
+                return;
+            }
+            if (!NetworkManager.validate_network_settings(address, port)) {
+                PopupWindow.showMessage("Invalid connection settings. Please check your connection settings file.");
+                isConnecting = false;
+                return;
+            }
+            NetworkManager networkManager = new NetworkManager(address, port);
 
-        NetworkManager networkManager = new NetworkManager(address, port);
+            // check connection
+            if (!networkManager.connect()) {
+                PopupWindow.showMessage("Could not connect to server. Please check your connection settings.");
+                isConnecting = false;
+                return;
+            }
 
-        // check connection
-        if (!networkManager.connect()) {
-            PopupWindow.showMessage("Could not connect to server. Please check your connection settings.");
-            return;
-        }
-
-        startMultiplayerGame(networkManager);
-        showCard(Constants.GAME_ON_CARD);
+            startMultiplayerGame(networkManager);
+            showCard(Constants.GAME_ON_CARD);
+            isConnecting = false;
+        }).start();
     }
 }
 
