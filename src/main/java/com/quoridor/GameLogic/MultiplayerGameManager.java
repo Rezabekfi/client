@@ -160,8 +160,8 @@ public class MultiplayerGameManager extends GameManager {
                     System.out.println("Attempting to reconnect...");
                     if (networkManager.connect()) {
                         System.out.println("Reconnected to the server.");
-                        networkManager.sendMessage(GameMessage.createNameResponse(gameBoardUI.getMainWindow().getPlayerName()));
                         PopupWindow.showMessage("Reconnected to the server!");
+                        startHeartbeatChecker();
                         break;
                     }
                     Thread.sleep(5000); // Wait for 5 seconds before retrying
@@ -588,6 +588,7 @@ public class MultiplayerGameManager extends GameManager {
                 }
                 if (networkManager.isConnected() && (System.currentTimeMillis() - lastHeartbeat > 10000)) {
                     handleConnectionLoss();
+                    break;
                 }
                 try {
                     Thread.sleep(5000);
