@@ -113,6 +113,7 @@ public class NetworkManager {
     }
 
     public static boolean validate_network_settings(String address, int port) {
+        // I don't know how to validate an IP address, so I'll just check if it's not empty
         return address != null && !address.isEmpty() && port > 0 && port < 65536;
     }
 }

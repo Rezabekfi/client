@@ -140,6 +140,7 @@ public class MultiplayerGameManager extends GameManager {
                 break;
             case LOST_CONNECTION:
                 handleConnectionLoss(); // message isnt inmportant here
+                break;
             default:
                 System.out.println("Unknown message type: " + message.getType());
                 break;
