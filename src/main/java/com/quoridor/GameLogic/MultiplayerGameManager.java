@@ -386,7 +386,6 @@ public class MultiplayerGameManager extends GameManager {
         data.put("position", "[" + position.getRow() + "," + position.getCol() + "]");
         
         GameMessage message = new GameMessage(GameMessage.MessageType.MOVE, data);
-        System.out.println("Sending move message" + message.toMessageString());
         networkManager.sendMessage(message);
     }
     
@@ -505,6 +504,7 @@ public class MultiplayerGameManager extends GameManager {
         }
         for (SquareUI square : squares) {
             square.removeMouseListener(square.getMouseListener());
+            square.setMouseListener(null);
             square.setLightedUp(false);
         }
     }
@@ -536,6 +536,9 @@ public class MultiplayerGameManager extends GameManager {
         List<Position> list = board.possibleMoves(currentPlayer);
         List<SquareUI> squares = gameBoardUI.setUpPossibleSquares(list);
         for (SquareUI square : squares) {
+            if (square == null || square.getMouseListener() != null) { // this is a work around a current bug
+                continue;
+            }
             MouseListener listener = new MouseListener() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
