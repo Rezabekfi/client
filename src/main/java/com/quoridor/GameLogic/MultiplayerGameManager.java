@@ -27,7 +27,8 @@ public class MultiplayerGameManager extends GameManager {
     private List<Player> players;
     private WallUI[] doubleWall;
     private volatile boolean running = true;
-
+    private volatile boolean isConnecting = false;
+    
     private boolean nameSent = false;
     private boolean welcomeReceived = false; // placak
 
@@ -148,7 +149,8 @@ public class MultiplayerGameManager extends GameManager {
     }
 
     private void handleConnectionLoss() {
-        if (!running) return;
+        if (!running || isConnecting) return;
+        isConnecting = true;
         PopupWindow.showMessage("Connection lost!");
         startReconnectionLoop();
     }
@@ -161,6 +163,7 @@ public class MultiplayerGameManager extends GameManager {
                     if (networkManager.connect()) {
                         System.out.println("Reconnected to the server.");
                         PopupWindow.showMessage("Reconnected to the server!");
+                        isConnecting = false;
                         startHeartbeatChecker();
                         break;
                     }
