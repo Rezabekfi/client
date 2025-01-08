@@ -28,8 +28,6 @@ public class MultiplayerGameManager extends GameManager {
     private WallUI[] doubleWall;
     private volatile boolean running = true;
 
-    private boolean isConnecting = false;
-
     private boolean nameSent = false;
     private boolean welcomeReceived = false; // placak
 
@@ -151,7 +149,6 @@ public class MultiplayerGameManager extends GameManager {
 
     private void handleConnectionLoss() {
         if (!running) return;
-        isConnecting = true;
         PopupWindow.showMessage("Connection lost!");
         startReconnectionLoop();
     }
@@ -165,7 +162,6 @@ public class MultiplayerGameManager extends GameManager {
                         System.out.println("Reconnected to the server.");
                         networkManager.sendMessage(GameMessage.createNameResponse(gameBoardUI.getMainWindow().getPlayerName()));
                         PopupWindow.showMessage("Reconnected to the server!");
-                        isConnecting = false;
                         break;
                     }
                     Thread.sleep(5000); // Wait for 5 seconds before retrying
@@ -587,14 +583,14 @@ public class MultiplayerGameManager extends GameManager {
     private void startHeartbeatChecker() {
         new Thread(() -> {
             while (running) {
-                if (networkManager.isConnected() && !isConnecting) {
+                if (networkManager.isConnected()) {
                     networkManager.sendMessage(GameMessage.createHeartbeatMessage());
                 }
-                if (networkManager.isConnected() && (System.currentTimeMillis() - lastHeartbeat > 10000) && !isConnecting) {
-                    handleWrongMessage(GameMessage.createErrorMessage("Server is not responding!"));
+                if (networkManager.isConnected() && (System.currentTimeMillis() - lastHeartbeat > 10000)) {
+                    handleConnectionLoss();
                 }
                 try {
-                    Thread.sleep(5500);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;
