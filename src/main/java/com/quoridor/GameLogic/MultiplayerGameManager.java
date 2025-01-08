@@ -26,6 +26,7 @@ public class MultiplayerGameManager extends GameManager {
     private Player currentPlayer;
     private List<Player> players;
     private WallUI[] doubleWall;
+    private volatile boolean hearthBeatRunning = true;
     private volatile boolean running = true;
 
     private boolean nameSent = false;
@@ -150,16 +151,19 @@ public class MultiplayerGameManager extends GameManager {
     private void handleConnectionLoss() {
         if (!running) return;
         PopupWindow.showMessage("Connection lost!");
+        hearthBeatRunning = false;
         startReconnectionLoop();
     }
 
     private void startReconnectionLoop() {
         new Thread(() -> {
             while (!networkManager.isConnected()) {
+                hearthBeatRunning = false;
                 try {
                     System.out.println("Attempting to reconnect...");
                     if (networkManager.connect()) {
                         System.out.println("Reconnected to the server.");
+
                         networkManager.sendMessage(GameMessage.createNameResponse(gameBoardUI.getMainWindow().getPlayerName()));
                         PopupWindow.showMessage("Reconnected to the server!");
                         break;
@@ -582,7 +586,7 @@ public class MultiplayerGameManager extends GameManager {
 
     private void startHeartbeatChecker() {
         new Thread(() -> {
-            while (running) {
+            while (hearthBeatRunning) {
                 if (networkManager.isConnected()) {
                     networkManager.sendMessage(GameMessage.createHeartbeatMessage());
                 }
