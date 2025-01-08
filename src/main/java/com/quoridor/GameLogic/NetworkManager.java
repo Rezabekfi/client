@@ -92,7 +92,6 @@ public class NetworkManager {
         } catch (Exception e) {
             System.err.println("Receive error: " + e.getMessage());
             connected = false;
-            System.out.println("yo");
             return GameMessage.createLostConnection();
         }
     }

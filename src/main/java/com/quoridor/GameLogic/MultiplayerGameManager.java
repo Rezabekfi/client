@@ -148,6 +148,7 @@ public class MultiplayerGameManager extends GameManager {
     }
 
     private void handleConnectionLoss() {
+        System.out.println("Connection lost!");
         if (!running) return;
         PopupWindow.showMessage("Connection lost!");
         startReconnectionLoop();
