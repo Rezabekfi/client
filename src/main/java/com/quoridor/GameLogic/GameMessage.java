@@ -278,6 +278,12 @@ public class GameMessage {
         return new GameMessage(MessageType.NAME_RESPONSE, data);
     }
 
+    public static GameMessage createPlayerDisconnected(String playerId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("disconnected_player_id", playerId);
+        return new GameMessage(MessageType.PLAYER_DISCONNECTED, data);
+    }
+
     public static GameMessage createAckMessage() {
         return new GameMessage(MessageType.ACK, new HashMap<>());
     }

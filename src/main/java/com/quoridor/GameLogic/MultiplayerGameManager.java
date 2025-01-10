@@ -590,6 +590,7 @@ public class MultiplayerGameManager extends GameManager {
                 }
                 if (networkManager.isConnected() && (System.currentTimeMillis() - lastHeartbeat > 10000)) {
                     PopupWindow.showMessage("Connection lost!");
+                    handlePlayerDisconnected(GameMessage.createPlayerDisconnected(playerId));
                     break;
                 }
                 try {
