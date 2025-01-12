@@ -339,7 +339,7 @@ public class MultiplayerGameManager extends GameManager {
     }
 
     private void handleError(GameMessage message) {
-        message.setMessage("Server send error: " + message.getMessage());
+        message.setMessage("Server sent error: " + message.getMessage());
         handleWrongMessage(message);
     }
 
