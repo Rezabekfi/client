@@ -45,8 +45,6 @@ public class Board {
 
     }
 
-    // TODO: change color distribution to something else.
-    // CAREFUL DIRECTION IS DIRECTION WHICH PLAYER WILL BE FACING AND TRYING TO GET TO NOT THE ONE WEHRE HE STARTS!
     private Player createPlayer(GoalDirection goalDirection) {
         int row, col;
         PlayerColor playerColor;

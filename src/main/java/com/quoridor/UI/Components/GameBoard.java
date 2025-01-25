@@ -113,9 +113,6 @@ public class GameBoard extends JPanel {
     }
 
     private void updateWalls() {
-
-        // TODO: zkrášlit metodu
-
         boolean[][] verticalWallState = this.board.getVerticalWalls();
         boolean[][] horizontalWallState = this.board.getHorizontalWalls();
         int wallGap = 5;

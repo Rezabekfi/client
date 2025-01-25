@@ -15,8 +15,6 @@ import com.quoridor.UI.Components.SquareUI;
 import com.quoridor.UI.Components.WallUI;
 import com.quoridor.UI.Windows.PopupWindow;
 
-// would be better if class would extend another but because of my coding "style" I wont do it now (possible future improvment)
-
 public class MultiplayerGameManager extends GameManager {
     private NetworkManager networkManager;
     private boolean isMyTurn;
@@ -29,7 +27,7 @@ public class MultiplayerGameManager extends GameManager {
     private volatile boolean running = true;
 
     private boolean nameSent = false;
-    private boolean welcomeReceived = false; // placak
+    private boolean welcomeReceived = false;
 
     private long lastHeartbeat;
 
@@ -344,8 +342,6 @@ public class MultiplayerGameManager extends GameManager {
     }
 
     synchronized private void handleWrongMessage(GameMessage message) {
-        // clean up and disconect
-        //networkManager.sendMessage(GameMessage.createAbandonMessage());
         stopNetworkListener();
         networkManager.disconnect();
         gameBoardUI.getMainWindow().getGamePanel().cleanupGame();
@@ -405,8 +401,6 @@ public class MultiplayerGameManager extends GameManager {
     private void sendAck() {
         networkManager.sendMessage(GameMessage.createAckMessage());
     }
-
-    // Override other necessary methods
 
     public void setWallActionListener() {
         List<WallUI> walls = gameBoardUI.getAllWalls();
@@ -521,7 +515,6 @@ public class MultiplayerGameManager extends GameManager {
     }
 
     public void cleanupGame() {
-        // TODO: check if anything else is needed
         stopNetworkListener();
         networkManager.disconnect();
     }
