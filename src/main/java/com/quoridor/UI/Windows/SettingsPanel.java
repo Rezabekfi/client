@@ -17,11 +17,18 @@ import javax.swing.SwingConstants;
 
 import com.quoridor.Settings.Constants;
 
+/**
+ * Panel for player settings. Allows the user to set their name.
+ */
 public class SettingsPanel extends JPanel {
-    
+    // Reference to the main window
     private QuoridorApp mainWindow;
+
+    // Text field for player name input
     private JTextField playerNameField;
     private JTextField playerNameField2;
+
+    // Constants for name validation
     private static final int MAX_NAME_LENGTH = 16;
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9_ ]*$");
 

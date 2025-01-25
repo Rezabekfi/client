@@ -13,21 +13,29 @@ import com.quoridor.GameLogic.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
+/**
+ * Main class of the application. Instance is cretaed in the main method of App.java and it is responsible for managing the game screens and starting games.
+ */
 public class QuoridorApp extends JFrame {
-
+    // Main panel that will hold all other panels
     private JPanel mainPanel;
 
+    // Game panel that will be shown when the game is running
     private GamePanel gamePanel;
 
+    // Menu panel that will be shown when the game is not running
     private MenuPanel menuPanel;
 
+    // Settings panel, used for changing player names
     private SettingsPanel settingsPanel;
 
+    // Player name that will be used in the game
     private String playerName;
 
+    // Player name that will be used in single player mode
     private String playerName2;
 
+    // Flag to prevent multiple connection attempts
     private boolean isConnecting = false;
     
     public QuoridorApp() {
@@ -43,7 +51,7 @@ public class QuoridorApp extends JFrame {
 
         this.settingsPanel = new SettingsPanel(this);
 
-        // Add both panels to the frame (CardLayout will handle switching between them)
+        // Add panels to the frame
         mainPanel.add(this.menuPanel, Constants.MENU_CARD);
         mainPanel.add(this.gamePanel, Constants.GAME_ON_CARD);
         mainPanel.add(this.settingsPanel, Constants.SETTINGS_CARD);
@@ -53,11 +61,13 @@ public class QuoridorApp extends JFrame {
         this.setVisible(true);
     }
 
+    // Method to switch between different panels
     public void showCard(String panel) {
         CardLayout cl = (CardLayout) this.mainPanel.getLayout();
         cl.show(this.mainPanel, panel);
     }
 
+    // Start new single player game
     public void startNewGame(int startingPlayer) {
         // Clean up any existing game
         gamePanel.cleanupGame();
@@ -86,6 +96,7 @@ public class QuoridorApp extends JFrame {
         gm.gameLoop();
     }
 
+    // Start new multiplayer game
     public void startMultiplayerGame(NetworkManager networkManager) {
         // Clean up any existing game
         gamePanel.cleanupGame();
@@ -102,46 +113,7 @@ public class QuoridorApp extends JFrame {
 
     }
 
-    public static void createWindow(JFrame window, String title, int width, int height) {
-        window.setTitle(title);
-        window.setSize(width, height);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setLocationRelativeTo(null);
-        window.setResizable(false);
-    }
-
-    public JPanel getMainPanel() {
-        return mainPanel;
-    }
-
-    public GamePanel getGamePanel() {
-        return gamePanel;
-    }
-
-    public MenuPanel getMenuPanel() {
-        return menuPanel;
-    }
-
-    public SettingsPanel getSettingsPanel() {
-        return settingsPanel;
-    }
-
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
-
-    public String getPlayerName2() {
-        return playerName2;
-    }
-
-    public void setPlayerName2(String playerName2) {
-        this.playerName2 = playerName2;
-    }
-
+    // Try connecting to a server and start a new multiplayer game if successful
     public void tryNewMultiplayerGame() {
         if (isConnecting) {
             PopupWindow.showMessage("Already trying to connect. Please wait.");
@@ -183,6 +155,48 @@ public class QuoridorApp extends JFrame {
             showCard(Constants.GAME_ON_CARD);
             isConnecting = false;
         }).start();
+    }
+
+    // Method to create a new window with specified title, width and height (used in the constructor)
+    public static void createWindow(JFrame window, String title, int width, int height) {
+        window.setTitle(title);
+        window.setSize(width, height);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setLocationRelativeTo(null);
+        window.setResizable(false);
+    }
+
+    // Getters and setters
+    public JPanel getMainPanel() {
+        return mainPanel;
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
+    }
+
+    public MenuPanel getMenuPanel() {
+        return menuPanel;
+    }
+
+    public SettingsPanel getSettingsPanel() {
+        return settingsPanel;
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public String getPlayerName2() {
+        return playerName2;
+    }
+
+    public void setPlayerName2(String playerName2) {
+        this.playerName2 = playerName2;
     }
 }
 

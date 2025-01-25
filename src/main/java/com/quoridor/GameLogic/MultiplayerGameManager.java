@@ -15,22 +15,38 @@ import com.quoridor.UI.Components.SquareUI;
 import com.quoridor.UI.Components.WallUI;
 import com.quoridor.UI.Windows.PopupWindow;
 
+
+/**
+ * MultiplayerGameManager class is responsible for managing the game state and handling the game loop for Multiplayer mode
+ * It extends GameManager class to handle the game loop for Multiplayer mode -> the extension is barely used in the code it is more for accesing polymorphised methods by UI classes
+ */
 public class MultiplayerGameManager extends GameManager {
+    // NetworkManager object for handling network communication
     private NetworkManager networkManager;
+    // boolean to check if it is the player's turn
     private boolean isMyTurn;
+    // player id
     private String playerId;
+    // Board representing the game state
     private Board board;
+    // GameBoard representing the game UI
     private GameBoard gameBoardUI;
+    
     private Player currentPlayer;
     private List<Player> players;
     private WallUI[] doubleWall;
+
+    // boolean to check if the game is running and set to false when the game ends to stop threads.
     private volatile boolean running = true;
 
+    // booleans to check if the setup messages has been sent and received
     private boolean nameSent = false;
     private boolean welcomeReceived = false;
 
+    // time of the last message
     private long lastHeartbeat;
 
+    // Player object representing the disconnected player
     Player disconectedPlayer;
 
     public MultiplayerGameManager(Board board, GameBoard gameBoardUI, NetworkManager networkManager) {
@@ -46,6 +62,8 @@ public class MultiplayerGameManager extends GameManager {
         lastHeartbeat = System.currentTimeMillis();
     }
 
+    // Start the network listener thread
+    // This thread listens for incoming messages from the server and handles them
     public void startNetworkListener() {
         new Thread(() -> {
             while (running) {
@@ -65,28 +83,32 @@ public class MultiplayerGameManager extends GameManager {
         }).start();
     }
 
+    // Stop the network listener thread
     public void stopNetworkListener() {
         running = false;
     }
     
+    // Handle incoming network messages
+    // This method is called by the network listener thread and is very important for the game to work
     private void handleNetworkMessage(GameMessage message) {
         if (message == null) return;
 
+        // Update the last message time
         lastHeartbeat = System.currentTimeMillis();
 
-        if (message.getType() == GameMessage.MessageType.ACK) {
+        if (message.getType() == GameMessage.MessageType.ACK) { // Ignore ACK messages
             return;
         }
 
         if (!welcomeReceived) {
-            if (message.getType() == GameMessage.MessageType.WELCOME) {
+            if (message.getType() == GameMessage.MessageType.WELCOME) { // Check if the first message is WELCOME
                 welcomeReceived = true;
             } else {
                 handleError(GameMessage.createErrorMessage("Expected WELCOME message"));
                 return;
             }
         } else if (!nameSent) {
-            if (message.getType() == GameMessage.MessageType.NAME_REQUEST) {
+            if (message.getType() == GameMessage.MessageType.NAME_REQUEST) { // Check if the second message is NAME_REQUEST
                 handleNameRequest(message);
                 return;
             } else {
@@ -95,7 +117,7 @@ public class MultiplayerGameManager extends GameManager {
             }
         }
         
-        
+        // Handle the message based on its type
         switch (message.getType()) {
             case NEXT_TURN:
                 handleNextTurn(message);
@@ -145,11 +167,13 @@ public class MultiplayerGameManager extends GameManager {
         }
     }
 
+    // Handle connection loss by starting the reconnection loop in a new thread
     private void handleConnectionLoss() {
         if (!running) return;
         startReconnectionLoop();
     }
 
+    // Start the reconnection loop in a new thread
     private void startReconnectionLoop() {
         new Thread(() -> {
             while (!networkManager.isConnected()) {
@@ -170,6 +194,7 @@ public class MultiplayerGameManager extends GameManager {
         }).start();
     }
 
+    // Handle message type PLAYER_RECONNECTED
     private void handlePlayerReconnected(GameMessage message) {
         Player[] players = board.getPlayers();
         for (Player player : players) {
@@ -182,6 +207,7 @@ public class MultiplayerGameManager extends GameManager {
         gameBoardUI.updateBoard();
     }
 
+    // Handle message type PLAYER_DISCONNECTED
     private void handlePlayerDisconnected(GameMessage message) {
         Player[] players = board.getPlayers();
         for (Player player : players) {
@@ -194,26 +220,31 @@ public class MultiplayerGameManager extends GameManager {
         gameBoardUI.updateBoard();
     }
 
+    // Handle message type NAME_REQUEST
     private void handleNameRequest(GameMessage message) {
         nameSent = true;
         sendNameResponse(gameBoardUI.getMainWindow().getPlayerName());
     }
 
+    // Handle message type WELCOME
     private void handleWelcome(GameMessage message) {
         sendAck();
     }
 
+    // Handle message type WAITING
     private void handleWaiting(GameMessage message) {
         PopupWindow.showMessage("Waiting for other players to join...");
         sendAck();
     }
 
+    // Handle message type GAME_STARTED
     private void handleGameStarted(GameMessage message) {
-        findPlayerId(message);
-        updateGameState(message);
+        findPlayerId(message); // Find player id based on the player name (this client)
+        updateGameState(message); // Update the game state based on the message (should be starting position)
         sendAck();
     }
 
+    // Find the player id based on the player name
     private void findPlayerId(GameMessage message) {
         String playerName = gameBoardUI.getMainWindow().getPlayerName();
         List<Player> players = message.getPlayers();
@@ -226,21 +257,23 @@ public class MultiplayerGameManager extends GameManager {
         }
     }
 
+    // Handle the next turn message
     private void handleNextTurn(GameMessage message) {
         sendAck();
-        setCurrentPlayer(message);
-        updateGameState(message);
+        setCurrentPlayer(message); // Set the current player based on the message
+        updateGameState(message); // Update the game state
         if (isMyTurn(message)) {
             isMyTurn = true;
-            highlightPossibleMoves();
+            highlightPossibleMoves(); // Highlight possible moves if it is the player's turn
         } else {
             isMyTurn = false;
-            removeSelectedSquares();
-            removeSelectedWalls();
+            removeSelectedSquares(); // Remove selected squares if it is not the player's turn
+            removeSelectedWalls(); // Remove selected walls if it is not the player's turn (this is not necessary, but it is nicer visualy)
         }
-        gameBoardUI.updateBoard();
+        gameBoardUI.updateBoard(); // Update the game board so it reflects the new game state
     }
 
+    // Removes selected walls that are not placed (when user clicks a wall it is selected, but if the user doesn't place it, it should be unselected, after he makes another move)
     private void removeSelectedWalls() {
         List<WallUI> walls = gameBoardUI.getAllWalls();
         for (WallUI wall : walls) {
@@ -250,10 +283,12 @@ public class MultiplayerGameManager extends GameManager {
         }
     }
 
+    // Set the current player based on the message
     private void setCurrentPlayer(GameMessage message) {
         currentPlayer = message.getCurrentPlayer();
     }
 
+    // Update the game state based on the message
     private void updateGameState(GameMessage message) {
         updatePlayers(message);
         updateBoard(message);
@@ -261,10 +296,12 @@ public class MultiplayerGameManager extends GameManager {
         gameBoardUI.updateBoard();
     }
 
+    // Check if it is the player's turn based on the message
     private boolean isMyTurn(GameMessage message) {
         return message.getPlayerId(currentPlayer).equals(playerId);
     }
 
+    // Place walls based on the new game state
     private void updateWalls(GameMessage message) {
         List<Position> horizontalWalls = message.getHorizontalWalls();
         List<Position> verticalWalls = message.getVerticalWalls();
@@ -276,10 +313,12 @@ public class MultiplayerGameManager extends GameManager {
         }
     }
 
+    // Place a wall, but without checking if it is possible, because server is king
     private void placeWallServer(Position wall, boolean isHorizontal) {
         board.placeWall(wall, !isHorizontal);
     }
 
+    // Update player objects
     private void updatePlayers(GameMessage message) {
         players = message.getPlayers();
         Player[] playersArray = new Player[players.size()];
@@ -292,6 +331,7 @@ public class MultiplayerGameManager extends GameManager {
         board.setPlayers(playersArray);
     }
 
+    // Update the board based on the message
     private void updateBoard(GameMessage message) {
         String boardString = message.getBoardString();
         char[][] board = this.board.getBoard();
@@ -302,6 +342,7 @@ public class MultiplayerGameManager extends GameManager {
         }
     }
 
+    // Find a player based on the id
     private Player getPlayerById(String id) {
         for (Player player : players) {
             if (player.getId().equals(id)) {
@@ -311,36 +352,42 @@ public class MultiplayerGameManager extends GameManager {
         return null;
     }
 
+    // Handle the end of the game
     private void handleGameEnd(GameMessage message) {
         Player winner = getPlayerById(message.getWinnerId());
+        // Show who won
         if (winner == null) {
             PopupWindow.showMessage("Game ended. Winner: unknown");
         } else {
             PopupWindow.showMessage("Game ended. Winner: " + winner.getName());
         }
-        updateBoard(message);
+        updateBoard(message); // update board so the oponent can see the last move
+        // clean up
         removeSelectedSquares();
         removeWallActionListener();
         gameBoardUI.updateBoard();
-        stopNetworkListener();
+        stopNetworkListener(); // stop the network listener
         sendAck();
 
+        // disconnect from the server
         networkManager.sendMessage(GameMessage.createAbandonMessage());
         networkManager.disconnect();
     }
 
+    // Remove the action listener from the walls
     private void removeWallActionListener() {
         List<WallUI> walls = gameBoardUI.getAllWalls();
         for (WallUI wall : walls) {
             wall.removeMouseListener(wall.getMouseListener());
         }
     }
-
+    // Handle the error message -> show the error message and disconnect from the server
     private void handleError(GameMessage message) {
         message.setMessage("Server sent error: " + message.getMessage());
         handleWrongMessage(message);
     }
-
+    // Handle wrong message
+    // clean up game and disconnect from the server + show the error message
     synchronized private void handleWrongMessage(GameMessage message) {
         stopNetworkListener();
         networkManager.disconnect();
@@ -368,6 +415,7 @@ public class MultiplayerGameManager extends GameManager {
         }
     }
 
+    // Send the move to the server
     public void sendMove(Position position) {
         Map<String, Object> data = new HashMap<>();
         data.put("player_id", Integer.parseInt(playerId)-1);
@@ -379,6 +427,7 @@ public class MultiplayerGameManager extends GameManager {
         networkManager.sendMessage(message);
     }
     
+    // Send the wall placement to the server
     public void sendWallPlacement(Position wall1, Position wall2, boolean isHorizontal) {
         Map<String, Object> data = new HashMap<>();
         data.put("player_id", Integer.parseInt(playerId)-1);
@@ -390,6 +439,7 @@ public class MultiplayerGameManager extends GameManager {
         networkManager.sendMessage(message);
     }
     
+    // Send the name response to the server
     public void sendNameResponse(String name) {
         Map<String, Object> data = new HashMap<>();
         data.put("name", name);
@@ -398,10 +448,12 @@ public class MultiplayerGameManager extends GameManager {
         networkManager.sendMessage(message);
     }        
 
+    // Send ACK message
     private void sendAck() {
         networkManager.sendMessage(GameMessage.createAckMessage());
     }
 
+    // Set the wall action listener to work with the UI.
     public void setWallActionListener() {
         List<WallUI> walls = gameBoardUI.getAllWalls();
         for (WallUI wall : walls) {
@@ -463,7 +515,8 @@ public class MultiplayerGameManager extends GameManager {
             wall.setMouseListener(listener);  // Store the listener
         }
     }
-
+    
+    // Check if the player can place a wall
     public boolean possibleDoubleWall() {
         if (doubleWall[0] == null || doubleWall[1] == null) return false;
     
@@ -485,6 +538,7 @@ public class MultiplayerGameManager extends GameManager {
         return false;
     }
 
+    // Remove selected squares
     private void removeSelectedSquares() {
         List<SquareUI> squares = getAllSquares();
         if (squares == null) {
@@ -497,6 +551,7 @@ public class MultiplayerGameManager extends GameManager {
         }
     }
 
+    // Highlight possible moves
     private void highlightPossibleMoves() {
         if (!isMyTurn) {
             removeSelectedSquares();
@@ -519,6 +574,7 @@ public class MultiplayerGameManager extends GameManager {
         networkManager.disconnect();
     }
 
+    // Set the action listener for the squares
     private void setSquaresActionListener() {
         List<Position> list = board.possibleMoves(currentPlayer);
         List<SquareUI> squares = gameBoardUI.setUpPossibleSquares(list);
@@ -570,6 +626,7 @@ public class MultiplayerGameManager extends GameManager {
         return false;
     }
 
+    // Start the heartbeat checker in a new thread
     private void startHeartbeatChecker() {
         new Thread(() -> {
             while (running) {

@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility class for color related operations
+ */
 public class ColorUtils {
     private static final Map<Color, String> colorNameMap = new HashMap<>();
 

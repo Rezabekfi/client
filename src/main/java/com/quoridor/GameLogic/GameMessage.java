@@ -6,12 +6,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.quoridor.Settings.PlayerColor;
-
+/**
+ * Represents a message that can be sent between the server and the client.
+ * The message is composed of a type and a map of data.
+ * Structure of the message: type:MESSAGE_TYPE|data:key1=value1;key2=value2;...;
+ */
 public class GameMessage {
-
+    // The type of the message
     private MessageType type;
+    // The data of the message
     private Map<String, Object> messageData;
 
+    // Enum for the different types of messages
     public enum MessageType {
         WELCOME,
         WAITING,
@@ -31,21 +37,26 @@ public class GameMessage {
         LOST_CONNECTION
     }
 
+    // Constructor for a message with no data
+    // For empty message we assign a wrong message type as default
     public GameMessage() {
         this.type = MessageType.WRONG_MESSAGE;
         this.messageData = new HashMap<>();
     }
 
+    // Constructor for a message with a message string only (careful, this is not a from string to message constructor)
     public GameMessage(String message) {
         this.type = MessageType.WRONG_MESSAGE;
         this.messageData = new HashMap<>();
         this.messageData.put("message", message);
     }
 
+    // Constructor for a message with a type and data
     public GameMessage(MessageType type, Map<String, Object> data) {
         this.type = type;
         this.messageData = data;
     }
+
 
     public MessageType getType() {
         return type;
@@ -55,6 +66,7 @@ public class GameMessage {
         this.type = type;
     }
 
+    // Converts the message to a string
     public String toMessageString() {
         StringBuilder messageBuilder = new StringBuilder();
         messageBuilder.append("type:").append(type.toString().toLowerCase()).append("|data:");
@@ -67,6 +79,7 @@ public class GameMessage {
         return messageBuilder.toString();
     }
 
+    // Converts a message string to a message - used for receiving messages
     public static GameMessage fromMessageString(String messageString) {
         try {
             String[] parts = messageString.split("\\|data:");
@@ -92,6 +105,7 @@ public class GameMessage {
         }
     }
 
+    // Checks if the message is valid for the given type
     private static boolean isValidMessage(MessageType type, Map<String, Object> data) {
         switch (type) {
             case WELCOME:
@@ -122,7 +136,7 @@ public class GameMessage {
                 return false;
         }
     }
-
+    // Checks if the message is valid for the GAME_STARTED or NEXT_TURN type
     private static boolean isValidGameStartedOrNextTurn(Map<String, Object> data) {
         return data.containsKey("lobby_id") && data.get("lobby_id") instanceof String &&
                data.containsKey("board") && data.get("board") instanceof String &&
@@ -264,6 +278,7 @@ public class GameMessage {
     }
 
     // Factory methods for creating specific message types
+    
     public static GameMessage createMoveMessage(String playerId, boolean isHorizontal, Position[] positions) {
         Map<String, Object> data = new HashMap<>();
         data.put("player_id", playerId);

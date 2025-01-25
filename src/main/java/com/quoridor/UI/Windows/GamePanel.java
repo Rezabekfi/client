@@ -4,14 +4,11 @@ import java.awt.Color;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import com.quoridor.GameLogic.GameManager;
 import com.quoridor.GameLogic.MultiplayerGameManager;
@@ -21,43 +18,42 @@ import com.quoridor.UI.Components.GameBoard;
 import com.quoridor.GameLogic.Player;
 import com.quoridor.GameLogic.NetworkManager;
 
+/**
+ * Panel that displays the game board and player information. It is shown when the game is running.
+ */
 public class GamePanel extends JPanel {
 
+    // Reference to the main window
     private QuoridorApp mainWindow;
+    
+    // Game board that will be shown in the panel (UI component)
     private GameBoard gb;
+
+    // Game manager that will be used to run the game (singleplayer/multiplayer)
     private GameManager gm;
+
+    // Player panels that will display information about the players next to the game board
     private PlayerPanel p1;
     private PlayerPanel p2;
+
+    // Network manager that will be used to communicate with the server, if the game is multiplayer
     private NetworkManager networkManager;
+    // Flag to check if the game is multiplayer
     private boolean isMultiplayerGame;
 
+    // Constructor (setting up the graphical interface)
     public GamePanel(QuoridorApp mainWindow) {
         this.mainWindow = mainWindow;
         this.setLayout(null);
         this.isMultiplayerGame = false;
 
+        // Set up the title of the game
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
         JLabel title = new JLabel("GAME", SwingConstants.CENTER);
         titlePanel.add(title);
         titlePanel.setBounds(0, 0, this.mainWindow.getWidth(), this.mainWindow.getHeight()/12);
         titlePanel.setBackground(Color.GRAY);
-
-        // Adding the key listener to the title panel -> only for testing in "production" should be removed
-        titlePanel.setFocusable(true);
-        titlePanel.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (!isMultiplayerGame) return;
-                
-                if (e.getKeyCode() == KeyEvent.VK_D) { // 'D' for disconnect
-                    simulateDisconnect();
-                } else if (e.getKeyCode() == KeyEvent.VK_C) { // 'C' for connect
-                    simulateReconnect();
-                }
-            }
-        });
-        this.add(titlePanel);
 
         JPanel buttonPanel = new JPanel();
         JButton backButton = new JButton("Abandon Game");
@@ -68,16 +64,7 @@ public class GamePanel extends JPanel {
         this.add(buttonPanel);
     }
 
-    public void setUpTitle() {
-        JPanel titlePanel = new JPanel();
-        titlePanel.setLayout(new BorderLayout());
-        JLabel title = new JLabel("GAME", SwingConstants.CENTER);
-        titlePanel.add(title);
-        titlePanel.setBounds(0, 0, this.mainWindow.getWidth(), this.mainWindow.getHeight()/12);
-        titlePanel.setBackground(Color.GRAY);
-        this.add(titlePanel);
-    }
-
+    // Action listener for the back button
     public ActionListener backToMenuAction() {
         ActionListener al = new ActionListener() {
             @Override
@@ -105,6 +92,7 @@ public class GamePanel extends JPanel {
 
     }
 
+    // Method to update the player panels with new player information
     public void updatePlayerPanels(List<Player> players) {
         if (p1 == null || p2 == null) {
             createPlayerPanels(players);
@@ -116,6 +104,7 @@ public class GamePanel extends JPanel {
         }
     }
 
+    // Method to create the player panels
     public void createPlayerPanels(List<Player> players) {
         p1 = new PlayerPanel(players.get(0));
         p2 = new PlayerPanel(players.get(1));
@@ -130,8 +119,21 @@ public class GamePanel extends JPanel {
         this.add(p2);
     }
 
+    // Method to clean up the game components
+    public void cleanupGame() {
+        if (p1 != null) remove(p1);
+        if (p2 != null) remove(p2);
+        if (gb != null) remove(gb);
+        gb = null;
+        gm = null;
+        p1 = null;
+        p2 = null;
+        networkManager = null;
+        isMultiplayerGame = false;
+        repaint();
+    }
 
-
+    // Getters and setters
     public QuoridorApp getmainWindow() {
         return mainWindow;
     }
@@ -155,45 +157,6 @@ public class GamePanel extends JPanel {
 
     public void setGameManager(GameManager gm) {
         this.gm = gm;
-    }
-
-    public void cleanupGame() {
-        if (p1 != null) remove(p1);
-        if (p2 != null) remove(p2);
-        if (gb != null) remove(gb);
-        gb = null;
-        gm = null;
-        p1 = null;
-        p2 = null;
-        networkManager = null;
-        isMultiplayerGame = false;
-        repaint();
-    }
-
-    private void simulateDisconnect() {
-        if (networkManager != null) {
-            SwingUtilities.invokeLater(() -> {
-                networkManager.simulateDisconnect();
-                PopupWindow.showMessage("Simulated Disconnect");
-                if (p1 != null) p1.updatePlayerInfo();
-                if (p2 != null) p2.updatePlayerInfo();
-                revalidate();
-                repaint();
-            });
-        }
-    }
-
-    private void simulateReconnect() {
-        if (networkManager != null) {
-            SwingUtilities.invokeLater(() -> {
-                networkManager.simulateReconnect();
-                PopupWindow.showMessage("Simulated Reconnect");
-                if (p1 != null) p1.updatePlayerInfo();
-                if (p2 != null) p2.updatePlayerInfo();
-                revalidate();
-                repaint();
-            });
-        }
     }
 
     public void setNetworkManager(NetworkManager networkManager) {

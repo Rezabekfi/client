@@ -2,6 +2,9 @@ package com.quoridor.Settings;
 
 import java.awt.Color;
 
+/**
+ * Enum representing the color of the player. Color as in the color of the player's pawn and the symbol representing the player in board strings
+ */
 public enum PlayerColor {
     BLUE(Color.BLUE, '1'),
     RED(Color.RED, '2'),

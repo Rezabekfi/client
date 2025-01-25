@@ -5,8 +5,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * A simple popup window that displays a message and an OK button. 
+ */
 public class PopupWindow extends JDialog {
     
+    // Constructor (not used)
     public PopupWindow(String message, String title, int width, int height) {
         setTitle(title);
         setSize(width, height);
@@ -39,6 +43,8 @@ public class PopupWindow extends JDialog {
         add(mainPanel);
     }
     
+    // Static method to show a message in a new popup window
+    // This method is used significantly more than the constructor
     public static void showMessage(String message) {
         new Thread(() -> {
             // Ensure we're on EDT for Swing operations

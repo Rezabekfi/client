@@ -10,17 +10,23 @@ import com.quoridor.GameLogic.*;
 import com.quoridor.Settings.Constants;
 import com.quoridor.UI.Windows.QuoridorApp;
 
+/**
+ * Panel that the game board. It is shown in GamePanel when the game is running.
+ */
 public class GameBoard extends JPanel {
-    
+    // Reference to the game board object
     private Board board;
+    // Reference to the main window
     private QuoridorApp mainWindow;
+    // Panel that will hold the game board UI
     private JPanel boardPanel;
+    // 2D array of SquareUI objects representing the squares on the board
     private SquareUI[][] squares;
+    // 2D array of WallUI objects representing the vertical walls on the board
     private WallUI[][] verticalWalls = new WallUI[Constants.BOARD_SIZE][Constants.BOARD_SIZE-1];
     private WallUI[][] horizontalWalls = new WallUI[Constants.BOARD_SIZE-1][Constants.BOARD_SIZE];
 
-    private Position newPosition; // completely forgot why is this here
-
+    // Constructor
     public GameBoard(Board board, QuoridorApp mainWindow) {
         this.board = board;
         this.mainWindow = mainWindow;
@@ -29,12 +35,12 @@ public class GameBoard extends JPanel {
         
         JPanel boardPanel = setUpGameBoardUI();
         this.add(boardPanel, BorderLayout.CENTER);
-        
-        
     }
 
+    // Method to set up the game board UI - graphical hell
     private JPanel setUpGameBoardUI() {
         this.boardPanel = new JPanel(null);
+        // get board state
         char[][] gamePosition = this.board.getBoard();
         boolean[][] verticalWalls = this.board.getVerticalWalls();
         boolean[][] horizontalWalls = this.board.getHorizontalWalls();
@@ -43,6 +49,7 @@ public class GameBoard extends JPanel {
         int wallGap = 5;
         int squareSize = mainWindow.getHeight()*3/4 /9 - wallGap;
 
+        // Create squares
         for (int i = 0; i < this.board.getBoardSize(); i++) {
             for (int j = 0; j < this.board.getBoardSize(); j++) {
                 char currentChar = gamePosition[i][j];
@@ -52,7 +59,7 @@ public class GameBoard extends JPanel {
                 this.boardPanel.add(currentSquare);
             }
         }
-        
+        // Create vertical walls
         for (int i = 0; i < Constants.BOARD_SIZE; i++) {
             for (int j = 0; j < Constants.BOARD_SIZE-1; j++) {
                 WallUI wall = new WallUI(i,j,true, verticalWalls[i][j]);
@@ -63,6 +70,7 @@ public class GameBoard extends JPanel {
             }
         }
 
+        // Create horizontal walls
         for (int i = 0; i < Constants.BOARD_SIZE-1; i++) {
             for (int j = 0; j < Constants.BOARD_SIZE; j++) {
                 WallUI wall = new WallUI(i, j, false, horizontalWalls[i][j]);
@@ -90,6 +98,7 @@ public class GameBoard extends JPanel {
         repaint();    // Redraw the updated components
     }
 
+    // Method to update the squares on the board
     private void updateSquares() {
         char[][] gamePosition = this.board.getBoard();
         for (int i = 0; i < this.board.getBoardSize(); i++) {
@@ -105,13 +114,7 @@ public class GameBoard extends JPanel {
         }
     }
 
-    public void clearAllWalls() {
-        for (WallUI wall : this.getAllWalls()) {
-            wall.setPlaced(false);
-            wall.repaint();
-        }
-    }
-
+    // Method to update the walls on the board
     private void updateWalls() {
         boolean[][] verticalWallState = this.board.getVerticalWalls();
         boolean[][] horizontalWallState = this.board.getHorizontalWalls();
@@ -143,6 +146,7 @@ public class GameBoard extends JPanel {
         this.repaint();
     }
 
+    // Method to light up the squares that the player can move to
     public List<SquareUI> setUpPossibleSquares(List<Position> list) {
         List<SquareUI> res = new ArrayList<SquareUI>();
         for (Position position : list) {
@@ -154,6 +158,7 @@ public class GameBoard extends JPanel {
         return res;
     }
 
+    // Getters and setters
     public Board getBoard() {
         return board;
     }
@@ -207,14 +212,6 @@ public class GameBoard extends JPanel {
 
     public void setHorizontalWalls(WallUI[][] horizontalWalls) {
         this.horizontalWalls = horizontalWalls;
-    }
-
-    public Position getNewPosition() {
-        return newPosition;
-    }
-
-    public void setNewPosition(Position newPosition) {
-        this.newPosition = newPosition;
     }
     
     public void setNewGame(int startingPlayer) {

@@ -9,16 +9,20 @@ import javax.swing.border.LineBorder;
 
 import com.quoridor.GameLogic.Player;
 
+/**
+ * Panel that displays information about a player. It is shown in GamePanel next to the game board.
+*/
 public class PlayerPanel extends JPanel {
-
+    // Player object to display information about
     Player player;
 
-
+    // Constructor
     public PlayerPanel(Player p) {
         this.player = p;
         setPlayerPanel();
     }
 
+    // Set up the panel to display player information
     private void setPlayerPanel() {
         this.setLayout(new GridLayout(4, 1));
         if (player == null) {
@@ -28,6 +32,7 @@ public class PlayerPanel extends JPanel {
         }
     }
 
+    // Display default message when no player is set
     private void displayEmptyPlayer() {
         this.add(new JLabel("No Player"), SwingConstants.CENTER);
         this.add(new JLabel("Walls: N/A"), SwingConstants.CENTER);
@@ -35,6 +40,7 @@ public class PlayerPanel extends JPanel {
         this.add(new JLabel("Color: N/A"), SwingConstants.CENTER);
     }
 
+    // Display player information
     private void displayPlayer() {
         // Display player name
         JLabel nameLabel = new JLabel("Player: " + player.getName(), SwingConstants.CENTER);
@@ -62,6 +68,8 @@ public class PlayerPanel extends JPanel {
         this.add(colorLabel);
     }
 
+    // Update player information displayed in the panel
+    // called when player info changes
     public void updatePlayerInfo() {
         this.removeAll();  // Clear existing components
         displayPlayer();   // Redisplay with updated info
@@ -69,6 +77,7 @@ public class PlayerPanel extends JPanel {
         this.repaint();
     }
 
+    // Set the player to display information about
     public void setPlayer(Player p) {
         this.player = p;
     }

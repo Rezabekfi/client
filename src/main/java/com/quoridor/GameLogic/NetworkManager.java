@@ -7,21 +7,30 @@ import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+/**
+ * NetworkManager class is responsible for handling the connection to the server, receiving and sending messages.
+ */
 public class NetworkManager {
+    // Socket and I/O streams
     private Socket socket;
     private PrintWriter output;
     private BufferedReader input;
+
+    // Connection status
     private boolean connected;
+
+    // Server address and port
     private String serverAddress;
     private int serverPort;
-    private boolean simulatedDisconnect = false;
 
+    // Constructor
     public NetworkManager(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
         this.connected = false;
     }
 
+    // Connect to the server
     public synchronized boolean connect() {
         try {
             socket = new Socket();
@@ -40,6 +49,7 @@ public class NetworkManager {
         }
     }
 
+    // Disconnect from the server
     public void disconnect() {
         try {
             if (socket != null) socket.close();
@@ -51,7 +61,13 @@ public class NetworkManager {
         }
     }
 
+    // Send a message to the server
     public synchronized void sendMessage(String message) {
+        if (!isConnected()) {
+            System.err.println("Cannot send message, not connected to the server.");
+            return;
+        }
+
         try {
             output.println(message);
         } catch (Exception e) {
@@ -59,6 +75,7 @@ public class NetworkManager {
         }
     }
 
+    // Send a GameMessage to the server
     public synchronized void sendMessage(GameMessage message) {
         if (!isConnected()) {
             System.err.println("Cannot send message, not connected to the server.");
@@ -76,6 +93,7 @@ public class NetworkManager {
         }
     }
 
+    // Receive a GameMessage from the server
     public GameMessage receiveMessage() {
         try {
             String jsonString = input.readLine();
@@ -97,23 +115,12 @@ public class NetworkManager {
     }
 
     public boolean isConnected() {
-        return connected && !simulatedDisconnect;
+        return connected;
     }
 
-    public void simulateDisconnect() {
-        simulatedDisconnect = true;
-        connected = false;
-    }
-
-    public void simulateReconnect() {
-        if (simulatedDisconnect) {
-            simulatedDisconnect = false;
-            connected = true;
-        }
-    }
-
+    // Validate network settings soft validation
     public static boolean validate_network_settings(String address, int port) {
-        // I don't know how to validate an IP address, so I'll just check if it's not empty
+        // I don't know how to validate an IP address, so I'll just check if it's not NULL and the port is in the valid range
         return address != null && !address.isEmpty() && port > 0 && port < 65536;
     }
 }

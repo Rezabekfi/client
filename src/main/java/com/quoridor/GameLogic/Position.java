@@ -1,5 +1,8 @@
 package com.quoridor.GameLogic;
 
+/**
+ * Position class represents a position on the board. Helper class for the Board class and Player class
+ */
 public class Position {
     private int row;
     private int col;

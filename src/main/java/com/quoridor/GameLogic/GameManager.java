@@ -9,14 +9,20 @@ import com.quoridor.UI.Components.SquareUI;
 import com.quoridor.UI.Components.WallUI;
 import com.quoridor.UI.Windows.PopupWindow;
 
+
+// GameManager class is responsible for managing the game state and handling the game loop for Single Player mode
+// MultiplayerGameManager extends this class to handle the game loop for Multiplayer mode
 public class GameManager {
 
     protected Board board;             // Game state (e.g., players, walls)
     protected GameBoard gameBoardUI;   // UI component for the game board
+    // current player who's turn it is
     protected Player currentPlayer;
     protected int playerIndex;
+    // UI components
     protected List<SquareUI> squares;
     protected List<WallUI> walls;
+    // helper array for placing walls (size = 2)
     protected WallUI[] doubleWall;
 
     public GameManager(Board board, GameBoard gameBoardUI) {
@@ -27,11 +33,14 @@ public class GameManager {
         this.doubleWall = new WallUI[2];
     }
 
+    // Setup the walls for the game
     protected void initializeWalls() {
         this.walls = gameBoardUI.getAllWalls();
         setWallActionListener();
     }
 
+    // Set up the action listener for the walls
+    // user has to click on two walls to place a wall (wall is 2 squares long in Quoridor). It has to be next to each other.
     public void setWallActionListener() {
         for (WallUI wall : walls) {
             wall.addMouseListener(new MouseListener() {
@@ -89,6 +98,7 @@ public class GameManager {
         }
     }
 
+    // Check if the player can place a wall
     public boolean possibleDoubleWall() {
         if (doubleWall[0] == null || doubleWall[1] == null) return false;
     
@@ -110,7 +120,7 @@ public class GameManager {
         return false;
     }
     
-
+    // Handle placing a wall
     public boolean placeWall(int row_1, int col_1, int row_2, int col_2, boolean isVertical) {
         if (board.canPlaceWall(currentPlayer, row_1, col_1, isVertical) && board.canPlaceWall(currentPlayer, row_2, col_2, isVertical)) {
             board.placeWall(row_1, col_1, isVertical);  // Update the game logic
@@ -144,10 +154,8 @@ public class GameManager {
         return false;
     }
 
-    // Optional: Handling turns
+    // change the turn to the next player if the game is not done
     public void nextTurn() {
-        //updatePlayerPosition();
-        //updateGameState -better
         removeSelectedWalls();
         removeSelectedSquares();
         gameBoardUI.updateBoard();
@@ -159,6 +167,7 @@ public class GameManager {
         highlightPossibleMoves();
     }
 
+    // change the turn to the next player
     private void getNextPlayer() {
         if (++playerIndex == board.getPlayers().length) {
             playerIndex = 0;
@@ -166,6 +175,7 @@ public class GameManager {
         currentPlayer = board.getPlayers()[playerIndex];
     }
 
+    // Handle the end of the game
     private void handleGameEnded() {
         Player winner = getWinner();
         PopupWindow.showMessage("Game Over! Player " + winner.getName() + " wins!");
@@ -173,6 +183,7 @@ public class GameManager {
         gameBoardUI.setNewGame(playerIndex);
     }
 
+    // Remove the selected squares (possible moves)
     private void removeSelectedSquares() {
         if (squares == null) {
             return;
@@ -184,22 +195,26 @@ public class GameManager {
         squares = null;
     }
 
+    // Highlight the possible moves for the current player (only possible moves are highlighted and clickable)
     private void highlightPossibleMoves() {
         List<Position> list = board.possibleMoves(currentPlayer);
         squares = gameBoardUI.setUpPossibleSquares(list);
         setSquaresActionListener();
     }
 
+    // Game loop for Single Player mode
     public void gameLoop() {
         setUpFirstMove();
     }
 
+    // Set up the first move of the game
     private void setUpFirstMove() {
         initializeWalls();
         gameBoardUI.updateBoard();
         highlightPossibleMoves();
     }
 
+    // Set up the action listener for the squares
     private void setSquaresActionListener() {
         for (SquareUI square : squares) {
             MouseListener listener = new MouseListener() {
@@ -231,13 +246,8 @@ public class GameManager {
             square.setMouseListener(listener);  // Store the listener in SquareUI
         }
     }
-    
 
-    // for debugging - current development tested here
-    public void debbugRand() {
-        System.out.println("debbuging - nothing");
-    }
-
+    // Get the winner of the game
     public Player getWinner() {
         Player[] players = this.board.getPlayers();
         
@@ -249,12 +259,14 @@ public class GameManager {
         return null;
     }
 
+    // Remove the selected walls
     private void removeSelectedWalls() {
         for (WallUI wall : walls) {
             wall.setSelected(false);
         }
     }
 
+    // Set the current player
     public void setCurrentPlayer(Player player, int playerIndex) {
         this.currentPlayer = player;
         this.playerIndex = playerIndex;

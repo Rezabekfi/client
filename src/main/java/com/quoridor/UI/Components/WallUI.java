@@ -11,18 +11,29 @@ import javax.swing.border.LineBorder;
 
 //import Settings.Constants;
 
-public class WallUI extends JPanel {
 
+/**
+ * Panel that represents a wall on the game board. It is used in the GameBoard panel.
+ */
+public class WallUI extends JPanel {
+    // Flag to indicate if the wall is placed
     public boolean placed;
+    // Flag to indicate if the wall is vertical
     public boolean isVertical;
+    // Flag to indicate if the wall is selected (highlighted)
     public boolean selected;
+
+    // Color of the player that placed the wall (set to black by default)
     public Color playerColor;
 
+    // Position of the wall on the board
     public int row;
     public int col;
 
+    // Mouse listener for the wall
     private MouseListener mouseListener;
 
+    // Constructor
     public WallUI(int row, int col, boolean isVertical, boolean placed) {
         this.row = row;
         this.col = col;
@@ -32,6 +43,7 @@ public class WallUI extends JPanel {
         this.playerColor = Color.BLACK;
     }
 
+    // Method to paint the wall
     @Override
     public void paint(Graphics g) {
         if (isPlaced()) {
@@ -47,6 +59,7 @@ public class WallUI extends JPanel {
         super.paint(g);
     }
     
+    // Getters and setters
     public boolean isPlaced() {
         return placed;
     }

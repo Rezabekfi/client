@@ -11,13 +11,23 @@ import com.quoridor.Settings.Constants;
 import com.quoridor.Settings.PlayerColor;
 import java.awt.event.MouseListener;
 
+/**
+ * Panel that represents a square on the game board. It can contain a player piece or be empty.
+ * The square can be lighted up to indicate that it is a possible move for the player.
+ * It is used in the GameBoard panel.
+ */
 public class SquareUI extends JPanel {
 
+    // Character representing the square
     private char squareChar;
+    // Flag to indicate if the square is lighted up
     private boolean lightedUp;
+    // Position of the square on the board
     private Position position;
+    // Mouse listener for the square
     private MouseListener mouseListener;
 
+    // Constructor
     public SquareUI(char currentChar, Position position) {
         this.squareChar = currentChar;
         this.setBackground(Constants.SQUARE_COLOR);
@@ -25,6 +35,7 @@ public class SquareUI extends JPanel {
         this.position = position;
     }
 
+    // Method to paint the square
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // Call the superclass method to ensure proper painting
@@ -41,15 +52,16 @@ public class SquareUI extends JPanel {
         }
 
         // Set the color for the circle
-        g2d.setColor(PlayerColor.fromSymbol(squareChar).getColor()); // You can use a constant or dynamic color if needed
+        g2d.setColor(PlayerColor.fromSymbol(squareChar).getColor());
 
-        // Draw the circle (as an oval with equal width and height)
-        int diameter = Math.min(getWidth(), getHeight()) - 10;  // Circle size slightly smaller than the panel size
-        int x = (getWidth() - diameter) / 2;  // Center the circle horizontally
-        int y = (getHeight() - diameter) / 2; // Center the circle vertically
+        // Draw the circle if the square is lighten up
+        int diameter = Math.min(getWidth(), getHeight()) - 10;
+        int x = (getWidth() - diameter) / 2;
+        int y = (getHeight() - diameter) / 2;
         g2d.fillOval(x, y, diameter, diameter);
     }
 
+    // Method to light up the square
     private void lightUpSquare(Graphics2D g2d) {
         g2d.setColor(Constants.POSSIBLE_SQUARE_COLLOR);
         int diameter = Math.min(getWidth(), getHeight()) - 10;  // Circle size slightly smaller than the panel size
@@ -58,6 +70,7 @@ public class SquareUI extends JPanel {
         g2d.fillOval(x, y, diameter, diameter);
     }
 
+    // Getters and setters
     public char getSquareChar() {
         return squareChar;
     }

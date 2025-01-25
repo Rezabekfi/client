@@ -1,6 +1,8 @@
 package com.quoridor.Settings;
 import java.awt.*;
-
+/**
+ * Constants class contains some of the constants used in the game
+ */
 public class Constants{
     public static String GAME_NAME = "Quoridor";
     public static int STARTING_NUMBER_OF_WALLS = 10; 
